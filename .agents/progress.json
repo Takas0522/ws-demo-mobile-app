@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T07:42:14Z",
+  "updatedAt": "2026-02-11T07:57:19Z",
   "currentPhase": 2,
   "status": "in-progress",
   "phases": {
@@ -55,13 +55,29 @@
     "2": {
       "name": "architecture-update",
       "displayName": "アーキテクチャ仕様更新",
-      "status": "in-progress",
-      "attempts": 0,
+      "status": "review",
+      "attempts": 1,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T07:42:14Z",
       "completedAt": null,
       "reviewHistory": [],
-      "outputs": []
+      "outputs": [
+        "docs/architecture/00-overview.md",
+        "docs/architecture/01-system-context.md",
+        "docs/architecture/02-component-design.md",
+        "docs/architecture/03-data-architecture.md",
+        "docs/architecture/04-api-architecture.md",
+        "docs/architecture/05-security-architecture.md",
+        "docs/architecture/06-infrastructure.md",
+        "docs/architecture/07-deployment.md",
+        "docs/architecture/08-monitoring.md",
+        "docs/architecture/09-coding-standards.md",
+        "docs/architecture/10-dependency-management.md",
+        "docs/architecture/11-testing-architecture.md",
+        "docs/architecture/12-adr/README.md",
+        "docs/architecture/12-adr/ADR-001-bff-pattern.md",
+        "docs/architecture/12-adr/ADR-002-jwt-authentication.md"
+      ]
     },
     "3": {
       "name": "task-creation",
