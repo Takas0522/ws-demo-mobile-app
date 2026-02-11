@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T08:16:00Z",
+  "updatedAt": "2026-02-11T08:30:00Z",
   "currentPhase": 3,
   "status": "in-progress",
   "phases": {
@@ -102,13 +102,16 @@
     "3": {
       "name": "task-creation",
       "displayName": "開発タスク作成",
-      "status": "in-progress",
-      "attempts": 0,
+      "status": "review",
+      "attempts": 1,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T08:16:00Z",
       "completedAt": null,
       "reviewHistory": [],
-      "outputs": []
+      "outputs": [
+        "docs/specs/mobile-app-system/development-plan.md",
+        "docs/specs/mobile-app-system/task-list.json"
+      ]
     },
     "4": {
       "name": "development",
