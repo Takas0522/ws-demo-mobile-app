@@ -1,8 +1,8 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T08:30:00Z",
-  "currentPhase": 3,
+  "updatedAt": "2026-02-11T08:30:24Z",
+  "currentPhase": 4,
   "status": "in-progress",
   "phases": {
     "1": {
@@ -102,12 +102,20 @@
     "3": {
       "name": "task-creation",
       "displayName": "開発タスク作成",
-      "status": "review",
+      "status": "completed",
       "attempts": 1,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T08:16:00Z",
-      "completedAt": null,
-      "reviewHistory": [],
+      "completedAt": "2026-02-11T08:30:24Z",
+      "reviewHistory": [
+        {
+          "attempt": 1,
+          "result": "approved",
+          "timestamp": "2026-02-11T08:31:00Z",
+          "findings": [],
+          "summary": "Development plan with 75 tasks created successfully. Clear dependencies and acceptance criteria defined."
+        }
+      ],
       "outputs": [
         "docs/specs/mobile-app-system/development-plan.md",
         "docs/specs/mobile-app-system/task-list.json"
@@ -116,10 +124,230 @@
     "4": {
       "name": "development",
       "displayName": "開発実行",
-      "status": "not-started",
-      "startedAt": null,
+      "status": "in-progress",
+      "startedAt": "2026-02-11T08:30:24Z",
       "completedAt": null,
-      "tasks": [],
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "DevContainer環境構築",
+          "description": "Web開発用のDevContainer環境をセットアップする。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [],
+          "acceptanceCriteria": [
+            "DevContainerが正常に起動する",
+            "Java（最新版）がインストールされている",
+            "Maven/Gradleがインストールされている",
+            "Node.js（最新版）がインストールされている"
+          ],
+          "targetFiles": [
+            ".devcontainer/devcontainer.json",
+            ".devcontainer/Dockerfile"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/06-infrastructure.md#3-devcontainer構成"
+          ],
+          "verificationMethod": "build",
+          "verificationCommand": "docker ps",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-002",
+          "title": "PostgreSQL環境構築",
+          "description": "PostgreSQLデータベース環境をDockerで構築する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [],
+          "acceptanceCriteria": [
+            "PostgreSQLコンテナが起動する",
+            "データベースに接続できる",
+            "接続情報が環境変数で管理されている"
+          ],
+          "targetFiles": [
+            "docker-compose.yml",
+            ".env.example"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/03-data-architecture.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "psql -h localhost -U postgres -c 'SELECT 1'",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-003",
+          "title": "データベーススキーマ作成",
+          "description": "PostgreSQL上に全テーブルスキーマを作成する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-002"
+          ],
+          "acceptanceCriteria": [
+            "全テーブルが作成される",
+            "インデックスが設定される",
+            "外部キー制約が設定される"
+          ],
+          "targetFiles": [
+            "database/schema/01_create_tables.sql"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/04-data-model.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "psql -h localhost -U postgres -d mobile_app -c '\\dt'",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-004",
+          "title": "初期データ投入スクリプト作成",
+          "description": "テストユーザーと商品データを投入するスクリプトを作成・実行する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-003"
+          ],
+          "acceptanceCriteria": [
+            "ユーザーデータが投入される",
+            "商品データが投入される",
+            "機能フラグマスタが投入される"
+          ],
+          "targetFiles": [
+            "database/seeds/02_seed_data.sql"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/04-data-model.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "psql -h localhost -U postgres -d mobile_app -c 'SELECT COUNT(*) FROM products'",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-005",
+          "title": "Web APIプロジェクト雛形作成",
+          "description": "Spring Boot Web APIプロジェクトの雛形を作成する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [
+            "task-001"
+          ],
+          "acceptanceCriteria": [
+            "Spring Bootプロジェクトが作成される",
+            "ビルドが成功する",
+            "アプリケーションが起動する"
+          ],
+          "targetFiles": [
+            "web-api/pom.xml",
+            "web-api/src/main/java/com/example/webapi/Application.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/04-api-architecture.md"
+          ],
+          "verificationMethod": "build",
+          "verificationCommand": "mvn clean package",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-006",
+          "title": "Mobile BFFプロジェクト雛形作成",
+          "description": "Mobile BFF（Spring Boot）プロジェクトの雛形を作成する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [
+            "task-001"
+          ],
+          "acceptanceCriteria": [
+            "Spring Bootプロジェクトが作成される",
+            "ビルドが成功する",
+            "アプリケーションが起動する"
+          ],
+          "targetFiles": [
+            "mobile-bff/pom.xml",
+            "mobile-bff/src/main/java/com/example/mobilebff/Application.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/04-api-architecture.md"
+          ],
+          "verificationMethod": "build",
+          "verificationCommand": "mvn clean package",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-007",
+          "title": "Admin BFFプロジェクト雛形作成",
+          "description": "Admin BFF（Spring Boot）プロジェクトの雛形を作成する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [
+            "task-001"
+          ],
+          "acceptanceCriteria": [
+            "Spring Bootプロジェクトが作成される",
+            "ビルドが成功する",
+            "アプリケーションが起動する"
+          ],
+          "targetFiles": [
+            "admin-bff/pom.xml",
+            "admin-bff/src/main/java/com/example/adminbff/Application.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/04-api-architecture.md"
+          ],
+          "verificationMethod": "build",
+          "verificationCommand": "mvn clean package",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        },
+        {
+          "id": "task-008",
+          "title": "DB接続確認（Web API）",
+          "description": "Web APIからPostgreSQLへの接続を確認する。",
+          "phase": "phase-1",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [
+            "task-005",
+            "task-004"
+          ],
+          "acceptanceCriteria": [
+            "Web APIからDBに接続できる",
+            "シンプルなクエリが実行できる",
+            "データが取得できる"
+          ],
+          "targetFiles": [
+            "web-api/src/main/resources/application.yml"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/03-data-architecture.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "curl http://localhost:8080/actuator/health",
+          "status": "not-started",
+          "startedAt": null,
+          "completedAt": null
+        }
+      ],
       "currentTaskIndex": 0
     },
     "5": {
