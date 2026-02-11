@@ -2,8 +2,10 @@ package com.example.webapi.config;
 
 import com.example.webapi.dto.ErrorResponse;
 import com.example.webapi.exception.AuthenticationException;
+import com.example.webapi.exception.FeatureFlagException;
 import com.example.webapi.exception.ForbiddenException;
 import com.example.webapi.exception.ResourceNotFoundException;
+import com.example.webapi.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,10 +83,10 @@ public class GlobalExceptionHandler {
     }
     
     /**
-     * バリデーションエラーハンドラー
+     * バリデーションエラーハンドラー（アノテーション）
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.warn("バリデーションエラー: {}", e.getMessage());
         
         String details = e.getBindingResult().getFieldErrors().stream()
@@ -99,6 +101,39 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+    
+    /**
+     * バリデーション例外ハンドラー（カスタム）
+     */
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException e) {
+        log.warn("バリデーションエラー: code={}, message={}", e.getCode(), e.getMessage());
+        
+        ErrorResponse errorResponse = e.getDetails() != null
+                ? ErrorResponse.of(e.getCode(), e.getMessage(), e.getDetails())
+                : ErrorResponse.of(e.getCode(), e.getMessage());
+        
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+    
+    /**
+     * 機能フラグ例外ハンドラー
+     */
+    @ExceptionHandler(FeatureFlagException.class)
+    public ResponseEntity<ErrorResponse> handleFeatureFlagException(FeatureFlagException e) {
+        log.warn("機能フラグエラー: code={}, message={}", e.getCode(), e.getMessage());
+        
+        ErrorResponse errorResponse = ErrorResponse.of(
+                e.getCode(),
+                e.getMessage()
+        );
+        
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(errorResponse);
     }
     
