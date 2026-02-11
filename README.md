@@ -9,19 +9,22 @@
 ### アーキテクチャ
 
 ```
-┌─────────────────────────────────────────────────┐
-│                 オーケストレーター                  │
-│          (.agents/orchestrator.md)                │
-│  ┌───────────────────────────────────────────┐   │
-│  │  進捗管理 (.agents/progress.json)          │   │
-│  └───────────────────────────────────────────┘   │
-│                      │                           │
-│         ┌────────────┼────────────┐              │
-│         ▼            ▼            ▼              │
-│    サブエージェント  サブエージェント  レビュー         │
-│    (Phase 1-5)     (Phase 1-5)  サブエージェント    │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│              Orchestrator エージェント                 │
+│       (.github/agents/orchestrator.agent.md)         │
+│  ┌───────────────────────────────────────────────┐   │
+│  │  進捗管理 (.agents/progress.json)              │   │
+│  └───────────────────────────────────────────────┘   │
+│                      │                               │
+│   ┌──────────────────┼──────────────────┐            │
+│   ▼                  ▼                  ▼            │
+│ サブエージェント   サブエージェント    Review           │
+│ (Phase 1-5)      (Phase 1-5)     エージェント        │
+└─────────────────────────────────────────────────────┘
 ```
+
+VS Code のカスタムエージェント機能を使用しています。
+サブエージェントは `user-invokable: false` で定義されており、Orchestrator からのみ起動されます。
 
 ### 開発フェーズ
 
@@ -40,12 +43,10 @@
 #### VS Code Copilot での利用
 
 1. VS Code で本プロジェクトを開く
-2. Copilot Chat で以下のようにオーケストレーターを起動:
+2. Copilot Chat のエージェントドロップダウンから **Orchestrator** を選択
+3. 機能名と仕様概要を入力：
 
 ```
-以下の機能の開発を開始してください。
-.agents/orchestrator.md の手順に従い、サブエージェントを使って開発を進めてください。
-
 ## 機能名
 ユーザー認証
 
@@ -54,6 +55,8 @@
 - ソーシャルログイン（Google, Apple）
 - パスワードリセット機能
 ```
+
+Orchestrator が自動的にサブエージェント（SpecRefinement, ArchitectureUpdate, TaskCreation, Development, Summary, Review）を呼び出して開発を進行します。
 
 #### GitHub Coding Agent での利用
 
@@ -64,21 +67,21 @@
 
 ```
 .
-├── .agents/                        # エージェントシステム
-│   ├── orchestrator.md            # オーケストレーター定義
+├── .github/
+│   ├── agents/                     # VS Code カスタムエージェント定義
+│   │   ├── orchestrator.agent.md  # Orchestrator（ユーザーが起動）
+│   │   ├── spec-refinement.agent.md    # Phase 1（サブエージェント）
+│   │   ├── architecture-update.agent.md # Phase 2（サブエージェント）
+│   │   ├── task-creation.agent.md       # Phase 3（サブエージェント）
+│   │   ├── development.agent.md         # Phase 4（サブエージェント）
+│   │   ├── summary.agent.md             # Phase 5（サブエージェント）
+│   │   └── review.agent.md             # レビュー（サブエージェント）
+│   └── copilot-instructions.md    # Copilot カスタムインストラクション
+├── .agents/                        # 進捗管理
 │   ├── config.md                  # 設定
 │   ├── progress.json              # 進捗管理（実行時生成）
-│   ├── sub-agents/                # サブエージェント定義
-│   │   ├── 01-spec-refinement.md
-│   │   ├── 02-architecture-update.md
-│   │   ├── 03-task-creation.md
-│   │   ├── 04-development.md
-│   │   ├── 05-summary.md
-│   │   └── review.md
 │   └── templates/                 # テンプレート
 │       └── progress-template.json
-├── .github/
-│   └── copilot-instructions.md    # Copilot カスタムインストラクション
 ├── docs/                           # ドキュメント（実行時生成）
 │   ├── specs/{機能名}/            # 機能仕様
 │   └── architecture/              # アーキテクチャ
@@ -92,6 +95,6 @@
 中断した場合でも、progress.json の状態から作業を再開できます。
 
 ```
-.agents/progress.json を確認し、中断した作業を再開してください。
-.agents/orchestrator.md の手順に従ってください。
+Copilot Chat のエージェントドロップダウンから Orchestrator を選択し、
+「.agents/progress.json を確認し、中断した作業を再開してください」と入力してください。
 ```

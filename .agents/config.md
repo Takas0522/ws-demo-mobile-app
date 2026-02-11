@@ -5,19 +5,23 @@
 ## ディレクトリ構成
 
 ```
-.agents/
-├── orchestrator.md                     # オーケストレーター定義
+.github/agents/                         # VS Code カスタムエージェント定義
+├── orchestrator.agent.md               # オーケストレーター（ユーザーが起動）
+├── spec-refinement.agent.md            # Phase 1: 仕様精査（サブエージェント）
+├── architecture-update.agent.md        # Phase 2: アーキテクチャ更新（サブエージェント）
+├── task-creation.agent.md              # Phase 3: タスク作成（サブエージェント）
+├── development.agent.md               # Phase 4: 開発実行（サブエージェント）
+├── summary.agent.md                   # Phase 5: サマリ作成（サブエージェント）
+└── review.agent.md                    # レビューサブエージェント
+
+.agents/                                # 進捗管理・テンプレート
 ├── config.md                           # この設定ファイル
 ├── progress.json                       # 進捗管理（実行時に生成）
-├── sub-agents/
-│   ├── 01-spec-refinement.md           # Phase 1: 仕様精査
-│   ├── 02-architecture-update.md       # Phase 2: アーキテクチャ更新
-│   ├── 03-task-creation.md             # Phase 3: タスク作成
-│   ├── 04-development.md              # Phase 4: 開発実行
-│   ├── 05-summary.md                  # Phase 5: サマリ作成
-│   └── review.md                      # レビューサブエージェント
 └── templates/
     └── progress-template.json          # 進捗管理テンプレート
+
+.github/
+└── copilot-instructions.md             # Copilot カスタムインストラクション
 ```
 
 ## Git 運用

@@ -1,3 +1,11 @@
+---
+name: Summary
+description: Phase 5 - サマリ作成。全開発フェーズ完了後に成果物・変更点・課題を整理したサマリを作成します。
+tools: ['read', 'search', 'edit', 'terminalLastCommand', 'runInTerminal']
+user-invokable: false
+argument-hint: '機能名を入力してください'
+---
+
 # Phase 5: サマリ作成サブエージェント
 
 あなたはテクニカルライターです。すべての開発フェーズが完了した後に、開発全体のサマリを作成します。
@@ -110,7 +118,6 @@
 ## 変更ログ
 
 ### Phase 1: 仕様精査
-- {日時}: {変更内容}
 - {日時}: {変更内容}
 
 ### Phase 2: アーキテクチャ更新

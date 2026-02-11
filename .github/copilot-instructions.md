@@ -3,32 +3,41 @@
 ## プロジェクト概要
 
 このプロジェクトはエージェント駆動型の開発ワークフローを採用しています。
-開発はオーケストレーター（`.agents/orchestrator.md`）が管理し、各フェーズの作業はサブエージェントが担当します。
+開発はオーケストレーターエージェント（`.github/agents/orchestrator.agent.md`）が管理し、各フェーズの作業はカスタムサブエージェントが担当します。
 
 ## エージェントシステム
 
-### オーケストレーターとして動作する場合
+### カスタムエージェント配置
 
-ユーザーから「オーケストレーターとして開発を実施してください」等の指示があった場合：
+エージェント定義は `.github/agents/` ディレクトリに `.agent.md` ファイルとして配置されています。
+VS Code はこのディレクトリを自動検出し、エージェントドロップダウンに表示します。
 
-1. `.agents/orchestrator.md` を読み込み、その手順に従ってください
-2. `.agents/progress.json` で進捗を管理してください
-3. 各フェーズの作業は `runSubagent` でサブエージェントに委譲してください
-4. あなた自身はコードの変更を行わず、進捗管理と作業の割り振りに専念してください
+| エージェント | ファイル | 役割 |
+|------------|---------|------|
+| Orchestrator | `orchestrator.agent.md` | 作業割り振り・進捗管理（ユーザーが起動） |
+| SpecRefinement | `spec-refinement.agent.md` | Phase 1: 仕様精査（サブエージェント専用） |
+| ArchitectureUpdate | `architecture-update.agent.md` | Phase 2: アーキテクチャ更新（サブエージェント専用） |
+| TaskCreation | `task-creation.agent.md` | Phase 3: タスク作成（サブエージェント専用） |
+| Development | `development.agent.md` | Phase 4: 開発実行（サブエージェント専用） |
+| Summary | `summary.agent.md` | Phase 5: サマリ作成（サブエージェント専用） |
+| Review | `review.agent.md` | 批判的レビュー（サブエージェント専用） |
 
-### サブエージェントとして動作する場合
+### オーケストレーターの利用
 
-`runSubagent` として起動された場合：
+Copilot Chat のエージェントドロップダウンから **Orchestrator** を選択し、機能名と仕様概要を入力してください。
+オーケストレーターは自動的に各フェーズのサブエージェントを呼び出し、作業を進行します。
 
-1. 提供されたプロンプトの指示に正確に従ってください
-2. 完了条件をすべて満たすよう作業してください
-3. 作業結果を正確に報告してください
+### 進捗管理
+
+- 進捗は `.agents/progress.json` で管理されます
+- テンプレートは `.agents/templates/progress-template.json` にあります
 
 ## ディレクトリ規約
 
 | ディレクトリ | 用途 |
 |-------------|------|
-| `.agents/` | エージェントシステム定義 |
+| `.github/agents/` | カスタムエージェント定義（`.agent.md`） |
+| `.agents/` | 進捗管理・テンプレート |
 | `docs/specs/{機能名}/` | 機能仕様書 |
 | `docs/architecture/` | アーキテクチャドキュメント |
 | `src/` | ソースコード |
