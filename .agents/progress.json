@@ -1,18 +1,18 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T08:30:00Z",
-  "currentPhase": 1,
+  "updatedAt": "2026-02-11T07:42:14Z",
+  "currentPhase": 2,
   "status": "in-progress",
   "phases": {
     "1": {
       "name": "spec-refinement",
       "displayName": "仕様精査・構築",
-      "status": "review",
+      "status": "completed",
       "attempts": 2,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T07:06:36Z",
-      "completedAt": null,
+      "completedAt": "2026-02-11T07:42:14Z",
       "reviewHistory": [
         {
           "attempt": 1,
@@ -23,6 +23,13 @@
             "05-api-spec.md: 996行（196行超過） - 5ファイルに分割が必要"
           ],
           "summary": "2ファイルが800行制限を超過。分割が必要。その他の品質は高い。"
+        },
+        {
+          "attempt": 2,
+          "result": "approved",
+          "timestamp": "2026-02-11T07:08:00Z",
+          "findings": [],
+          "summary": "全ファイルが800行以下に分割され、完了条件をすべて満たしている。優れた品質のドキュメントセット。"
         }
       ],
       "outputs": [
@@ -48,10 +55,10 @@
     "2": {
       "name": "architecture-update",
       "displayName": "アーキテクチャ仕様更新",
-      "status": "not-started",
+      "status": "in-progress",
       "attempts": 0,
       "maxAttempts": 3,
-      "startedAt": null,
+      "startedAt": "2026-02-11T07:42:14Z",
       "completedAt": null,
       "reviewHistory": [],
       "outputs": []
