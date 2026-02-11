@@ -1,9 +1,9 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T09:39:37Z",
+  "updatedAt": "2026-02-11T09:51:00Z",
   "currentPhase": 5,
-  "status": "in-progress",
+  "status": "completed",
   "phases": {
     "1": {
       "name": "spec-refinement",
@@ -353,13 +353,29 @@
     "5": {
       "name": "summary",
       "displayName": "サマリ作成",
-      "status": "in-progress",
-      "attempts": 0,
+      "status": "completed",
+      "attempts": 1,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T09:39:37Z",
-      "completedAt": null,
-      "reviewHistory": [],
-      "outputs": []
+      "completedAt": "2026-02-11T09:50:00Z",
+      "reviewHistory": [
+        {
+          "attempt": 1,
+          "result": "approved",
+          "timestamp": "2026-02-11T09:50:00Z",
+          "findings": [],
+          "summary": "Comprehensive project summary created with all deliverables, metrics, and lessons learned documented."
+        }
+      ],
+      "outputs": [
+        "docs/specs/mobile-app-system/summary/README.md",
+        "docs/specs/mobile-app-system/summary/00-executive-summary.md",
+        "docs/specs/mobile-app-system/summary/01-deliverables.md",
+        "docs/specs/mobile-app-system/summary/02-changes-log.md",
+        "docs/specs/mobile-app-system/summary/03-review-history.md",
+        "docs/specs/mobile-app-system/summary/04-issues-and-improvements.md",
+        "docs/specs/mobile-app-system/summary/05-lessons-learned.md"
+      ]
     }
   },
   "errors": []
