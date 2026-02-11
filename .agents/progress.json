@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T13:20:00Z",
+  "updatedAt": "2026-02-11T22:46:51Z",
   "currentPhase": 5,
   "status": "completed",
   "phases": {
@@ -354,14 +354,20 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-005"],
+          "dependencies": [
+            "task-005"
+          ],
           "acceptanceCriteria": [
             "JWTトークンが生成できる",
             "JWTトークンが検証できる",
             "リフレッシュトークンが生成できる"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/JwtTokenProvider.java"],
-          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/security/JwtTokenProvider.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/05-security-architecture.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -375,14 +381,20 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-009"],
+          "dependencies": [
+            "task-009"
+          ],
           "acceptanceCriteria": [
             "リクエストヘッダーからJWTを抽出できる",
             "JWTを検証してユーザー情報を設定できる",
             "認証エラーを適切に処理できる"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/JwtAuthenticationFilter.java"],
-          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/security/JwtAuthenticationFilter.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/05-security-architecture.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -396,14 +408,20 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-010"],
+          "dependencies": [
+            "task-010"
+          ],
           "acceptanceCriteria": [
             "正しい認証情報でログインできる",
             "JWTトークンとリフレッシュトークンが返却される",
             "誤った認証情報でエラーが返る"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/AuthController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/AuthController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -X POST http://localhost:8080/api/v1/auth/login",
           "status": "completed",
@@ -417,13 +435,19 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "S",
-          "dependencies": ["task-011"],
+          "dependencies": [
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "リフレッシュトークンで新しいアクセストークンが取得できる",
             "無効なリフレッシュトークンでエラーが返る"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/AuthController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/AuthController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -X POST http://localhost:8080/api/v1/auth/refresh",
           "status": "completed",
@@ -437,13 +461,19 @@
           "phase": "phase-2",
           "priority": "medium",
           "estimatedSize": "S",
-          "dependencies": ["task-011"],
+          "dependencies": [
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "ログアウト後にトークンが無効化される",
             "無効化されたトークンでAPIアクセスできない"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/AuthController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/AuthController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -X POST http://localhost:8080/api/v1/auth/logout",
           "status": "completed",
@@ -457,13 +487,19 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "S",
-          "dependencies": ["task-005"],
+          "dependencies": [
+            "task-005"
+          ],
           "acceptanceCriteria": [
             "パスワードがBCryptでハッシュ化される",
             "ハッシュ化されたパスワードで認証できる"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/PasswordEncoder.java"],
-          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/security/PasswordEncoder.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/05-security-architecture.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -477,13 +513,19 @@
           "phase": "phase-2",
           "priority": "medium",
           "estimatedSize": "S",
-          "dependencies": ["task-011"],
+          "dependencies": [
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "認証済みユーザーの情報が取得できる",
             "未認証でエラーが返る"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/UserController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/UserController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -H 'Authorization: Bearer <token>' http://localhost:8080/api/v1/users/me",
           "status": "completed",
@@ -497,14 +539,20 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-010"],
+          "dependencies": [
+            "task-010"
+          ],
           "acceptanceCriteria": [
             "管理者権限のチェックができる",
             "一般ユーザー権限のチェックができる",
             "権限不足でエラーが返る"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/RoleChecker.java"],
-          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/security/RoleChecker.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/05-security-architecture.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -518,14 +566,20 @@
           "phase": "phase-2",
           "priority": "medium",
           "estimatedSize": "S",
-          "dependencies": ["task-010"],
+          "dependencies": [
+            "task-010"
+          ],
           "acceptanceCriteria": [
             "401エラーが適切に返る",
             "403エラーが適切に返る",
             "エラーレスポンスが統一されている"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/exception/AuthExceptionHandler.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/07-error-handling.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/exception/AuthExceptionHandler.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/07-error-handling.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -539,14 +593,20 @@
           "phase": "phase-2",
           "priority": "medium",
           "estimatedSize": "M",
-          "dependencies": ["task-011"],
+          "dependencies": [
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "アクティブセッションが記録される",
             "セッション一覧が取得できる",
             "セッションを強制終了できる"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/service/SessionService.java"],
-          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/service/SessionService.java"
+          ],
+          "relatedSpecs": [
+            "docs/architecture/05-security-architecture.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -560,14 +620,22 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-011", "task-012", "task-013"],
+          "dependencies": [
+            "task-011",
+            "task-012",
+            "task-013"
+          ],
           "acceptanceCriteria": [
             "ログインからログアウトまでのフローがテストできる",
             "トークンリフレッシュのテストができる",
             "エラーケースがテストできる"
           ],
-          "targetFiles": ["web-api/src/test/java/com/example/webapi/integration/AuthIntegrationTest.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/12-testing-strategy.md"],
+          "targetFiles": [
+            "web-api/src/test/java/com/example/webapi/integration/AuthIntegrationTest.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/12-testing-strategy.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -581,14 +649,20 @@
           "phase": "phase-2",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-011"],
+          "dependencies": [
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "トークン改ざん検知のテストができる",
             "期限切れトークンのテストができる",
             "不正アクセスのテストができる"
           ],
-          "targetFiles": ["web-api/src/test/java/com/example/webapi/security/AuthSecurityTest.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/08-security.md"],
+          "targetFiles": [
+            "web-api/src/test/java/com/example/webapi/security/AuthSecurityTest.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/08-security.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "mvn test",
           "status": "completed",
@@ -602,14 +676,20 @@
           "phase": "phase-3",
           "priority": "high",
           "estimatedSize": "M",
-          "dependencies": ["task-008"],
+          "dependencies": [
+            "task-008"
+          ],
           "acceptanceCriteria": [
             "商品一覧が取得できる",
             "ページネーションが機能する",
             "フィルタリングが機能する"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/ProductController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-02-product-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/ProductController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl http://localhost:8080/api/v1/products",
           "status": "completed",
@@ -623,13 +703,19 @@
           "phase": "phase-3",
           "priority": "high",
           "estimatedSize": "S",
-          "dependencies": ["task-021"],
+          "dependencies": [
+            "task-021"
+          ],
           "acceptanceCriteria": [
             "商品IDで詳細情報が取得できる",
             "存在しない商品でエラーが返る"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/ProductController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-02-product-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/ProductController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl http://localhost:8080/api/v1/products/{id}",
           "status": "completed",
@@ -643,14 +729,21 @@
           "phase": "phase-3",
           "priority": "high",
           "estimatedSize": "L",
-          "dependencies": ["task-021", "task-011"],
+          "dependencies": [
+            "task-021",
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "商品購入が記録される",
             "在庫が減少する",
             "購入履歴が作成される"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/PurchaseController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/PurchaseController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -X POST http://localhost:8080/api/v1/purchases",
           "status": "completed",
@@ -664,14 +757,20 @@
           "phase": "phase-3",
           "priority": "medium",
           "estimatedSize": "M",
-          "dependencies": ["task-023"],
+          "dependencies": [
+            "task-023"
+          ],
           "acceptanceCriteria": [
             "購入履歴一覧が取得できる",
             "ページネーションが機能する",
             "認証チェックが機能する"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/PurchaseController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/PurchaseController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -H 'Authorization: Bearer <token>' http://localhost:8080/api/v1/purchases",
           "status": "completed",
@@ -685,14 +784,21 @@
           "phase": "phase-3",
           "priority": "medium",
           "estimatedSize": "S",
-          "dependencies": ["task-021", "task-011"],
+          "dependencies": [
+            "task-021",
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "お気に入りに追加できる",
             "重複追加がエラーになる",
             "認証チェックが機能する"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/FavoriteController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/FavoriteController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -X POST http://localhost:8080/api/v1/favorites",
           "status": "completed",
@@ -706,14 +812,20 @@
           "phase": "phase-3",
           "priority": "medium",
           "estimatedSize": "S",
-          "dependencies": ["task-025"],
+          "dependencies": [
+            "task-025"
+          ],
           "acceptanceCriteria": [
             "お気に入り一覧が取得できる",
             "ページネーションが機能する",
             "認証チェックが機能する"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/FavoriteController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/FavoriteController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -H 'Authorization: Bearer <token>' http://localhost:8080/api/v1/favorites",
           "status": "completed",
@@ -727,22 +839,352 @@
           "phase": "phase-3",
           "priority": "medium",
           "estimatedSize": "M",
-          "dependencies": ["task-011"],
+          "dependencies": [
+            "task-011"
+          ],
           "acceptanceCriteria": [
             "機能フラグ一覧が取得できる",
             "ユーザーごとの有効/無効が判定できる",
             "管理者が設定を変更できる"
           ],
-          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/FeatureFlagController.java"],
-          "relatedSpecs": ["docs/specs/mobile-app-system/05-02-product-api.md"],
+          "targetFiles": [
+            "web-api/src/main/java/com/example/webapi/controller/FeatureFlagController.java"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
           "verificationMethod": "test",
           "verificationCommand": "curl -H 'Authorization: Bearer <token>' http://localhost:8080/api/v1/feature-flags",
           "status": "completed",
           "startedAt": "2026-02-11T13:05:00Z",
           "completedAt": "2026-02-11T13:20:00Z"
+        },
+        {
+          "id": "task-028",
+          "title": "Mobile BFF - 商品一覧取得エンドポイント実装",
+          "description": "Mobile BFFに商品一覧を取得するエンドポイントを実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-012"
+          ],
+          "acceptanceCriteria": [
+            "商品一覧が取得できる",
+            "フィルタリングが機能する",
+            "レスポンスが最適化されている"
+          ],
+          "targetFiles": [
+            "mobile-bff/src/controllers/productController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl http://localhost:3001/api/v1/products",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-029",
+          "title": "Mobile BFF - 商品詳細取得エンドポイント実装",
+          "description": "Mobile BFFに商品詳細を取得するエンドポイントを実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-028"
+          ],
+          "acceptanceCriteria": [
+            "商品詳細が取得できる",
+            "関連商品情報が含まれる",
+            "レスポンスが最適化されている"
+          ],
+          "targetFiles": [
+            "mobile-bff/src/controllers/productController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl http://localhost:3001/api/v1/products/:id",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-030",
+          "title": "Mobile BFF - カート管理エンドポイント実装",
+          "description": "Mobile BFFにカート管理機能を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-029"
+          ],
+          "acceptanceCriteria": [
+            "カートへの追加・削除ができる",
+            "カート内容を取得できる",
+            "在庫チェックが機能する"
+          ],
+          "targetFiles": [
+            "mobile-bff/src/controllers/cartController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:3001/api/v1/cart/items",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-031",
+          "title": "Mobile BFF - お気に入り管理エンドポイント実装",
+          "description": "Mobile BFFにお気に入り管理機能を実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-030"
+          ],
+          "acceptanceCriteria": [
+            "お気に入りの追加・削除ができる",
+            "お気に入り一覧を取得できる",
+            "認証チェックが機能する"
+          ],
+          "targetFiles": [
+            "mobile-bff/src/controllers/favoriteController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:3001/api/v1/favorites",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-032",
+          "title": "Mobile BFF - 認証ミドルウェア実装",
+          "description": "Mobile BFFに認証・認可のミドルウェアを実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-031"
+          ],
+          "acceptanceCriteria": [
+            "JWT認証が機能する",
+            "認証エラーが適切に処理される",
+            "トークンリフレッシュが機能する"
+          ],
+          "targetFiles": [
+            "mobile-bff/src/middleware/auth.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "npm test -- auth.middleware",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-033",
+          "title": "Mobile BFF - エラーハンドリング実装",
+          "description": "Mobile BFFに統一的なエラーハンドリングを実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": [
+            "task-032"
+          ],
+          "acceptanceCriteria": [
+            "エラーレスポンスが統一されている",
+            "ログが適切に出力される",
+            "クライアントに適切なエラー情報が返される"
+          ],
+          "targetFiles": [
+            "mobile-bff/src/middleware/errorHandler.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "npm test -- errorHandler",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-034",
+          "title": "Admin BFF - 管理者認証エンドポイント実装",
+          "description": "Admin BFFに管理者認証機能を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-033"
+          ],
+          "acceptanceCriteria": [
+            "管理者ログインができる",
+            "権限チェックが機能する",
+            "セッション管理が機能する"
+          ],
+          "targetFiles": [
+            "admin-bff/src/controllers/authController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:3002/api/v1/admin/auth/login",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-035",
+          "title": "Admin BFF - 商品管理エンドポイント実装",
+          "description": "Admin BFFに商品管理機能を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-034"
+          ],
+          "acceptanceCriteria": [
+            "商品の登録・更新・削除ができる",
+            "商品一覧が取得できる",
+            "権限チェックが機能する"
+          ],
+          "targetFiles": [
+            "admin-bff/src/controllers/productController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:3002/api/v1/admin/products",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-036",
+          "title": "Admin BFF - 注文管理エンドポイント実装",
+          "description": "Admin BFFに注文管理機能を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-035"
+          ],
+          "acceptanceCriteria": [
+            "注文一覧が取得できる",
+            "注文詳細が確認できる",
+            "注文ステータスが更新できる"
+          ],
+          "targetFiles": [
+            "admin-bff/src/controllers/orderController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-03-purchase-favorite-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl http://localhost:3002/api/v1/admin/orders",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-037",
+          "title": "Admin BFF - ユーザー管理エンドポイント実装",
+          "description": "Admin BFFにユーザー管理機能を実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-036"
+          ],
+          "acceptanceCriteria": [
+            "ユーザー一覧が取得できる",
+            "ユーザー情報が更新できる",
+            "ユーザーステータスが管理できる"
+          ],
+          "targetFiles": [
+            "admin-bff/src/controllers/userController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-01-auth-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl http://localhost:3002/api/v1/admin/users",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-038",
+          "title": "Admin BFF - 機能フラグ管理エンドポイント実装",
+          "description": "Admin BFFに機能フラグ管理機能を実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-037"
+          ],
+          "acceptanceCriteria": [
+            "機能フラグ一覧が取得できる",
+            "機能フラグが作成・更新できる",
+            "ユーザーグループごとの設定ができる"
+          ],
+          "targetFiles": [
+            "admin-bff/src/controllers/featureFlagController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl http://localhost:3002/api/v1/admin/feature-flags",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-039",
+          "title": "Admin BFF - 分析ダッシュボードエンドポイント実装",
+          "description": "Admin BFFに分析ダッシュボード用のエンドポイントを実装する。",
+          "phase": "phase-4",
+          "priority": "low",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-038"
+          ],
+          "acceptanceCriteria": [
+            "売上統計が取得できる",
+            "ユーザー統計が取得できる",
+            "商品統計が取得できる"
+          ],
+          "targetFiles": [
+            "admin-bff/src/controllers/analyticsController.ts"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/05-02-product-api.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "curl http://localhost:3002/api/v1/admin/analytics",
+          "status": "completed",
+          "startedAt": "2026-02-11T22:40:00Z",
+          "completedAt": "2026-02-11T23:00:00Z"
         }
       ],
-      "currentTaskIndex": 27
+      "currentTaskIndex": 39
     },
     "5": {
       "name": "summary",

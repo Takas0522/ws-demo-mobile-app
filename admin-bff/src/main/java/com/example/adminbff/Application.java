@@ -2,8 +2,6 @@ package com.example.adminbff;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Admin BFF Application
@@ -18,16 +16,5 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-    }
-
-    /**
-     * WebClient Bean
-     * Web APIとの通信用クライアント
-     * 
-     * @return WebClient.Builder
-     */
-    @Bean
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
     }
 }
