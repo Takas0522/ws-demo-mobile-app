@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T09:51:00Z",
+  "updatedAt": "2026-02-11T13:00:00Z",
   "currentPhase": 5,
   "status": "completed",
   "phases": {
@@ -346,9 +346,257 @@
           "status": "completed",
           "startedAt": "2026-02-11T09:35:00Z",
           "completedAt": "2026-02-11T09:39:37Z"
+        },
+        {
+          "id": "task-009",
+          "title": "JWT認証基盤実装",
+          "description": "JWT生成・検証の基盤クラスを実装する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": ["task-005"],
+          "acceptanceCriteria": [
+            "JWTトークンが生成できる",
+            "JWTトークンが検証できる",
+            "リフレッシュトークンが生成できる"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/JwtTokenProvider.java"],
+          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-010",
+          "title": "認証フィルター実装",
+          "description": "Spring SecurityベースのJWT認証フィルターを実装する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": ["task-009"],
+          "acceptanceCriteria": [
+            "リクエストヘッダーからJWTを抽出できる",
+            "JWTを検証してユーザー情報を設定できる",
+            "認証エラーを適切に処理できる"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/JwtAuthenticationFilter.java"],
+          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-011",
+          "title": "ログイン認証API実装",
+          "description": "ユーザー名とパスワードによるログイン認証を実装する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": ["task-010"],
+          "acceptanceCriteria": [
+            "正しい認証情報でログインできる",
+            "JWTトークンとリフレッシュトークンが返却される",
+            "誤った認証情報でエラーが返る"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/AuthController.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:8080/api/v1/auth/login",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-012",
+          "title": "トークンリフレッシュAPI実装",
+          "description": "リフレッシュトークンによるアクセストークン再発行を実装する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": ["task-011"],
+          "acceptanceCriteria": [
+            "リフレッシュトークンで新しいアクセストークンが取得できる",
+            "無効なリフレッシュトークンでエラーが返る"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/AuthController.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:8080/api/v1/auth/refresh",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-013",
+          "title": "ログアウトAPI実装",
+          "description": "トークン無効化によるログアウトを実装する。",
+          "phase": "phase-2",
+          "priority": "medium",
+          "estimatedSize": "S",
+          "dependencies": ["task-011"],
+          "acceptanceCriteria": [
+            "ログアウト後にトークンが無効化される",
+            "無効化されたトークンでAPIアクセスできない"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/AuthController.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -X POST http://localhost:8080/api/v1/auth/logout",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-014",
+          "title": "パスワードハッシュ化実装",
+          "description": "BCryptを使用したパスワードハッシュ化を実装する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "S",
+          "dependencies": ["task-005"],
+          "acceptanceCriteria": [
+            "パスワードがBCryptでハッシュ化される",
+            "ハッシュ化されたパスワードで認証できる"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/PasswordEncoder.java"],
+          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-015",
+          "title": "ユーザー情報取得API実装",
+          "description": "認証済みユーザーの詳細情報を取得するAPIを実装する。",
+          "phase": "phase-2",
+          "priority": "medium",
+          "estimatedSize": "S",
+          "dependencies": ["task-011"],
+          "acceptanceCriteria": [
+            "認証済みユーザーの情報が取得できる",
+            "未認証でエラーが返る"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/controller/UserController.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/05-01-auth-api.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "curl -H 'Authorization: Bearer <token>' http://localhost:8080/api/v1/users/me",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-016",
+          "title": "権限チェック機能実装",
+          "description": "ユーザーロールに基づく権限チェックを実装する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": ["task-010"],
+          "acceptanceCriteria": [
+            "管理者権限のチェックができる",
+            "一般ユーザー権限のチェックができる",
+            "権限不足でエラーが返る"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/security/RoleChecker.java"],
+          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-017",
+          "title": "認証エラーハンドリング実装",
+          "description": "認証・認可エラーの統一的なハンドリングを実装する。",
+          "phase": "phase-2",
+          "priority": "medium",
+          "estimatedSize": "S",
+          "dependencies": ["task-010"],
+          "acceptanceCriteria": [
+            "401エラーが適切に返る",
+            "403エラーが適切に返る",
+            "エラーレスポンスが統一されている"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/exception/AuthExceptionHandler.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/07-error-handling.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-018",
+          "title": "セッション管理実装",
+          "description": "アクティブセッションの管理機能を実装する。",
+          "phase": "phase-2",
+          "priority": "medium",
+          "estimatedSize": "M",
+          "dependencies": ["task-011"],
+          "acceptanceCriteria": [
+            "アクティブセッションが記録される",
+            "セッション一覧が取得できる",
+            "セッションを強制終了できる"
+          ],
+          "targetFiles": ["web-api/src/main/java/com/example/webapi/service/SessionService.java"],
+          "relatedSpecs": ["docs/architecture/05-security-architecture.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-019",
+          "title": "認証統合テスト作成",
+          "description": "認証フロー全体の統合テストを作成する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": ["task-011", "task-012", "task-013"],
+          "acceptanceCriteria": [
+            "ログインからログアウトまでのフローがテストできる",
+            "トークンリフレッシュのテストができる",
+            "エラーケースがテストできる"
+          ],
+          "targetFiles": ["web-api/src/test/java/com/example/webapi/integration/AuthIntegrationTest.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/12-testing-strategy.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
+        },
+        {
+          "id": "task-020",
+          "title": "認証セキュリティテスト作成",
+          "description": "認証機能のセキュリティテストを作成する。",
+          "phase": "phase-2",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": ["task-011"],
+          "acceptanceCriteria": [
+            "トークン改ざん検知のテストができる",
+            "期限切れトークンのテストができる",
+            "不正アクセスのテストができる"
+          ],
+          "targetFiles": ["web-api/src/test/java/com/example/webapi/security/AuthSecurityTest.java"],
+          "relatedSpecs": ["docs/specs/mobile-app-system/08-security.md"],
+          "verificationMethod": "test",
+          "verificationCommand": "mvn test",
+          "status": "completed",
+          "startedAt": "2026-02-11T12:40:00Z",
+          "completedAt": "2026-02-11T13:00:00Z"
         }
       ],
-      "currentTaskIndex": 0
+      "currentTaskIndex": 20
     },
     "5": {
       "name": "summary",
