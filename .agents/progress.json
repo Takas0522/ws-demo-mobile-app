@@ -1,0 +1,63 @@
+{
+  "featureName": "mobile-app-system",
+  "startedAt": "2026-02-11T07:06:36Z",
+  "updatedAt": "2026-02-11T07:06:36Z",
+  "currentPhase": 1,
+  "status": "in-progress",
+  "phases": {
+    "1": {
+      "name": "spec-refinement",
+      "displayName": "仕様精査・構築",
+      "status": "in-progress",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "startedAt": "2026-02-11T07:06:36Z",
+      "completedAt": null,
+      "reviewHistory": [],
+      "outputs": []
+    },
+    "2": {
+      "name": "architecture-update",
+      "displayName": "アーキテクチャ仕様更新",
+      "status": "not-started",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "startedAt": null,
+      "completedAt": null,
+      "reviewHistory": [],
+      "outputs": []
+    },
+    "3": {
+      "name": "task-creation",
+      "displayName": "開発タスク作成",
+      "status": "not-started",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "startedAt": null,
+      "completedAt": null,
+      "reviewHistory": [],
+      "outputs": []
+    },
+    "4": {
+      "name": "development",
+      "displayName": "開発実行",
+      "status": "not-started",
+      "startedAt": null,
+      "completedAt": null,
+      "tasks": [],
+      "currentTaskIndex": 0
+    },
+    "5": {
+      "name": "summary",
+      "displayName": "サマリ作成",
+      "status": "not-started",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "startedAt": null,
+      "completedAt": null,
+      "reviewHistory": [],
+      "outputs": []
+    }
+  },
+  "errors": []
+}
