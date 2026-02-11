@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T07:57:19Z",
+  "updatedAt": "2026-02-11T08:09:00Z",
   "currentPhase": 2,
   "status": "in-progress",
   "phases": {
@@ -55,12 +55,22 @@
     "2": {
       "name": "architecture-update",
       "displayName": "アーキテクチャ仕様更新",
-      "status": "review",
+      "status": "in-progress",
       "attempts": 1,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T07:42:14Z",
       "completedAt": null,
-      "reviewHistory": [],
+      "reviewHistory": [
+        {
+          "attempt": 1,
+          "result": "rejected",
+          "timestamp": "2026-02-11T08:08:51Z",
+          "findings": [
+            "02-component-design.md: 880行（80行超過） - 3ファイルに分割が必要"
+          ],
+          "summary": "1ファイルが800行制限を超過。分割が必要。全体的な品質は非常に高い。"
+        }
+      ],
       "outputs": [
         "docs/architecture/00-overview.md",
         "docs/architecture/01-system-context.md",
