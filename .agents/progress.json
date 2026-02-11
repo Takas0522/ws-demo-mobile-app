@@ -1,20 +1,32 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T07:06:36Z",
+  "updatedAt": "2026-02-11T07:27:35Z",
   "currentPhase": 1,
   "status": "in-progress",
   "phases": {
     "1": {
       "name": "spec-refinement",
       "displayName": "仕様精査・構築",
-      "status": "in-progress",
-      "attempts": 0,
+      "status": "review",
+      "attempts": 1,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T07:06:36Z",
       "completedAt": null,
       "reviewHistory": [],
-      "outputs": []
+      "outputs": [
+        "docs/specs/mobile-app-system/00-overview.md",
+        "docs/specs/mobile-app-system/01-business-requirements.md",
+        "docs/specs/mobile-app-system/02-functional-requirements.md",
+        "docs/specs/mobile-app-system/03-non-functional-requirements.md",
+        "docs/specs/mobile-app-system/04-data-model.md",
+        "docs/specs/mobile-app-system/05-api-spec.md",
+        "docs/specs/mobile-app-system/06-ui-spec.md",
+        "docs/specs/mobile-app-system/07-error-handling.md",
+        "docs/specs/mobile-app-system/08-security.md",
+        "docs/specs/mobile-app-system/09-glossary.md",
+        "docs/specs/mobile-app-system/12-testing-strategy.md"
+      ]
     },
     "2": {
       "name": "architecture-update",
