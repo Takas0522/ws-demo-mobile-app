@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T08:09:00Z",
+  "updatedAt": "2026-02-11T08:15:00Z",
   "currentPhase": 2,
   "status": "in-progress",
   "phases": {
@@ -55,8 +55,8 @@
     "2": {
       "name": "architecture-update",
       "displayName": "アーキテクチャ仕様更新",
-      "status": "in-progress",
-      "attempts": 1,
+      "status": "review",
+      "attempts": 2,
       "maxAttempts": 3,
       "startedAt": "2026-02-11T07:42:14Z",
       "completedAt": null,
@@ -74,7 +74,10 @@
       "outputs": [
         "docs/architecture/00-overview.md",
         "docs/architecture/01-system-context.md",
-        "docs/architecture/02-component-design.md",
+        "docs/architecture/02-01-client-components.md",
+        "docs/architecture/02-02-bff-components.md",
+        "docs/architecture/02-03-api-components.md",
+        "docs/architecture/02-04-api-data-layer.md",
         "docs/architecture/03-data-architecture.md",
         "docs/architecture/04-api-architecture.md",
         "docs/architecture/05-security-architecture.md",

@@ -1,18 +1,25 @@
-# [削除予定] コンポーネント設計
+# クライアント層コンポーネント設計
 
-> **このファイルは削除予定です**
->
-> 内容は以下のファイルに分割されました：
-> - `02-01-client-components.md` - クライアント層コンポーネント（944行）
-> - `02-02-bff-components.md` - BFF層コンポーネント（864行）
-> - `02-03-api-components.md` - API層コンポーネント（827行）
-> - `02-04-api-data-layer.md` - API層データレイヤー（1066行）
->
-> **レビュー完了後に`git rm docs/architecture/02-component-design.md`コマンドで削除してください。**
+> 最終更新: 2025-01-08  
+> ステータス: Draft  
+> バージョン: 1.0
+
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 | 関連機能 |
+|-----------|------|---------|---------|
+| 1.0 | 2025-01-08 | 初版作成（02-component-design.mdから分割） | mobile-app-system |
 
 ---
 
-**End of Document**
+## 1. クライアント層概要
+
+本ドキュメントでは、mobile-app-system のクライアント層コンポーネントの詳細設計を定義します。
+以下の3つのクライアントアプリケーションのコンポーネント設計を記載します：
+
+- **iOS アプリ**（Swift / MVVM）
+- **Android アプリ**（Java / MVVM）
+- **管理 Web アプリ**（Vue.js / Pinia）
 
 ## 2. コンポーネント全体図（C4モデル Level 3）
 
@@ -68,6 +75,8 @@ graph TB
     AdminBFFClient --> APIController
     APIRepository --> DB
 ```
+
+---
 
 ## 3. iOS アプリコンポーネント
 
@@ -181,6 +190,75 @@ class KeychainManager {
 }
 ```
 
+#### LoginViewModel
+
+```swift
+@MainActor
+class LoginViewModel: ObservableObject {
+    @Published var loginId: String = ""
+    @Published var password: String = ""
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+    
+    private let authService: AuthService
+    private let keychainManager: KeychainManager
+    
+    init(authService: AuthService = AuthService(),
+         keychainManager: KeychainManager = KeychainManager()) {
+        self.authService = authService
+        self.keychainManager = keychainManager
+    }
+    
+    func login() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let response = try await authService.login(
+                loginId: loginId,
+                password: password
+            )
+            keychainManager.saveToken(response.token)
+            // 画面遷移処理
+        } catch {
+            errorMessage = "ログインに失敗しました"
+        }
+        
+        isLoading = false
+    }
+}
+```
+
+#### ProductListViewModel
+
+```swift
+@MainActor
+class ProductListViewModel: ObservableObject {
+    @Published var products: [Product] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+    
+    private let productService: ProductService
+    
+    init(productService: ProductService = ProductService()) {
+        self.productService = productService
+    }
+    
+    func loadProducts() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            products = try await productService.fetchProducts()
+        } catch {
+            errorMessage = "商品の取得に失敗しました"
+        }
+        
+        isLoading = false
+    }
+}
+```
+
 ### 3.5 画面遷移図
 
 ```mermaid
@@ -198,6 +276,35 @@ graph TD
     Purchase -->|確定| ProductList
     ProductDetail -->|お気に入り登録| FavoriteList
 ```
+
+### 3.6 エラーハンドリング
+
+```swift
+enum APIError: Error, LocalizedError {
+    case networkError
+    case unauthorized
+    case notFound
+    case serverError
+    case decodingError
+    
+    var errorDescription: String? {
+        switch self {
+        case .networkError:
+            return "ネットワークエラーが発生しました"
+        case .unauthorized:
+            return "認証に失敗しました"
+        case .notFound:
+            return "リソースが見つかりませんでした"
+        case .serverError:
+            return "サーバーエラーが発生しました"
+        case .decodingError:
+            return "データの解析に失敗しました"
+        }
+    }
+}
+```
+
+---
 
 ## 4. Android アプリコンポーネント
 
@@ -345,6 +452,90 @@ public class SecureStorageManager {
     }
 }
 ```
+
+#### AuthRepository
+
+```java
+public class AuthRepository {
+    private final ApiService apiService;
+    private final SecureStorageManager storageManager;
+    
+    public AuthRepository(Context context) {
+        this.apiService = ApiClient.getInstance().getApiService();
+        this.storageManager = new SecureStorageManager(context);
+    }
+    
+    public Single<LoginResponse> login(String loginId, String password) {
+        LoginRequest request = new LoginRequest(loginId, password);
+        return apiService.login(request)
+            .doOnSuccess(response -> {
+                storageManager.saveToken(response.getToken());
+            });
+    }
+    
+    public void logout() {
+        storageManager.deleteToken();
+    }
+    
+    public String getToken() {
+        return storageManager.getToken();
+    }
+}
+```
+
+#### LoginViewModel
+
+```java
+public class LoginViewModel extends ViewModel {
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
+    
+    private final AuthRepository authRepository;
+    private final CompositeDisposable disposables = new CompositeDisposable();
+    
+    public LoginViewModel(AuthRepository authRepository) {
+        this.authRepository = authRepository;
+    }
+    
+    public void login(String loginId, String password) {
+        isLoading.setValue(true);
+        
+        disposables.add(
+            authRepository.login(loginId, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    response -> {
+                        isLoading.setValue(false);
+                        loginSuccess.setValue(true);
+                    },
+                    error -> {
+                        isLoading.setValue(false);
+                        errorMessage.setValue("ログインに失敗しました");
+                    }
+                )
+        );
+    }
+    
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposables.clear();
+    }
+    
+    // Getters for LiveData
+    public LiveData<Boolean> getIsLoading() { return isLoading; }
+    public LiveData<String> getErrorMessage() { return errorMessage; }
+    public LiveData<Boolean> getLoginSuccess() { return loginSuccess; }
+}
+```
+
+### 4.5 画面遷移図（iOSと同様）
+
+Android版も iOS版と同様の画面遷移フローを実装します。
+
+---
 
 ## 5. 管理Webアプリコンポーネント
 
@@ -500,6 +691,134 @@ export const useAuthStore = defineStore('auth', {
 });
 ```
 
+#### Product Store（stores/product.js）
+
+```javascript
+import { defineStore } from 'pinia';
+import { getProducts, updateProduct } from '@/api/product';
+
+export const useProductStore = defineStore('product', {
+  state: () => ({
+    products: [],
+    currentProduct: null,
+    isLoading: false,
+    error: null,
+  }),
+  
+  actions: {
+    async fetchProducts() {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const response = await getProducts();
+        this.products = response.data;
+      } catch (error) {
+        this.error = '商品の取得に失敗しました';
+        console.error('Failed to fetch products:', error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    
+    async updateProduct(id, productData) {
+      this.isLoading = true;
+      this.error = null;
+      
+      try {
+        const response = await updateProduct(id, productData);
+        // 商品リストを更新
+        const index = this.products.findIndex(p => p.productId === id);
+        if (index !== -1) {
+          this.products[index] = response.data;
+        }
+        return true;
+      } catch (error) {
+        this.error = '商品の更新に失敗しました';
+        console.error('Failed to update product:', error);
+        return false;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+  
+  getters: {
+    getProductById: (state) => (id) => {
+      return state.products.find(p => p.productId === id);
+    },
+  },
+});
+```
+
+#### Router設定（router/index.js）
+
+```javascript
+import { createRouter, createWebHistory } from 'vue-router';
+import Login from '@/views/Login.vue';
+import ProductList from '@/views/ProductList.vue';
+import ProductEdit from '@/views/ProductEdit.vue';
+import UserList from '@/views/UserList.vue';
+import FeatureFlagManagement from '@/views/FeatureFlagManagement.vue';
+
+const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/',
+    redirect: '/products',
+  },
+  {
+    path: '/products',
+    name: 'ProductList',
+    component: ProductList,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/products/:id/edit',
+    name: 'ProductEdit',
+    component: ProductEdit,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users',
+    name: 'UserList',
+    component: UserList,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users/:id/feature-flags',
+    name: 'FeatureFlagManagement',
+    component: FeatureFlagManagement,
+    meta: { requiresAuth: true },
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+// ナビゲーションガード
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('jwt_token');
+  
+  if (to.meta.requiresAuth && !token) {
+    next('/login');
+  } else if (to.path === '/login' && token) {
+    next('/');
+  } else {
+    next();
+  }
+});
+
+export default router;
+```
+
 ### 5.5 画面遷移図
 
 ```mermaid
@@ -519,358 +838,106 @@ graph TD
     FeatureFlag -->|保存| UserList
 ```
 
-## 6. Mobile BFF コンポーネント
+### 5.6 コンポーネント設計例
 
-### 6.1 技術スタック
+#### Login.vue
 
-| 項目 | 技術 | バージョン |
-|------|------|----------|
-| 言語 | Java | latest |
-| フレームワーク | Spring Boot | latest |
-| ビルドツール | Maven / Gradle | latest |
-| HTTPクライアント | RestTemplate / WebClient | Spring標準 |
-| ログ | SLF4J + Logback | Spring標準 |
+```vue
+<template>
+  <div class="login-container">
+    <h1>管理者ログイン</h1>
+    <form @submit.prevent="handleLogin">
+      <div class="form-group">
+        <label for="loginId">ログインID</label>
+        <input
+          id="loginId"
+          v-model="loginId"
+          type="text"
+          required
+        />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">パスワード</label>
+        <input
+          id="password"
+          v-model="password"
+          type="password"
+          required
+        />
+      </div>
+      
+      <button type="submit" :disabled="isLoading">
+        {{ isLoading ? 'ログイン中...' : 'ログイン' }}
+      </button>
+      
+      <div v-if="errorMessage" class="error">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</template>
 
-### 6.2 レイヤー構造
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
-```mermaid
-graph TD
-    Controller[Controller Layer<br/>@RestController] --> Service[Service Layer<br/>@Service]
-    Service --> WebAPIClient[Web API Client<br/>RestTemplate]
-    Controller --> ErrorHandler[Exception Handler<br/>@ControllerAdvice]
-```
+const router = useRouter();
+const authStore = useAuthStore();
 
-### 6.3 パッケージ構造
+const loginId = ref('');
+const password = ref('');
+const isLoading = ref(false);
+const errorMessage = ref('');
 
-```
-mobile-bff/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/mobilebff/
-│   │   │   ├── MobileBffApplication.java
-│   │   │   ├── controller/
-│   │   │   │   ├── AuthController.java
-│   │   │   │   ├── ProductController.java
-│   │   │   │   ├── PurchaseController.java
-│   │   │   │   └── FavoriteController.java
-│   │   │   ├── service/
-│   │   │   │   ├── AuthService.java
-│   │   │   │   ├── ProductService.java
-│   │   │   │   ├── PurchaseService.java
-│   │   │   │   └── FavoriteService.java
-│   │   │   ├── client/
-│   │   │   │   └── WebApiClient.java
-│   │   │   ├── dto/
-│   │   │   │   ├── request/
-│   │   │   │   └── response/
-│   │   │   ├── exception/
-│   │   │   │   ├── GlobalExceptionHandler.java
-│   │   │   │   └── BffException.java
-│   │   │   └── config/
-│   │   │       ├── RestTemplateConfig.java
-│   │   │       └── CorsConfig.java
-│   │   └── resources/
-│   │       ├── application.yml
-│   │       └── logback-spring.xml
-│   └── test/
-└── pom.xml
-```
+const handleLogin = async () => {
+  isLoading.value = true;
+  errorMessage.value = '';
+  
+  const success = await authStore.login(loginId.value, password.value);
+  
+  if (success) {
+    router.push('/');
+  } else {
+    errorMessage.value = 'ログインに失敗しました';
+  }
+  
+  isLoading.value = false;
+};
+</script>
 
-### 6.4 主要クラス設計
-
-#### ProductController
-
-```java
-@RestController
-@RequestMapping("/api/mobile/products")
-@RequiredArgsConstructor
-public class ProductController {
-    private final ProductService productService;
-    
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductDto>>> getProducts(
-        @RequestHeader("Authorization") String token
-    ) {
-        List<ProductDto> products = productService.getProducts(token);
-        return ResponseEntity.ok(ApiResponse.success(products));
-    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductDto>> getProduct(
-        @PathVariable Long id,
-        @RequestHeader("Authorization") String token
-    ) {
-        ProductDto product = productService.getProduct(id, token);
-        return ResponseEntity.ok(ApiResponse.success(product));
-    }
+<style scoped>
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
 }
-```
 
-#### WebApiClient
-
-```java
-@Component
-@RequiredArgsConstructor
-public class WebApiClient {
-    private final RestTemplate restTemplate;
-    
-    @Value("${webapi.base-url}")
-    private String webApiBaseUrl;
-    
-    public <T> T get(String endpoint, String token, Class<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", token);
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-        
-        try {
-            ResponseEntity<T> response = restTemplate.exchange(
-                webApiBaseUrl + endpoint,
-                HttpMethod.GET,
-                entity,
-                responseType
-            );
-            return response.getBody();
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new BffException("Web API呼び出し失敗", e);
-        }
-    }
+.form-group {
+  margin-bottom: 15px;
 }
-```
 
-## 7. Admin BFF コンポーネント
-
-### 7.1 技術スタック
-
-Mobile BFFと同様の技術スタックを使用
-
-### 7.2 パッケージ構造
-
-```
-admin-bff/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/adminbff/
-│   │   │   ├── AdminBffApplication.java
-│   │   │   ├── controller/
-│   │   │   │   ├── AuthController.java
-│   │   │   │   ├── ProductController.java
-│   │   │   │   └── UserController.java
-│   │   │   ├── service/
-│   │   │   │   ├── AuthService.java
-│   │   │   │   ├── ProductService.java
-│   │   │   │   └── UserService.java
-│   │   │   ├── client/
-│   │   │   │   └── WebApiClient.java
-│   │   │   ├── dto/
-│   │   │   ├── exception/
-│   │   │   └── config/
-│   │   └── resources/
-│   │       └── application.yml
-│   └── test/
-└── pom.xml
-```
-
-## 8. Web API コンポーネント
-
-### 8.1 技術スタック
-
-| 項目 | 技術 | バージョン |
-|------|------|----------|
-| 言語 | Java | latest |
-| フレームワーク | Spring Boot | latest |
-| セキュリティ | Spring Security | latest |
-| データアクセス | Spring Data JPA | latest |
-| JWT | jjwt | latest |
-| バリデーション | Hibernate Validator | Spring標準 |
-
-### 8.2 レイヤー構造
-
-```mermaid
-graph TD
-    Controller[Controller Layer<br/>@RestController] --> Security[Security Layer<br/>JWT Filter]
-    Security --> Service[Service Layer<br/>@Service]
-    Service --> Repository[Repository Layer<br/>@Repository]
-    Repository --> JPA[JPA<br/>Spring Data JPA]
-    JPA --> DB[(PostgreSQL)]
-```
-
-### 8.3 パッケージ構造
-
-```
-web-api/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/webapi/
-│   │   │   ├── WebApiApplication.java
-│   │   │   ├── controller/
-│   │   │   │   ├── AuthController.java
-│   │   │   │   ├── ProductController.java
-│   │   │   │   ├── PurchaseController.java
-│   │   │   │   ├── FavoriteController.java
-│   │   │   │   └── AdminController.java
-│   │   │   ├── service/
-│   │   │   │   ├── AuthService.java
-│   │   │   │   ├── ProductService.java
-│   │   │   │   ├── PurchaseService.java
-│   │   │   │   ├── FavoriteService.java
-│   │   │   │   └── FeatureFlagService.java
-│   │   │   ├── repository/
-│   │   │   │   ├── UserRepository.java
-│   │   │   │   ├── ProductRepository.java
-│   │   │   │   ├── PurchaseRepository.java
-│   │   │   │   ├── FavoriteRepository.java
-│   │   │   │   ├── FeatureFlagRepository.java
-│   │   │   │   └── UserFeatureFlagRepository.java
-│   │   │   ├── entity/
-│   │   │   │   ├── User.java
-│   │   │   │   ├── Product.java
-│   │   │   │   ├── Purchase.java
-│   │   │   │   ├── Favorite.java
-│   │   │   │   ├── FeatureFlag.java
-│   │   │   │   └── UserFeatureFlag.java
-│   │   │   ├── dto/
-│   │   │   │   ├── request/
-│   │   │   │   └── response/
-│   │   │   ├── security/
-│   │   │   │   ├── JwtTokenProvider.java
-│   │   │   │   ├── JwtAuthenticationFilter.java
-│   │   │   │   └── SecurityConfig.java
-│   │   │   ├── exception/
-│   │   │   │   ├── GlobalExceptionHandler.java
-│   │   │   │   └── CustomException.java
-│   │   │   └── config/
-│   │   │       └── JpaConfig.java
-│   │   └── resources/
-│   │       ├── application.yml
-│   │       └── logback-spring.xml
-│   └── test/
-└── pom.xml
-```
-
-### 8.4 主要クラス設計
-
-#### ProductService
-
-```java
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class ProductService {
-    private final ProductRepository productRepository;
-    
-    @Transactional(readOnly = true)
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-    
-    @Transactional(readOnly = true)
-    public Product getProductById(Long id) {
-        return productRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("商品が見つかりません"));
-    }
-    
-    public Product updateProduct(Long id, ProductRequest request) {
-        Product product = getProductById(id);
-        product.setProductName(request.getProductName());
-        product.setUnitPrice(request.getUnitPrice());
-        return productRepository.save(product);
-    }
+.error {
+  color: red;
+  margin-top: 10px;
 }
+</style>
 ```
 
-#### JwtTokenProvider
+---
 
-```java
-@Component
-public class JwtTokenProvider {
-    @Value("${jwt.secret}")
-    private String secretKey;
-    
-    @Value("${jwt.expiration}")
-    private long validityInMilliseconds = 86400000; // 24時間
-    
-    public String createToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getUserId().toString());
-        claims.put("loginId", user.getLoginId());
-        claims.put("userType", user.getUserType());
-        
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
-        
-        return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(validity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
-    }
-    
-    public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
-}
-```
-
-## 9. コンポーネント間通信
-
-### 9.1 通信プロトコル
-
-| 送信元 | 送信先 | プロトコル | 認証 |
-|-------|-------|----------|------|
-| iOS/Android | Mobile BFF | HTTPS/REST | JWT（ログイン後） |
-| Vue.js | Admin BFF | HTTPS/REST | JWT（ログイン後） |
-| Mobile BFF | Web API | HTTP/REST | JWT転送 |
-| Admin BFF | Web API | HTTP/REST | JWT転送 |
-| Web API | PostgreSQL | JDBC | DB認証 |
-
-### 9.2 データ形式
-
-**JSON形式統一**:
-- Content-Type: application/json
-- Accept: application/json
-- 文字コード: UTF-8
-
-## 10. 共通ライブラリ・ユーティリティ
-
-### 10.1 Java共通ライブラリ
-
-| ライブラリ | 用途 | 使用コンポーネント |
-|-----------|------|----------------|
-| Lombok | ボイラープレートコード削減 | 全Javaコンポーネント |
-| MapStruct | DTO/Entityマッピング | Web API |
-| Apache Commons | 汎用ユーティリティ | 全Javaコンポーネント |
-
-### 10.2 エラーハンドリング統一
-
-全コンポーネントで統一されたエラーレスポンス形式を使用:
-
-```json
-{
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "エラーメッセージ",
-    "details": "詳細情報（オプション）"
-  },
-  "timestamp": "2025-01-08T12:00:00Z"
-}
-```
-
-## 11. 参照ドキュメント
+## 6. 参照ドキュメント
 
 | ドキュメント | パス |
 |------------|------|
 | アーキテクチャ概要 | `00-overview.md` |
+| システムコンテキスト | `01-system-context.md` |
+| BFF層コンポーネント | `02-02-bff-components.md` |
+| API層コンポーネント | `02-03-api-components.md` |
 | APIアーキテクチャ | `04-api-architecture.md` |
 | セキュリティアーキテクチャ | `05-security-architecture.md` |
 | コーディング規約 | `09-coding-standards.md` |
-| 依存関係管理 | `10-dependency-management.md` |
 
 ---
 
