@@ -1,8 +1,8 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T08:30:24Z",
-  "currentPhase": 4,
+  "updatedAt": "2026-02-11T09:39:37Z",
+  "currentPhase": 5,
   "status": "in-progress",
   "phases": {
     "1": {
@@ -124,9 +124,9 @@
     "4": {
       "name": "development",
       "displayName": "開発実行",
-      "status": "in-progress",
+      "status": "completed",
       "startedAt": "2026-02-11T08:30:24Z",
-      "completedAt": null,
+      "completedAt": "2026-02-11T09:39:37Z",
       "tasks": [
         {
           "id": "task-001",
@@ -151,9 +151,9 @@
           ],
           "verificationMethod": "build",
           "verificationCommand": "docker ps",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T08:30:24Z",
+          "completedAt": "2026-02-11T09:00:00Z"
         },
         {
           "id": "task-002",
@@ -177,9 +177,9 @@
           ],
           "verificationMethod": "manual",
           "verificationCommand": "psql -h localhost -U postgres -c 'SELECT 1'",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:00:00Z",
+          "completedAt": "2026-02-11T09:05:00Z"
         },
         {
           "id": "task-003",
@@ -204,9 +204,9 @@
           ],
           "verificationMethod": "manual",
           "verificationCommand": "psql -h localhost -U postgres -d mobile_app -c '\\dt'",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:05:00Z",
+          "completedAt": "2026-02-11T09:15:00Z"
         },
         {
           "id": "task-004",
@@ -231,9 +231,9 @@
           ],
           "verificationMethod": "manual",
           "verificationCommand": "psql -h localhost -U postgres -d mobile_app -c 'SELECT COUNT(*) FROM products'",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:15:00Z",
+          "completedAt": "2026-02-11T09:20:00Z"
         },
         {
           "id": "task-005",
@@ -259,9 +259,9 @@
           ],
           "verificationMethod": "build",
           "verificationCommand": "mvn clean package",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:20:00Z",
+          "completedAt": "2026-02-11T09:25:00Z"
         },
         {
           "id": "task-006",
@@ -287,9 +287,9 @@
           ],
           "verificationMethod": "build",
           "verificationCommand": "mvn clean package",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:25:00Z",
+          "completedAt": "2026-02-11T09:30:00Z"
         },
         {
           "id": "task-007",
@@ -315,9 +315,9 @@
           ],
           "verificationMethod": "build",
           "verificationCommand": "mvn clean package",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:30:00Z",
+          "completedAt": "2026-02-11T09:35:00Z"
         },
         {
           "id": "task-008",
@@ -343,9 +343,9 @@
           ],
           "verificationMethod": "manual",
           "verificationCommand": "curl http://localhost:8080/actuator/health",
-          "status": "not-started",
-          "startedAt": null,
-          "completedAt": null
+          "status": "completed",
+          "startedAt": "2026-02-11T09:35:00Z",
+          "completedAt": "2026-02-11T09:39:37Z"
         }
       ],
       "currentTaskIndex": 0
@@ -353,10 +353,10 @@
     "5": {
       "name": "summary",
       "displayName": "サマリ作成",
-      "status": "not-started",
+      "status": "in-progress",
       "attempts": 0,
       "maxAttempts": 3,
-      "startedAt": null,
+      "startedAt": "2026-02-11T09:39:37Z",
       "completedAt": null,
       "reviewHistory": [],
       "outputs": []
