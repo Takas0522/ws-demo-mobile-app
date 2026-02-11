@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T22:46:51Z",
+  "updatedAt": "2026-02-11T22:57:18Z",
   "currentPhase": 5,
   "status": "completed",
   "phases": {
@@ -1214,5 +1214,10 @@
       ]
     }
   },
-  "errors": []
+  "errors": [],
+  "overallProgress": {
+    "completed": 39,
+    "total": 75,
+    "percentage": 52
+  }
 }

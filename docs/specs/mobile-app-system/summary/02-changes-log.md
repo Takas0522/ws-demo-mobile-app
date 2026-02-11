@@ -515,12 +515,179 @@
 
 ---
 
+### Task 009-020: 認証機能実装
+
+#### 実装内容
+
+**JWT関連**:
+- JWTサービス実装（生成、検証、リフレッシュ）
+- セキュリティ設定（Spring Security）
+- 認証フィルター実装
+
+**エンティティ・リポジトリ**:
+- UserエンティティとUserRepository実装
+
+**API実装**:
+- POST /api/auth/login - ログイン
+- POST /api/auth/logout - ログアウト
+- POST /api/auth/refresh - トークンリフレッシュ
+- PUT /api/auth/password - パスワード変更
+
+**テスト**:
+- 認証APIの統合テスト実装
+
+#### Gitコミット
+
+**Commit**: f360c60  
+**Message**: `[Phase 4] Authentication implementation (tasks 009-020) - JWT, login, security`  
+**Date**: 2026-02-11  
+**Files Changed**: 約20ファイル  
+
+---
+
+### Task 021-027: ビジネスロジックAPI実装
+
+#### 実装内容
+
+**商品機能**:
+- ProductエンティティとProductRepository実装
+- GET /api/products - 商品一覧取得
+- GET /api/products/{id} - 商品詳細取得
+- GET /api/products/search - 商品検索
+
+**購入機能**:
+- PurchaseエンティティとPurchaseRepository実装
+- POST /api/purchases - 商品購入
+- GET /api/purchases - 購入履歴取得
+- GET /api/purchases/{id} - 購入詳細取得
+
+**お気に入り機能**:
+- FavoriteエンティティとFavoriteRepository実装
+- GET /api/favorites - お気に入り一覧取得
+- POST /api/favorites - お気に入り登録
+- DELETE /api/favorites/{id} - お気に入り解除
+
+**機能フラグ機能**:
+- FeatureFlagエンティティとFeatureFlagRepository実装
+- GET /api/feature-flags - 機能フラグ取得
+- PUT /api/admin/feature-flags/{id} - 機能フラグ更新（管理者）
+
+**管理機能**:
+- PUT /api/admin/products/{id} - 商品更新（管理者）
+- GET /api/admin/users - ユーザー一覧（管理者）
+
+#### Gitコミット
+
+**Commit**: 3e241b9  
+**Message**: `[Phase 4] Business logic APIs (tasks 021-027) - Products, Purchases, Favorites, Feature Flags`  
+**Date**: 2026-02-11  
+**Files Changed**: 約30ファイル  
+
+---
+
+### Task 028-039: BFF層実装
+
+#### Mobile BFF実装（Task 028-033）
+
+**作成ファイル**: 20ファイル
+
+**主要コンポーネント**:
+1. `WebApiClient.java` - Web API呼び出しクライアント
+2. `WebClientConfig.java` - WebClient設定
+3. `GlobalExceptionHandler.java` - グローバル例外ハンドリング
+
+**コントローラー実装**:
+4. `AuthController.java` - 認証プロキシ
+   - POST /api/mobile/auth/login
+   - POST /api/mobile/auth/logout
+   - POST /api/mobile/auth/refresh
+
+5. `ProductController.java` - 商品API
+   - GET /api/mobile/products
+   - GET /api/mobile/products/{id}
+   - GET /api/mobile/products/search
+
+6. `PurchaseController.java` - 購入API
+   - POST /api/mobile/purchases
+   - GET /api/mobile/purchases
+
+7. `FavoriteController.java` - お気に入りAPI
+   - GET /api/mobile/favorites
+   - POST /api/mobile/favorites
+   - DELETE /api/mobile/favorites/{id}
+
+**DTO定義**: 10ファイル
+- LoginRequest, LoginResponse, RefreshTokenRequest
+- ProductDto, PurchaseRequest, PurchaseDto
+- FavoriteRequest, FavoriteDto
+- ErrorResponse, ApiResponse
+
+---
+
+#### Admin BFF実装（Task 034-039）
+
+**作成ファイル**: 19ファイル
+
+**主要コンポーネント**:
+1. `WebApiClient.java` - Web API呼び出しクライアント
+2. `WebClientConfig.java` - WebClient設定
+3. `GlobalExceptionHandler.java` - グローバル例外ハンドリング
+
+**コントローラー実装**:
+4. `AuthController.java` - 認証プロキシ（管理者）
+   - POST /api/admin/auth/login
+   - POST /api/admin/auth/logout
+
+5. `ProductController.java` - 商品管理API
+   - GET /api/admin/products
+   - GET /api/admin/products/{id}
+   - PUT /api/admin/products/{id}
+
+6. `UserController.java` - ユーザー管理API
+   - GET /api/admin/users
+   - GET /api/admin/users/{id}
+
+7. `FeatureFlagController.java` - 機能フラグ管理API
+   - GET /api/admin/feature-flags
+   - GET /api/admin/feature-flags/{id}
+   - PUT /api/admin/feature-flags/{id}
+
+**DTO定義**: 9ファイル
+- LoginRequest, LoginResponse
+- ProductDto, ProductUpdateRequest
+- UserDto
+- FeatureFlagDto, FeatureFlagUpdateRequest
+- ErrorResponse, ApiResponse
+
+---
+
+#### BFF層完了報告
+
+**作成ファイル**:
+1. `docs/specs/mobile-app-system/phase4-bff-completion-report.md` - BFF層完了報告書
+
+#### Gitコミット
+
+**Commit**: a985332  
+**Message**: `[Phase 4] BFF Layer complete (tasks 028-039) - Mobile & Admin BFF implementation`  
+**Date**: 2026-02-11  
+**Files Changed**: 約40ファイル  
+**Insertions**: 約2,500行
+
+**主要な変更内容**:
+- Mobile BFF: 20ファイル新規作成、10エンドポイント実装
+- Admin BFF: 19ファイル新規作成、10エンドポイント実装
+- 完了報告書: 1ファイル新規作成
+- 進捗管理ファイル更新
+
+---
+
 ## Phase 5: サマリ作成
 
 **期間**: 2026-02-11 09:39:37 ～ 進行中  
 **ステータス**: 進行中
 
-### 作成中のファイル (2026-02-11 09:39:37 ～)
+### 初回作成 (2026-02-11 09:39:37 ～)
 
 1. `docs/specs/mobile-app-system/summary/00-executive-summary.md` - エグゼクティブサマリ
 2. `docs/specs/mobile-app-system/summary/01-deliverables.md` - 成果物一覧
@@ -528,6 +695,14 @@
 4. `docs/specs/mobile-app-system/summary/03-review-history.md` - レビュー履歴
 5. `docs/specs/mobile-app-system/summary/04-issues-and-improvements.md` - 課題・改善点
 6. `docs/specs/mobile-app-system/summary/05-lessons-learned.md` - 学びの記録
+
+### 更新作業 (進行中)
+
+**更新内容**:
+- バックエンド実装完了（39タスク）を反映
+- 進捗率を10.7% → 52.0%に更新
+- BFF層の成果物を追加
+- メトリクスの更新
 
 ---
 
@@ -540,9 +715,12 @@
 | Phase 1 | 17 | 5 | 0 | 22 |
 | Phase 2 | 15 | 4 | 0 | 19 |
 | Phase 3 | 55 | 0 | 0 | 55 |
-| Phase 4 | 21 | 2 | 0 | 23 |
-| Phase 5 | 6 | 0 | 0 | 6 |
-| **合計** | **114** | **11** | **0** | **125** |
+| Phase 4 - Task 001-008 | 21 | 2 | 0 | 23 |
+| Phase 4 - Task 009-020 | ~20 | 0 | 0 | ~20 |
+| Phase 4 - Task 021-027 | ~30 | 0 | 0 | ~30 |
+| Phase 4 - Task 028-039 | ~40 | 1 | 0 | ~41 |
+| Phase 5 | 6 | 6 | 0 | 12 |
+| **合計** | **~204** | **18** | **0** | **~222** |
 
 ### フェーズ別行数変更
 
@@ -551,9 +729,12 @@
 | Phase 1 | ~10,000 | 0 | +10,000 |
 | Phase 2 | ~10,000 | 0 | +10,000 |
 | Phase 3 | 21,556 | 0 | +21,556 |
-| Phase 4 | 1,917 | 0 | +1,917 |
+| Phase 4 - Task 001-008 | 1,917 | 0 | +1,917 |
+| Phase 4 - Task 009-020 | ~2,000 | 0 | +2,000 |
+| Phase 4 - Task 021-027 | ~3,000 | 0 | +3,000 |
+| Phase 4 - Task 028-039 | ~2,500 | 0 | +2,500 |
 | Phase 5 | ~2,000 | 0 | +2,000 |
-| **合計** | **~45,473** | **0** | **+45,473** |
+| **合計** | **~52,973** | **0** | **+52,973** |
 
 ### Gitコミット履歴
 
@@ -561,9 +742,12 @@
 |---|--------|------|---------|-------|-------|
 | 1 | 5769f4d | 2026-02-11 08:28:51 | [Phase 3] task-creation | 55 | +21,556 |
 | 2 | 2a43d01 | 2026-02-11 08:30:46 | [Phase 3] Complete | 1 | +236/-8 |
-| 3 | bd7cacd | 2026-02-11 09:37:53 | feat: Phase 4 開発実行 | 21 | +1,611 |
+| 3 | bd7cacd | 2026-02-11 09:37:53 | feat: Phase 4 インフラ構築 | 21 | +1,611 |
 | 4 | ba26f02 | 2026-02-11 09:38:48 | docs: Phase 4 完了報告書 | 1 | +306 |
-| 5 | ffee915 | 2026-02-11 09:40:12 | [Phase 4] Complete | 1 | +30/-30 |
+| 5 | ffee915 | 2026-02-11 09:40:12 | [Phase 4] インフラ完了 | 1 | +30/-30 |
+| 6 | f360c60 | 2026-02-11 | [Phase 4] 認証機能実装 | ~20 | ~+2,000 |
+| 7 | 3e241b9 | 2026-02-11 | [Phase 4] ビジネスAPI実装 | ~30 | ~+3,000 |
+| 8 | a985332 | 2026-02-11 | [Phase 4] BFF層実装完了 | ~40 | ~+2,500 |
 
 ---
 
@@ -601,6 +785,27 @@
 **有効期限**: 24時間（86400秒）  
 **署名アルゴリズム**: HS256  
 **決定日**: Phase 4 Task 005実行時（2026-02-11 09:20:00頃）
+
+### BFFパターンの実装
+
+**Mobile BFF**:
+- ポート: 8081
+- 目的: モバイルアプリ専用API
+- エンドポイント数: 10
+- 主要機能: 認証プロキシ、商品API、購入API、お気に入りAPI
+
+**Admin BFF**:
+- ポート: 8082
+- 目的: 管理Web専用API
+- エンドポイント数: 10
+- 主要機能: 管理者認証、商品管理、ユーザー管理、機能フラグ管理
+
+**WebClientの採用**:
+- Spring WebFluxのWebClientを使用
+- 非同期・リアクティブなAPI呼び出し
+- タイムアウト設定: 30秒
+
+**決定日**: Phase 4 Task 028-039実行時（2026-02-11）
 
 ---
 

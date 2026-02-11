@@ -159,16 +159,24 @@
 | # | ファイルパス | 概要 |
 |---|------------|------|
 | 1 | `web-api/src/main/java/com/example/webapi/Application.java` | Spring Bootメインクラス |
-| 2 | `web-api/src/main/java/com/example/webapi/controller/HealthController.java` | ヘルスチェックAPI |
+| 2-51 | 各種Entity, Repository, Service, Controller, Config, DTO等 | 認証、商品、購入、お気に入り、機能フラグ、ユーザー管理の全機能実装 |
+
+**主要コンポーネント**:
+- Entity: User, Product, Purchase, Favorite, FeatureFlag, UserFeatureFlag
+- Repository: 各エンティティに対応
+- Service: JWT, 認証, 商品, 購入, お気に入り, 機能フラグ
+- Controller: 認証API, 商品API, 購入API, お気に入りAPI, 機能フラグAPI, ユーザー管理API
+- Config: Security, JWT, Database, WebClient
+- DTO: 各APIリクエスト/レスポンス用
 
 #### 設定ファイル
 
 | # | ファイルパス | 概要 |
 |---|------------|------|
-| 3 | `web-api/pom.xml` | Maven設定（Spring Boot 3.2.1、依存関係） |
-| 4 | `web-api/src/main/resources/application.yml` | アプリケーション設定（DB接続、JWT等） |
+| 1 | `web-api/pom.xml` | Maven設定（Spring Boot 3.2.1、依存関係） |
+| 2 | `web-api/src/main/resources/application.yml` | アプリケーション設定（DB接続、JWT等） |
 
-**Web API合計: 4ファイル**
+**Web API合計: 51ファイル**
 
 ---
 
@@ -179,16 +187,35 @@
 | # | ファイルパス | 概要 |
 |---|------------|------|
 | 1 | `mobile-bff/src/main/java/com/example/mobilebff/Application.java` | Spring Bootメインクラス |
-| 2 | `mobile-bff/src/main/java/com/example/mobilebff/controller/HealthController.java` | ヘルスチェックAPI |
+| 2-20 | 各種Controller, Client, Config, DTO | Mobile BFF全エンドポイント実装 |
+
+**主要コンポーネント**:
+- Controller: Auth, Product, Purchase, Favorite, Health
+- Client: WebApiClient（Web API呼び出し）
+- Config: WebClient, WebApi, GlobalExceptionHandler
+- DTO: LoginRequest/Response, ProductDto, PurchaseRequest/Dto, FavoriteRequest/Dto, ErrorResponse, ApiResponse
+
+**実装エンドポイント（10エンドポイント）**:
+1. POST /api/mobile/auth/login - ログイン
+2. POST /api/mobile/auth/logout - ログアウト
+3. POST /api/mobile/auth/refresh - トークンリフレッシュ
+4. GET /api/mobile/products - 商品一覧
+5. GET /api/mobile/products/{id} - 商品詳細
+6. GET /api/mobile/products/search - 商品検索
+7. POST /api/mobile/purchases - 商品購入
+8. GET /api/mobile/purchases - 購入履歴
+9. GET /api/mobile/favorites - お気に入り一覧
+10. POST /api/mobile/favorites - お気に入り登録
+11. DELETE /api/mobile/favorites/{id} - お気に入り解除
 
 #### 設定ファイル
 
 | # | ファイルパス | 概要 |
 |---|------------|------|
-| 3 | `mobile-bff/pom.xml` | Maven設定（Spring Boot 3.2.1、依存関係） |
-| 4 | `mobile-bff/src/main/resources/application.yml` | アプリケーション設定（Web API接続等） |
+| 1 | `mobile-bff/pom.xml` | Maven設定（Spring Boot 3.2.1、依存関係） |
+| 2 | `mobile-bff/src/main/resources/application.yml` | アプリケーション設定（Web API接続等） |
 
-**Mobile BFF合計: 4ファイル**
+**Mobile BFF合計: 20ファイル**
 
 ---
 
@@ -199,16 +226,34 @@
 | # | ファイルパス | 概要 |
 |---|------------|------|
 | 1 | `admin-bff/src/main/java/com/example/adminbff/Application.java` | Spring Bootメインクラス |
-| 2 | `admin-bff/src/main/java/com/example/adminbff/controller/HealthController.java` | ヘルスチェックAPI |
+| 2-19 | 各種Controller, Client, Config, DTO | Admin BFF全エンドポイント実装 |
+
+**主要コンポーネント**:
+- Controller: Auth, Product, User, FeatureFlag, Health
+- Client: WebApiClient（Web API呼び出し）
+- Config: WebClient, WebApi, GlobalExceptionHandler
+- DTO: LoginRequest/Response, ProductDto/UpdateRequest, UserDto, FeatureFlagDto/UpdateRequest, ErrorResponse, ApiResponse
+
+**実装エンドポイント（10エンドポイント）**:
+1. POST /api/admin/auth/login - 管理者ログイン
+2. POST /api/admin/auth/logout - 管理者ログアウト
+3. GET /api/admin/products - 商品一覧（管理用）
+4. GET /api/admin/products/{id} - 商品詳細（管理用）
+5. PUT /api/admin/products/{id} - 商品更新
+6. GET /api/admin/users - ユーザー一覧
+7. GET /api/admin/users/{id} - ユーザー詳細
+8. GET /api/admin/feature-flags - 機能フラグ一覧
+9. GET /api/admin/feature-flags/{id} - 機能フラグ詳細
+10. PUT /api/admin/feature-flags/{id} - 機能フラグ更新
 
 #### 設定ファイル
 
 | # | ファイルパス | 概要 |
 |---|------------|------|
-| 3 | `admin-bff/pom.xml` | Maven設定（Spring Boot 3.2.1、依存関係） |
-| 4 | `admin-bff/src/main/resources/application.yml` | アプリケーション設定（Web API接続等） |
+| 1 | `admin-bff/pom.xml` | Maven設定（Spring Boot 3.2.1、依存関係） |
+| 2 | `admin-bff/src/main/resources/application.yml` | アプリケーション設定（Web API接続等） |
 
-**Admin BFF合計: 4ファイル**
+**Admin BFF合計: 19ファイル**
 
 ---
 
@@ -216,10 +261,16 @@
 
 | プロジェクト | Javaファイル | 設定ファイル | 合計 |
 |------------|-------------|------------|------|
-| Web API | 2 | 2 | 4 |
-| Mobile BFF | 2 | 2 | 4 |
-| Admin BFF | 2 | 2 | 4 |
-| **合計** | **6** | **6** | **12** |
+| Web API | 51 | 2 | 53 |
+| Mobile BFF | 20 | 2 | 22 |
+| Admin BFF | 19 | 2 | 21 |
+| **合計** | **90** | **6** | **96** |
+
+**実装されたAPI数**:
+- Web API: 約30エンドポイント
+- Mobile BFF: 10エンドポイント
+- Admin BFF: 10エンドポイント
+- **合計: 約50エンドポイント**
 
 ---
 
@@ -363,13 +414,13 @@
 
 | カテゴリ | ファイル数 | 備考 |
 |---------|-----------|------|
-| **ドキュメント** | 40 | 仕様書、アーキテクチャ、計画、報告 |
-| **ソースコード** | 12 | Java、設定ファイル |
+| **ドキュメント** | 42 | 仕様書、アーキテクチャ、計画、報告 |
+| **ソースコード** | 96 | Java、設定ファイル |
 | **データベース** | 2 | スキーマ、初期データ |
 | **インフラ** | 4 | DevContainer、Docker |
 | **設定ファイル** | 5 | 環境変数、Git、Maven |
 | **プロジェクト管理** | 11 | エージェント、進捗管理 |
-| **総計** | **74** | |
+| **総計** | **160** | |
 
 ---
 
@@ -379,15 +430,15 @@
 
 | 言語/形式 | ファイル数 | 割合 |
 |----------|-----------|------|
-| Markdown | 42 | 56.8% |
-| Java | 6 | 8.1% |
-| YAML | 7 | 9.5% |
-| JSON | 3 | 4.1% |
-| XML (pom.xml) | 3 | 4.1% |
-| SQL | 2 | 2.7% |
-| Dockerfile | 1 | 1.4% |
-| その他 | 10 | 13.5% |
-| **合計** | **74** | **100%** |
+| Java | 90 | 56.3% |
+| Markdown | 42 | 26.3% |
+| YAML | 7 | 4.4% |
+| JSON | 3 | 1.9% |
+| XML (pom.xml) | 3 | 1.9% |
+| SQL | 2 | 1.3% |
+| Dockerfile | 1 | 0.6% |
+| その他 | 12 | 7.5% |
+| **合計** | **160** | **100%** |
 
 ### サイズ別ファイル分布（推定）
 
@@ -416,6 +467,10 @@
 - ✅ Lombokによるボイラープレートコード削減
 - ✅ Spring Boot 3の最新機能を活用
 - ✅ 全プロジェクトがビルド成功
+- ✅ RESTful API設計原則に準拠
+- ✅ 適切な例外ハンドリング実装
+- ✅ JWT認証の完全実装
+- ✅ BCryptによるパスワードハッシュ化
 
 ### データベース品質
 
