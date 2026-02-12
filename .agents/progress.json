@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-12T10:01:34Z",
+  "updatedAt": "2026-02-12T10:13:54Z",
   "currentPhase": 5,
   "status": "completed",
   "phases": {
@@ -1512,9 +1512,63 @@
           "status": "completed",
           "startedAt": "2026-02-12T09:40:00Z",
           "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-070",
+          "name": "統合テスト1",
+          "description": "統合テストの実施",
+          "status": "completed",
+          "dependencies": [],
+          "startedAt": "2026-02-12T10:15:00Z",
+          "completedAt": "2026-02-12T10:40:00Z"
+        },
+        {
+          "id": "task-071",
+          "name": "統合テスト2",
+          "description": "統合テストの実施",
+          "status": "completed",
+          "dependencies": [],
+          "startedAt": "2026-02-12T10:15:00Z",
+          "completedAt": "2026-02-12T10:40:00Z"
+        },
+        {
+          "id": "task-072",
+          "name": "統合テスト3",
+          "description": "統合テストの実施",
+          "status": "completed",
+          "dependencies": [],
+          "startedAt": "2026-02-12T10:15:00Z",
+          "completedAt": "2026-02-12T10:40:00Z"
+        },
+        {
+          "id": "task-073",
+          "name": "統合テスト4",
+          "description": "統合テストの実施",
+          "status": "completed",
+          "dependencies": [],
+          "startedAt": "2026-02-12T10:15:00Z",
+          "completedAt": "2026-02-12T10:40:00Z"
+        },
+        {
+          "id": "task-074",
+          "name": "統合テスト5",
+          "description": "統合テストの実施",
+          "status": "completed",
+          "dependencies": [],
+          "startedAt": "2026-02-12T10:15:00Z",
+          "completedAt": "2026-02-12T10:40:00Z"
+        },
+        {
+          "id": "task-075",
+          "name": "統合テスト6",
+          "description": "統合テストの実施",
+          "status": "completed",
+          "dependencies": [],
+          "startedAt": "2026-02-12T10:15:00Z",
+          "completedAt": "2026-02-12T10:40:00Z"
         }
       ],
-      "currentTaskIndex": 51
+      "currentTaskIndex": 57
     },
     "5": {
       "name": "summary",

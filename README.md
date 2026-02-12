@@ -499,6 +499,64 @@ mvn dependency:purge-local-repository
 | **テスト戦略** | テスト方針 | [12-testing-strategy.md](docs/specs/mobile-app-system/12-testing-strategy.md) |
 | **テストアーキテクチャ** | テスト設計 | [11-testing-architecture.md](docs/architecture/11-testing-architecture.md) |
 
+### テストドキュメント
+
+| ドキュメント | 説明 | パス |
+|------------|------|------|
+| **統合テスト計画** | 統合テストの計画と実施手順 | [integration-test-plan.md](docs/testing/integration-test-plan.md) |
+| **機能フラグシナリオ** | 機能フラグのテストシナリオ | [feature-flag-scenario.md](docs/testing/test-scenarios/feature-flag-scenario.md) |
+| **購入フローシナリオ** | 購入フローのE2Eテスト | [purchase-flow-scenario.md](docs/testing/test-scenarios/purchase-flow-scenario.md) |
+| **認証シナリオ** | ログイン・認証のテスト | [auth-scenario.md](docs/testing/test-scenarios/auth-scenario.md) |
+| **エラーシナリオ** | エラーケースのテスト | [error-scenario.md](docs/testing/test-scenarios/error-scenario.md) |
+| **手動テストチェックリスト** | 全機能の確認リスト | [manual-test-checklist.md](docs/testing/manual-test-checklist.md) |
+| **デモセットアップガイド** | デモ環境構築手順 | [DEMO-SETUP.md](docs/DEMO-SETUP.md) |
+
+## 🧪 テスト
+
+### クイックテスト
+
+デモ環境のセットアップと基本的な動作確認：
+
+```bash
+# すべてのサービスを起動
+./scripts/start-all-services.sh
+
+# 動作確認（別ターミナル）
+curl http://localhost:8080/actuator/health  # Web API
+curl http://localhost:8081/actuator/health  # Mobile BFF
+curl http://localhost:8082/actuator/health  # Admin BFF
+curl http://localhost:3000                  # Admin Web
+
+# ログイン動作確認
+curl -X POST http://localhost:8081/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"loginId":"user001","password":"password123"}' | jq .
+
+# すべてのサービスを停止
+./scripts/stop-all-services.sh
+```
+
+### 統合テストの実施
+
+詳細な統合テストの実施方法は [統合テスト計画](docs/testing/integration-test-plan.md) を参照してください。
+
+**主要なテストカテゴリ**:
+- ✅ 全コンポーネント統合テスト（5ケース）
+- ✅ 機能フラグシナリオテスト（4ケース）
+- ✅ 購入フローE2Eテスト（6ケース）
+- ✅ ログイン・認証テスト（5ケース）
+- ✅ エラーシナリオテスト（8ケース）
+
+**合計**: 28テストケース
+
+### 便利なスクリプト
+
+| スクリプト | 説明 | コマンド |
+|----------|------|---------|
+| **全サービス起動** | PostgreSQL, Web API, BFF, Admin Webを起動 | `./scripts/start-all-services.sh` |
+| **全サービス停止** | すべてのサービスを停止 | `./scripts/stop-all-services.sh` |
+| **DB リセット** | データベースを初期状態に戻す | `./scripts/reset-database.sh` |
+
 ## 🎯 次のステップ
 
 ### フロントエンド開発
