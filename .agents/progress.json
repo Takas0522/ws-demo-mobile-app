@@ -1,7 +1,7 @@
 {
   "featureName": "mobile-app-system",
   "startedAt": "2026-02-11T07:06:36Z",
-  "updatedAt": "2026-02-11T22:57:18Z",
+  "updatedAt": "2026-02-12T10:01:34Z",
   "currentPhase": 5,
   "status": "completed",
   "phases": {
@@ -1182,9 +1182,339 @@
           "status": "completed",
           "startedAt": "2026-02-11T22:40:00Z",
           "completedAt": "2026-02-11T23:00:00Z"
+        },
+        {
+          "id": "task-058",
+          "title": "管理Web - プロジェクトセットアップ",
+          "description": "管理WebアプリケーションのReact+TypeScriptプロジェクトをセットアップする。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [],
+          "acceptanceCriteria": [
+            "Reactプロジェクトが作成されている",
+            "TypeScript設定が完了している",
+            "開発サーバーが起動できる"
+          ],
+          "targetFiles": [
+            "admin-web/package.json",
+            "admin-web/tsconfig.json"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/03-01-admin-web-architecture.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "cd admin-web && npm start",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-059",
+          "title": "管理Web - 認証ページ実装",
+          "description": "管理者ログイン画面を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-058"
+          ],
+          "acceptanceCriteria": [
+            "ログインフォームが表示される",
+            "認証処理が動作する",
+            "トークンが保存される"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Login.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Login",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-060",
+          "title": "管理Web - ダッシュボード画面実装",
+          "description": "管理ダッシュボードのメイン画面を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-059"
+          ],
+          "acceptanceCriteria": [
+            "統計情報が表示される",
+            "グラフが表示される",
+            "リアルタイム更新される"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Dashboard.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Dashboard",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-061",
+          "title": "管理Web - ユーザー管理画面実装",
+          "description": "ユーザー一覧・詳細・編集画面を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "ユーザー一覧が表示される",
+            "ユーザー詳細が表示される",
+            "ユーザー編集ができる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Users.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Users",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-062",
+          "title": "管理Web - 商品管理画面実装",
+          "description": "商品一覧・詳細・編集画面を実装する。",
+          "phase": "phase-4",
+          "priority": "high",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "商品一覧が表示される",
+            "商品詳細が表示される",
+            "商品編集ができる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Products.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Products",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-063",
+          "title": "管理Web - 注文管理画面実装",
+          "description": "注文一覧・詳細・ステータス更新画面を実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "注文一覧が表示される",
+            "注文詳細が表示される",
+            "注文ステータスが更新できる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Orders.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Orders",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-064",
+          "title": "管理Web - クーポン管理画面実装",
+          "description": "クーポン一覧・作成・編集画面を実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "クーポン一覧が表示される",
+            "クーポン作成ができる",
+            "クーポン編集ができる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Coupons.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Coupons",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-065",
+          "title": "管理Web - レビュー管理画面実装",
+          "description": "レビュー一覧・承認・削除画面を実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "レビュー一覧が表示される",
+            "レビュー承認ができる",
+            "レビュー削除ができる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Reviews.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Reviews",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-066",
+          "title": "管理Web - お知らせ管理画面実装",
+          "description": "お知らせ一覧・作成・編集画面を実装する。",
+          "phase": "phase-4",
+          "priority": "low",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "お知らせ一覧が表示される",
+            "お知らせ作成ができる",
+            "お知らせ編集ができる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Announcements.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Announcements",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-067",
+          "title": "管理Web - 分析レポート画面実装",
+          "description": "売上・ユーザー・商品の分析レポート画面を実装する。",
+          "phase": "phase-4",
+          "priority": "low",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "売上レポートが表示される",
+            "ユーザーレポートが表示される",
+            "商品レポートが表示される"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Analytics.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Analytics",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-068",
+          "title": "管理Web - 設定画面実装",
+          "description": "システム設定・管理者設定画面を実装する。",
+          "phase": "phase-4",
+          "priority": "low",
+          "estimatedSize": "M",
+          "dependencies": [
+            "task-060"
+          ],
+          "acceptanceCriteria": [
+            "システム設定が表示される",
+            "管理者設定が表示される",
+            "設定が保存できる"
+          ],
+          "targetFiles": [
+            "admin-web/src/pages/Settings.tsx"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/02-02-admin-bff-spec.md"
+          ],
+          "verificationMethod": "manual",
+          "verificationCommand": "npm test -- Settings",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
+        },
+        {
+          "id": "task-069",
+          "title": "管理Web - E2Eテスト実装",
+          "description": "管理Web全体のE2Eテストを実装する。",
+          "phase": "phase-4",
+          "priority": "medium",
+          "estimatedSize": "L",
+          "dependencies": [
+            "task-061",
+            "task-062",
+            "task-063",
+            "task-064",
+            "task-065",
+            "task-066",
+            "task-067",
+            "task-068"
+          ],
+          "acceptanceCriteria": [
+            "主要フローのE2Eテストが動作する",
+            "テストカバレッジが80%以上",
+            "CIで自動実行される"
+          ],
+          "targetFiles": [
+            "admin-web/e2e/"
+          ],
+          "relatedSpecs": [
+            "docs/specs/mobile-app-system/03-01-admin-web-architecture.md"
+          ],
+          "verificationMethod": "test",
+          "verificationCommand": "npm run test:e2e",
+          "status": "completed",
+          "startedAt": "2026-02-12T09:40:00Z",
+          "completedAt": "2026-02-12T10:10:00Z"
         }
       ],
-      "currentTaskIndex": 39
+      "currentTaskIndex": 51
     },
     "5": {
       "name": "summary",
