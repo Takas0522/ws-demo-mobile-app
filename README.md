@@ -149,16 +149,16 @@
 
 **ビルド**:
 ```bash
-cd web-api && mvn clean package
-cd mobile-bff && mvn clean package
-cd admin-bff && mvn clean package
+cd src/web-api && mvn clean package
+cd src/mobile-bff && mvn clean package
+cd src/admin-bff && mvn clean package
 ```
 
 **テスト**:
 ```bash
-cd web-api && mvn test
-cd mobile-bff && mvn test
-cd admin-bff && mvn test
+cd src/web-api && mvn test
+cd src/mobile-bff && mvn test
+cd src/admin-bff && mvn test
 ```
 
 ### フロントエンド開発（⏳ 開始可能）
@@ -171,7 +171,7 @@ cd admin-bff && mvn test
 
 **起動方法**:
 ```bash
-cd ios-app
+cd src/ios-app
 open MobileApp.xcodeproj
 
 # Xcode で実行（Simulator選択 → ⌘R）
@@ -207,7 +207,7 @@ open MobileApp.xcodeproj
 
 **起動方法**:
 ```bash
-cd android-app
+cd src/android-app
 # Android Studio で開く → Run ボタン
 ```
 
@@ -242,7 +242,7 @@ cd android-app
 
 **起動方法**:
 ```bash
-cd admin-web
+cd src/admin-web
 npm install
 npm run dev
 # http://localhost:5173 でアクセス
@@ -327,7 +327,7 @@ docker ps | grep postgres
 #### ステップ2: Web API起動（Port: 8080）
 
 ```bash
-cd web-api
+cd src/web-api
 mvn clean package
 java -jar target/web-api-1.0.0-SNAPSHOT.jar
 ```
@@ -336,7 +336,7 @@ java -jar target/web-api-1.0.0-SNAPSHOT.jar
 
 ```bash
 # 新しいターミナルで
-cd mobile-bff
+cd src/mobile-bff
 mvn clean package
 java -jar target/mobile-bff-1.0.0-SNAPSHOT.jar
 ```
@@ -345,7 +345,7 @@ java -jar target/mobile-bff-1.0.0-SNAPSHOT.jar
 
 ```bash
 # 新しいターミナルで
-cd admin-bff
+cd src/admin-bff
 mvn clean package
 java -jar target/admin-bff-1.0.0-SNAPSHOT.jar
 ```
@@ -354,7 +354,7 @@ java -jar target/admin-bff-1.0.0-SNAPSHOT.jar
 
 ```bash
 # 新しいターミナルで
-cd ios-app
+cd src/ios-app
 open MobileApp.xcodeproj
 
 # Xcode で実行（Simulator選択 → ⌘R）
@@ -400,7 +400,7 @@ curl -X POST http://localhost:8081/api/mobile/auth/login \
 
 ```bash
 # 別ターミナルで
-cd admin-web
+cd src/admin-web
 npm install
 npm run dev
 ```
@@ -579,7 +579,7 @@ docker-compose up -d
 
 **Maven依存関係の更新**:
 ```bash
-cd web-api
+cd src/web-api
 mvn clean install -U
 ```
 

@@ -45,8 +45,8 @@ echo ""
 
 # 初期データを再投入
 echo "Inserting seed data..."
-if [ -f "$PROJECT_ROOT/database/seed.sql" ]; then
-  docker exec -i postgres-demo psql -U "$DB_USER" -d "$DB_NAME" < "$PROJECT_ROOT/database/seed.sql"
+if [ -f "$PROJECT_ROOT/src/database/seed.sql" ]; then
+  docker exec -i postgres-demo psql -U "$DB_USER" -d "$DB_NAME" < "$PROJECT_ROOT/src/database/seed.sql"
   echo "✓ Seed data inserted"
 else
   echo "✗ seed.sql not found!"

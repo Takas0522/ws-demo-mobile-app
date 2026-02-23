@@ -335,7 +335,7 @@ docker exec -it mobile-app-postgres psql -U postgres -d mobile_app
 ### 2. Web API起動（Port: 8080）
 
 ```bash
-cd web-api
+cd src/web-api
 
 # ビルド
 mvn clean package
@@ -351,7 +351,7 @@ curl http://localhost:8080/api/v1/health
 ### 3. Mobile BFF起動（Port: 8081）
 
 ```bash
-cd mobile-bff
+cd src/mobile-bff
 
 # ビルド
 mvn clean package
@@ -367,7 +367,7 @@ curl http://localhost:8081/api/mobile/health
 ### 4. Admin BFF起動（Port: 8082）
 
 ```bash
-cd admin-bff
+cd src/admin-bff
 
 # ビルド
 mvn clean package
@@ -573,7 +573,7 @@ npm install axios
 ```bash
 # プロジェクト作成
 npx create-react-app admin-web
-cd admin-web
+cd src/admin-web
 
 # 必要なライブラリ
 npm install react-router-dom

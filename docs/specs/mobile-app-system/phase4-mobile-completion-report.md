@@ -282,7 +282,7 @@ when (response.code()) {
 
 ```bash
 # Mobile BFF起動
-cd mobile-bff
+cd src/mobile-bff
 npm install
 npm start
 # http://localhost:8081 で起動確認
@@ -291,7 +291,7 @@ npm start
 ### 2. iOS テスト
 
 ```bash
-cd ios-app/MobileApp
+cd src/ios-app/MobileApp
 # Xcodeで開く
 open MobileApp.xcodeproj
 # Cmd+R でシミュレーター実行
@@ -308,7 +308,7 @@ open MobileApp.xcodeproj
 ### 3. Android テスト
 
 ```bash
-cd android-app
+cd src/android-app
 # Android Studioで開く
 # Run > Run 'app'
 ```

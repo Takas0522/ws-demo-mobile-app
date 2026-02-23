@@ -38,13 +38,13 @@ echo ""
 
 # Web APIを起動
 echo "[2/5] Starting Web API (port 8080)..."
-cd "$PROJECT_ROOT/web-api"
+cd "$PROJECT_ROOT/src/web-api"
 if [ -f "gradlew" ]; then
   nohup ./gradlew bootRun > "$PROJECT_ROOT/logs/web-api.log" 2>&1 &
   echo $! > "$PROJECT_ROOT/pids/web-api.pid"
   echo "✓ Web API started (PID: $(cat $PROJECT_ROOT/pids/web-api.pid))"
 else
-  echo "✗ gradlew not found in web-api/"
+  echo "✗ gradlew not found in src/web-api/"
   exit 1
 fi
 echo ""
@@ -55,39 +55,39 @@ sleep 15
 
 # Mobile BFFを起動
 echo "[3/5] Starting Mobile BFF (port 8081)..."
-cd "$PROJECT_ROOT/mobile-bff"
+cd "$PROJECT_ROOT/src/mobile-bff"
 if [ -f "gradlew" ]; then
   nohup ./gradlew bootRun > "$PROJECT_ROOT/logs/mobile-bff.log" 2>&1 &
   echo $! > "$PROJECT_ROOT/pids/mobile-bff.pid"
   echo "✓ Mobile BFF started (PID: $(cat $PROJECT_ROOT/pids/mobile-bff.pid))"
 else
-  echo "✗ gradlew not found in mobile-bff/"
+  echo "✗ gradlew not found in src/mobile-bff/"
   exit 1
 fi
 echo ""
 
 # Admin BFFを起動
 echo "[4/5] Starting Admin BFF (port 8082)..."
-cd "$PROJECT_ROOT/admin-bff"
+cd "$PROJECT_ROOT/src/admin-bff"
 if [ -f "gradlew" ]; then
   nohup ./gradlew bootRun > "$PROJECT_ROOT/logs/admin-bff.log" 2>&1 &
   echo $! > "$PROJECT_ROOT/pids/admin-bff.pid"
   echo "✓ Admin BFF started (PID: $(cat $PROJECT_ROOT/pids/admin-bff.pid))"
 else
-  echo "✗ gradlew not found in admin-bff/"
+  echo "✗ gradlew not found in src/admin-bff/"
   exit 1
 fi
 echo ""
 
 # Admin Webを起動
 echo "[5/5] Starting Admin Web (port 3000)..."
-cd "$PROJECT_ROOT/admin-web"
+cd "$PROJECT_ROOT/src/admin-web"
 if [ -f "package.json" ]; then
   nohup npm run dev > "$PROJECT_ROOT/logs/admin-web.log" 2>&1 &
   echo $! > "$PROJECT_ROOT/pids/admin-web.pid"
   echo "✓ Admin Web started (PID: $(cat $PROJECT_ROOT/pids/admin-web.pid))"
 else
-  echo "✗ package.json not found in admin-web/"
+  echo "✗ package.json not found in src/admin-web/"
   exit 1
 fi
 echo ""

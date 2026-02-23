@@ -3,7 +3,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
-  
+
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
       "version": "21",
@@ -15,7 +15,7 @@
     },
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -42,8 +42,8 @@
       }
     }
   },
-  
-  "forwardPorts": [8080, 8081, 8082, 5432],
+
+  "forwardPorts": [8080, 8081, 8082, 5173, 5432],
   "portsAttributes": {
     "8080": {
       "label": "Web API",
@@ -57,13 +57,17 @@
       "label": "Admin BFF",
       "onAutoForward": "notify"
     },
+    "5173": {
+      "label": "Admin Web",
+      "onAutoForward": "notify"
+    },
     "5432": {
       "label": "PostgreSQL",
       "onAutoForward": "silent"
     }
   },
-  
+
   "postCreateCommand": "echo 'Dev Container is ready!'",
-  
+
   "remoteUser": "vscode"
 }

@@ -418,21 +418,21 @@ docker ps | grep postgres
 
 **ターミナル1: Web API起動（Port: 8080）**
 ```bash
-cd web-api
+cd src/web-api
 mvn clean package
 java -jar target/web-api-1.0.0-SNAPSHOT.jar
 ```
 
 **ターミナル2: Mobile BFF起動（Port: 8081）**
 ```bash
-cd mobile-bff
+cd src/mobile-bff
 mvn clean package
 java -jar target/mobile-bff-1.0.0-SNAPSHOT.jar
 ```
 
 **ターミナル3: Admin BFF起動（Port: 8082）**
 ```bash
-cd admin-bff
+cd src/admin-bff
 mvn clean package
 java -jar target/admin-bff-1.0.0-SNAPSHOT.jar
 ```
@@ -441,7 +441,7 @@ java -jar target/admin-bff-1.0.0-SNAPSHOT.jar
 
 **ターミナル4: 管理Webアプリ起動（Port: 5173）**
 ```bash
-cd admin-web
+cd src/admin-web
 npm install
 npm run dev
 
@@ -451,7 +451,7 @@ npm run dev
 
 **ターミナル5: iOSアプリ起動**
 ```bash
-cd ios-app
+cd src/ios-app
 open MobileApp.xcodeproj
 
 # Xcode で実行（Simulator選択 → ⌘R）
@@ -459,7 +459,7 @@ open MobileApp.xcodeproj
 
 **ターミナル6: Androidアプリ起動**
 ```bash
-cd android-app
+cd src/android-app
 # Android Studio で開く → Run ボタン
 ```
 
@@ -764,19 +764,19 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ```bash
 # Web API
-cd web-api
+cd src/web-api
 docker build -t mobile-app/web-api:1.0.0 .
 
 # Mobile BFF
-cd mobile-bff
+cd src/mobile-bff
 docker build -t mobile-app/mobile-bff:1.0.0 .
 
 # Admin BFF
-cd admin-bff
+cd src/admin-bff
 docker build -t mobile-app/admin-bff:1.0.0 .
 
 # Admin Web
-cd admin-web
+cd src/admin-web
 docker build -t mobile-app/admin-web:1.0.0 .
 ```
 

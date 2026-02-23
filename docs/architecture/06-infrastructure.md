@@ -505,7 +505,7 @@ psql -h localhost -p 5432 -U postgres mobile_app_db < backup_20250108.sql
 ### 8.1 Web API起動
 
 ```bash
-cd web-api
+cd src/web-api
 mvn clean install
 mvn spring-boot:run
 
@@ -516,7 +516,7 @@ java -jar target/web-api-1.0.0.jar
 ### 8.2 Mobile BFF起動
 
 ```bash
-cd mobile-bff
+cd src/mobile-bff
 mvn clean install
 mvn spring-boot:run
 ```
@@ -524,7 +524,7 @@ mvn spring-boot:run
 ### 8.3 Admin BFF起動
 
 ```bash
-cd admin-bff
+cd src/admin-bff
 mvn clean install
 mvn spring-boot:run
 ```
@@ -532,7 +532,7 @@ mvn spring-boot:run
 ### 8.4 管理Webアプリ起動
 
 ```bash
-cd admin-web
+cd src/admin-web
 npm install
 npm run dev
 

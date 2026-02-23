@@ -143,7 +143,7 @@ psql -h localhost -p 5432 -U postgres -d mobile_app_db
 
 ```bash
 # 1. ビルド
-cd web-api
+cd src/web-api
 mvn clean package
 
 # 2. 起動
@@ -160,7 +160,7 @@ curl http://localhost:8080/actuator/health
 
 ```bash
 # 1. ビルド
-cd mobile-bff
+cd src/mobile-bff
 mvn clean package
 
 # 2. 起動
@@ -174,7 +174,7 @@ curl http://localhost:8081/actuator/health
 
 ```bash
 # 1. ビルド
-cd admin-bff
+cd src/admin-bff
 mvn clean package
 
 # 2. 起動
@@ -188,7 +188,7 @@ curl http://localhost:8082/actuator/health
 
 ```bash
 # 1. 依存関係インストール
-cd admin-web
+cd src/admin-web
 npm install
 
 # 2. 開発サーバー起動
@@ -234,28 +234,28 @@ sleep 5
 
 # 2. Web API起動
 echo "2. Starting Web API..."
-cd web-api
+cd src/web-api
 mvn spring-boot:run &
 cd ..
 sleep 10
 
 # 3. Mobile BFF起動
 echo "3. Starting Mobile BFF..."
-cd mobile-bff
+cd src/mobile-bff
 mvn spring-boot:run &
 cd ..
 sleep 5
 
 # 4. Admin BFF起動
 echo "4. Starting Admin BFF..."
-cd admin-bff
+cd src/admin-bff
 mvn spring-boot:run &
 cd ..
 sleep 5
 
 # 5. 管理Webアプリ起動
 echo "5. Starting Admin Web..."
-cd admin-web
+cd src/admin-web
 npm run dev &
 cd ..
 
@@ -365,7 +365,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   web-api:
-    build: ./web-api
+    build: ./src/web-api
     ports:
       - "8080:8080"
     environment:
@@ -375,7 +375,7 @@ services:
       - postgres
 
   mobile-bff:
-    build: ./mobile-bff
+    build: ./src/mobile-bff
     ports:
       - "8081:8081"
     environment:
@@ -384,7 +384,7 @@ services:
       - web-api
 
   admin-bff:
-    build: ./admin-bff
+    build: ./src/admin-bff
     ports:
       - "8082:8082"
     environment:
@@ -393,7 +393,7 @@ services:
       - web-api
 
   admin-web:
-    build: ./admin-web
+    build: ./src/admin-web
     ports:
       - "3000:3000"
     environment:
@@ -439,11 +439,11 @@ jobs:
           distribution: 'temurin'
       - name: Build with Maven
         run: |
-          cd web-api
+          cd src/web-api
           mvn clean install -DskipTests
       - name: Run tests
         run: |
-          cd web-api
+          cd src/web-api
           mvn test
 
   build-admin-web:
@@ -456,11 +456,11 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: |
-          cd admin-web
+          cd src/admin-web
           npm ci
       - name: Build
         run: |
-          cd admin-web
+          cd src/admin-web
           npm run build
 ```
 
@@ -475,7 +475,7 @@ jobs:
 pkill -f "spring-boot:run"
 
 # 2. 前バージョンのJAR起動
-cd web-api
+cd src/web-api
 java -jar target/web-api-0.9.0.jar
 
 # 3. データベースロールバック（必要に応じて）

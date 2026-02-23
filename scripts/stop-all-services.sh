@@ -19,11 +19,11 @@ if [ -d "$PROJECT_ROOT/pids" ]; then
     if [ -f "$pid_file" ]; then
       service_name=$(basename "$pid_file" .pid)
       pid=$(cat "$pid_file")
-      
+
       if ps -p "$pid" > /dev/null 2>&1; then
         echo "Stopping $service_name (PID: $pid)..."
         kill "$pid" 2>/dev/null || true
-        
+
         # プロセスが終了するまで待機（最大10秒）
         for i in {1..10}; do
           if ! ps -p "$pid" > /dev/null 2>&1; then
@@ -32,7 +32,7 @@ if [ -d "$PROJECT_ROOT/pids" ]; then
           fi
           sleep 1
         done
-        
+
         # まだ動いている場合は強制終了
         if ps -p "$pid" > /dev/null 2>&1; then
           echo "  Force killing $service_name..."
@@ -41,7 +41,7 @@ if [ -d "$PROJECT_ROOT/pids" ]; then
       else
         echo "✓ $service_name already stopped"
       fi
-      
+
       rm "$pid_file"
     fi
   done
@@ -59,7 +59,7 @@ echo ""
 
 # Gradleデーモンを停止（オプション）
 echo "Stopping Gradle daemons..."
-cd "$PROJECT_ROOT/web-api" && ./gradlew --stop 2>/dev/null || true
+cd "$PROJECT_ROOT/src/web-api" && ./gradlew --stop 2>/dev/null || true
 echo "✓ Gradle daemons stopped"
 echo ""
 

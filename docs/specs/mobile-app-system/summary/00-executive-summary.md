@@ -387,21 +387,21 @@ docker-compose up -d
 
 ### 2. Web API起動（Port: 8080）
 ```bash
-cd web-api
+cd src/web-api
 mvn clean package
 java -jar target/web-api-1.0.0-SNAPSHOT.jar
 ```
 
 ### 3. Mobile BFF起動（Port: 8081）
 ```bash
-cd mobile-bff
+cd src/mobile-bff
 mvn clean package
 java -jar target/mobile-bff-1.0.0-SNAPSHOT.jar
 ```
 
 ### 4. Admin BFF起動（Port: 8082）
 ```bash
-cd admin-bff
+cd src/admin-bff
 mvn clean package
 java -jar target/admin-bff-1.0.0-SNAPSHOT.jar
 ```

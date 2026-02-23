@@ -119,19 +119,19 @@ cd database
 cd ..
 
 # 4. Web APIを起動（ターミナル1）
-cd web-api
+cd src/web-api
 ./gradlew bootRun
 
 # 5. Mobile BFFを起動（ターミナル2）
-cd mobile-bff
+cd src/mobile-bff
 ./gradlew bootRun
 
 # 6. Admin BFFを起動（ターミナル3）
-cd admin-bff
+cd src/admin-bff
 ./gradlew bootRun
 
 # 7. Admin Webを起動（ターミナル4）
-cd admin-web
+cd src/admin-web
 npm install
 npm run dev
 
@@ -262,7 +262,7 @@ chmod +x init-database.sh
 #### 4.1 環境変数の設定
 
 ```bash
-cd web-api
+cd src/web-api
 
 # .env ファイルを作成（または .env.example をコピー）
 cat > .env << EOF
@@ -311,7 +311,7 @@ kill $(cat web-api.pid)
 ### Step 5: Mobile BFF のセットアップ
 
 ```bash
-cd mobile-bff
+cd src/mobile-bff
 
 # 環境変数設定
 cat > .env << EOF
@@ -334,7 +334,7 @@ curl http://localhost:8081/actuator/health
 ### Step 6: Admin BFF のセットアップ
 
 ```bash
-cd admin-bff
+cd src/admin-bff
 
 # 環境変数設定
 cat > .env << EOF
@@ -359,7 +359,7 @@ curl http://localhost:8082/actuator/health
 #### 7.1 依存関係のインストール
 
 ```bash
-cd admin-web
+cd src/admin-web
 
 # package.json の確認
 cat package.json
@@ -843,7 +843,7 @@ echo "Waiting for PostgreSQL to be ready..."
 sleep 5
 
 echo "Starting Web API..."
-cd web-api
+cd src/web-api
 nohup ./gradlew bootRun > ../logs/web-api.log 2>&1 &
 echo $! > ../pids/web-api.pid
 cd ..
@@ -852,19 +852,19 @@ echo "Waiting for Web API..."
 sleep 10
 
 echo "Starting Mobile BFF..."
-cd mobile-bff
+cd src/mobile-bff
 nohup ./gradlew bootRun > ../logs/mobile-bff.log 2>&1 &
 echo $! > ../pids/mobile-bff.pid
 cd ..
 
 echo "Starting Admin BFF..."
-cd admin-bff
+cd src/admin-bff
 nohup ./gradlew bootRun > ../logs/admin-bff.log 2>&1 &
 echo $! > ../pids/admin-bff.pid
 cd ..
 
 echo "Starting Admin Web..."
-cd admin-web
+cd src/admin-web
 nohup npm run dev > ../logs/admin-web.log 2>&1 &
 echo $! > ../pids/admin-web.pid
 cd ..

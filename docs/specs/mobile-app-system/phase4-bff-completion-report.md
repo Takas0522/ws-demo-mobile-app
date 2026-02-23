@@ -307,21 +307,21 @@ admin-bff/src/main/java/com/example/adminbff/
 
 **Terminal 1: Web API（前提）**
 ```bash
-cd web-api
+cd src/web-api
 mvn spring-boot:run
 # ポート 8080 で起動
 ```
 
 **Terminal 2: Mobile BFF**
 ```bash
-cd mobile-bff
+cd src/mobile-bff
 mvn spring-boot:run
 # ポート 8081 で起動
 ```
 
 **Terminal 3: Admin BFF**
 ```bash
-cd admin-bff
+cd src/admin-bff
 mvn spring-boot:run
 # ポート 8082 で起動
 ```
