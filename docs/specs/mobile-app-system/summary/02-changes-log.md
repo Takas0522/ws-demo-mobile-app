@@ -706,6 +706,69 @@
 
 ---
 
+## Phase 6: Windows C++ アプリケーション開発
+
+**期間**: 2026-02-24  
+**ステータス**: 完了
+
+### スキャフォールディング作成 (2026-02-24)
+
+#### Commit 1: 105d665
+
+**Message**: `feat: Windows C++ Win32 MVVM application scaffolding`
+
+**新規作成ファイル**: 50ファイル（約4,485行）
+
+**アーキテクチャ**: MVVM パターン（C++20 / Win32 API）
+
+**レイヤー構成**:
+- **Models** (6ファイル): User, Product, Purchase, Favorite, ApiError, Pagination
+  - nlohmann/json による JSON シリアライズ対応
+- **Services** (12ファイル): HttpClient, AuthService, ProductService, PurchaseService, FavoriteService, StatePollingService
+  - WinHTTP ベースの HTTP クライアント
+  - Windows Credential Manager (DPAPI) によるトークン保管
+  - バックグラウンドスレッドでの定期ポーリング
+- **ViewModels** (10ファイル): Login, ProductList, ProductDetail, Purchase, Favorite
+  - コールバックベースの変更通知
+  - バックグラウンドスレッドでの非同期処理
+- **Views** (10ファイル): LoginWindow, ProductListWindow, ProductDetailWindow, PurchaseWindow, FavoriteWindow
+  - Win32 ウィンドウプロシージャによる UI 実装
+  - ListView コントロール、ボタン、エディットコントロール
+- **Utils** (3ファイル): Constants, JsonHelper, CredentialManager
+- **App** (2ファイル): アプリケーションライフサイクル管理、画面遷移
+- **ビルド設定**: .vcxproj (MSBuild)、.slnx (ソリューション)、build.bat
+
+---
+
+### バグ修正・ビルド修正 (2026-02-24)
+
+#### Commit 2: 0386acf
+
+**Message**: `fix: Windows C++ app build and bug fixes`
+
+**修正内容**:
+
+1. **ビルドエラー修正**: build.bat に `/MDd` フラグを追加
+   - リンカーエラー（`_CrtDbgReport` 等の未解決外部シンボル）を解消
+   - Debug ビルドの CRT ランタイムライブラリ指定漏れが原因
+
+2. **バグ修正: AuthService::Login() の m_currentUser 未設定**
+   - ログイン成功後に `m_currentUser` が設定されず `GetCurrentUser()` が常に空を返す問題を修正
+
+3. **バグ修正: ウィンドウ閉じ時のゾンビプロセス化**
+   - ProductListWindow, ProductDetailWindow, PurchaseWindow, FavoriteWindow の `WM_DESTROY` ハンドラに `PostQuitMessage(0)` を追加
+   - ウィンドウの×ボタン押下時にメッセージループが終了せずプロセスが残る問題を修正
+
+4. **その他の改善**:
+   - vcxproj の LanguageStandard を `stdcpplatest` に変更（`std::expected` に必要）
+   - ApiError に `to_json` 関数を追加
+   - App.cpp の `[[nodiscard]]` 警告を `(void)` キャストで抑制
+   - copilot-instructions.md を Windows アプリ情報で拡充
+
+**ビルド結果**: ✅ BUILD SUCCEEDED（19 .cpp ファイルコンパイル・リンク成功）
+
+---
+
 ## 変更統計
 
 ### フェーズ別ファイル数
