@@ -82,12 +82,34 @@ LRESULT LoginWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		OnCommand(wParam);
 		return 0;
 
+	case WM_CTLCOLORSTATIC:
+	{
+		HDC hdc = reinterpret_cast<HDC>(wParam);
+		HWND hCtrl = reinterpret_cast<HWND>(lParam);
+		if (hCtrl == m_errorLabel)
+		{
+			SetTextColor(hdc, RGB(220, 30, 30));
+			SetBkMode(hdc, TRANSPARENT);
+			return reinterpret_cast<LRESULT>(GetStockObject(NULL_BRUSH));
+		}
+		return DefWindowProcW(m_hwnd, msg, wParam, lParam);
+	}
+
 	case WM_APP + 100:
 		if (m_onLoginSuccessNavigate)
 		{
 			m_onLoginSuccessNavigate();
 		}
 		return 0;
+
+	case kWmShowError:
+	{
+		auto* errorMsg = reinterpret_cast<std::wstring*>(wParam);
+		EnableWindow(m_loginButton, TRUE);
+		MessageBoxW(m_hwnd, errorMsg->c_str(), L"エラー", MB_OK | MB_ICONERROR);
+		delete errorMsg;
+		return 0;
+	}
 
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -146,6 +168,15 @@ void LoginWindow::OnCreate()
 		WS_CHILD | SS_CENTER,
 		centerX, startY + 200, 300, 40,
 		m_hwnd, ToHMenu(kIdErrorLabel), hInstance, nullptr);
+
+	// Register ViewModel error callback to show error dialog
+	m_viewModel.SetOnLoginError([hwnd = m_hwnd](const ws::models::ApiError& error)
+	{
+		int len = MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, nullptr, 0);
+		auto* msg = new std::wstring(len - 1, L'\0');
+		MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, msg->data(), len);
+		PostMessage(hwnd, kWmShowError, reinterpret_cast<WPARAM>(msg), 0);
+	});
 }
 
 void LoginWindow::OnCommand(WPARAM wParam)
@@ -175,6 +206,9 @@ void LoginWindow::OnLogin()
 
 	// Hide error
 	ShowWindow(m_errorLabel, SW_HIDE);
+
+	// Disable button while processing
+	EnableWindow(m_loginButton, FALSE);
 
 	m_viewModel.Login(loginId, password);
 }

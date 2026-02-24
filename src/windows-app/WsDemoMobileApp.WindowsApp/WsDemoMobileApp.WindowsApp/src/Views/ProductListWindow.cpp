@@ -54,6 +54,9 @@ HWND ProductListWindow::GetHandle() const
 
 void ProductListWindow::RefreshList()
 {
+	SetWindowTextW(m_statusLabel, L"読み込み中...");
+	ShowWindow(m_statusLabel, SW_SHOW);
+	ShowWindow(m_listView, SW_HIDE);
 	m_viewModel.FetchProducts();
 }
 
@@ -116,6 +119,16 @@ LRESULT ProductListWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		UpdateListView();
 		return 0;
 
+	case kWmShowError:
+	{
+		auto* errorMsg = reinterpret_cast<std::wstring*>(wParam);
+		ShowWindow(m_statusLabel, SW_HIDE);
+		ShowWindow(m_listView, SW_SHOW);
+		MessageBoxW(m_hwnd, errorMsg->c_str(), L"エラー", MB_OK | MB_ICONERROR);
+		delete errorMsg;
+		return 0;
+	}
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -172,10 +185,25 @@ void ProductListWindow::OnCreate()
 		10, 610, 100, 30,
 		m_hwnd, ToHMenu(kIdLogoutButton), hInstance, nullptr);
 
+	// Status label (loading / empty state)
+	m_statusLabel = CreateWindowExW(0, L"STATIC", L"",
+		WS_CHILD | SS_CENTER,
+		10, 280, 440, 30,
+		m_hwnd, ToHMenu(kIdStatusLabel), hInstance, nullptr);
+
 	// Register ViewModel callback to update UI when products change
 	m_viewModel.SetOnProductsChanged([hwnd = m_hwnd]()
 	{
 		PostMessage(hwnd, kWmProductsChanged, 0, 0);
+	});
+
+	// Register ViewModel error callback to show error dialog
+	m_viewModel.SetOnError([hwnd = m_hwnd](const ws::models::ApiError& error)
+	{
+		int len = MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, nullptr, 0);
+		auto* msg = new std::wstring(len - 1, L'\0');
+		MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, msg->data(), len);
+		PostMessage(hwnd, kWmShowError, reinterpret_cast<WPARAM>(msg), 0);
 	});
 }
 
@@ -230,6 +258,17 @@ void ProductListWindow::UpdateListView()
 
 	const auto& products = m_viewModel.GetProducts();
 
+	if (products.empty())
+	{
+		SetWindowTextW(m_statusLabel, L"商品が見つかりません");
+		ShowWindow(m_statusLabel, SW_SHOW);
+		ShowWindow(m_listView, SW_HIDE);
+		return;
+	}
+
+	ShowWindow(m_statusLabel, SW_HIDE);
+	ShowWindow(m_listView, SW_SHOW);
+
 	for (int i = 0; i < static_cast<int>(products.size()); ++i)
 	{
 		const auto& product = products[i];
@@ -259,6 +298,10 @@ void ProductListWindow::OnSearch()
 	int len = WideCharToMultiByte(CP_UTF8, 0, buf, -1, nullptr, 0, nullptr, nullptr);
 	std::string keyword(len - 1, '\0');
 	WideCharToMultiByte(CP_UTF8, 0, buf, -1, keyword.data(), len, nullptr, nullptr);
+
+	SetWindowTextW(m_statusLabel, L"読み込み中...");
+	ShowWindow(m_statusLabel, SW_SHOW);
+	ShowWindow(m_listView, SW_HIDE);
 
 	if (keyword.empty())
 	{

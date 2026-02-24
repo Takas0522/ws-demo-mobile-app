@@ -43,6 +43,7 @@ private:
 	void OnCommand(WPARAM wParam);
 
 	static constexpr const wchar_t* kClassName = L"PurchaseWindow";
+	static constexpr UINT kWmShowError = WM_APP + 200;
 	static constexpr int kIdQuantityLabel = 4001;
 	static constexpr int kIdIncrementButton = 4002;
 	static constexpr int kIdDecrementButton = 4003;

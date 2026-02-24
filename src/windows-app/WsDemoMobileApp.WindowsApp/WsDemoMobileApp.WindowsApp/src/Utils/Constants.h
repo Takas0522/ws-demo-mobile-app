@@ -47,5 +47,6 @@ constexpr int kDefaultPageSize = 20;
 // Custom window messages for async HTTP callbacks
 constexpr unsigned int WM_HTTP_RESPONSE = 0x8001;  // WM_APP + 1
 constexpr unsigned int WM_HTTP_ERROR = 0x8002;      // WM_APP + 2
+constexpr unsigned int WM_AUTH_ERROR = 0x8003;       // WM_APP + 3
 
 } // namespace ws::utils

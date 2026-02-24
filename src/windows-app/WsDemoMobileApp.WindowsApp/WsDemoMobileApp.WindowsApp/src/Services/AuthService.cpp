@@ -59,6 +59,9 @@ std::expected<LoginResponse, ws::models::ApiError> AuthService::Login(
 
 		m_currentUser = loginResponse.user;
 
+		m_tokenExpiry = std::chrono::system_clock::now()
+			+ std::chrono::seconds(loginResponse.expiresIn);
+
 		return loginResponse;
 	}
 	catch (const nlohmann::json::exception& e)
@@ -99,6 +102,7 @@ void AuthService::ClearToken()
 {
 	m_token.clear();
 	m_currentUser = ws::models::User{};
+	m_tokenExpiry = {};
 }
 
 bool AuthService::IsAuthenticated() const
@@ -109,6 +113,32 @@ bool AuthService::IsAuthenticated() const
 const ws::models::User& AuthService::GetCurrentUser() const
 {
 	return m_currentUser;
+}
+
+bool AuthService::IsTokenExpired() const
+{
+	if (m_token.empty())
+	{
+		return true;
+	}
+	return std::chrono::system_clock::now() >= m_tokenExpiry;
+}
+
+void AuthService::SetTokenExpiry(int expiresInSeconds)
+{
+	m_tokenExpiry = std::chrono::system_clock::now()
+		+ std::chrono::seconds(expiresInSeconds);
+}
+
+void AuthService::SetTokenExpiryFromTimestamp(int64_t timestamp)
+{
+	m_tokenExpiry = std::chrono::system_clock::from_time_t(
+		static_cast<std::time_t>(timestamp));
+}
+
+int64_t AuthService::GetTokenExpiryTimestamp() const
+{
+	return static_cast<int64_t>(std::chrono::system_clock::to_time_t(m_tokenExpiry));
 }
 
 } // namespace ws::services

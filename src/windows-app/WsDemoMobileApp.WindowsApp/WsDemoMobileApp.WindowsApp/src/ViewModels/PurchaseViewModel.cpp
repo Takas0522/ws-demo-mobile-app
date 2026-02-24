@@ -47,7 +47,8 @@ void PurchaseViewModel::DecrementQuantity()
 void PurchaseViewModel::SetQuantity(int quantity)
 {
 	quantity = std::clamp(quantity, ws::utils::kMinQuantity, ws::utils::kMaxQuantity);
-	quantity = (quantity / ws::utils::kQuantityStep) * ws::utils::kQuantityStep;
+	quantity = ((quantity + ws::utils::kQuantityStep / 2) / ws::utils::kQuantityStep) * ws::utils::kQuantityStep;
+	quantity = std::clamp(quantity, ws::utils::kMinQuantity, ws::utils::kMaxQuantity);
 
 	if (quantity != m_quantity)
 	{

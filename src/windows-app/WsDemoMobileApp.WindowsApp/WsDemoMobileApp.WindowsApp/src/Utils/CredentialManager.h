@@ -2,9 +2,16 @@
 
 #include <string>
 #include <optional>
+#include <cstdint>
 
 namespace ws::utils
 {
+
+struct TokenData
+{
+	std::string token;
+	int64_t expiryTimestamp = 0;
+};
 
 class CredentialManager
 {
@@ -18,6 +25,9 @@ public:
 	[[nodiscard]] bool SaveToken(const std::string& token);
 	[[nodiscard]] std::optional<std::string> LoadToken() const;
 	bool DeleteToken();
+
+	[[nodiscard]] bool SaveTokenWithExpiry(const std::string& token, int64_t expiryTimestamp);
+	[[nodiscard]] std::optional<TokenData> LoadTokenWithExpiry() const;
 
 private:
 	static constexpr const wchar_t* kCredentialTarget = L"WsDemoMobileApp/JWT";

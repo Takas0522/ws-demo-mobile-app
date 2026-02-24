@@ -37,12 +37,32 @@ bool App::Initialize(HINSTANCE hInstance, int nCmdShow)
 	// Initialize feature flag service
 	m_featureFlagService = std::make_unique<ws::services::FeatureFlagService>(m_httpClient);
 
-	// Try to restore saved token
-	auto savedToken = m_credentialManager.LoadToken();
-	if (savedToken.has_value())
+	// Try to restore saved token with expiry
+	auto savedTokenData = m_credentialManager.LoadTokenWithExpiry();
+	if (savedTokenData.has_value())
 	{
-		m_authService.SetToken(savedToken.value());
-		(void)m_featureFlagService->FetchFeatureFlags(m_authService.GetToken());
+		m_authService.SetToken(savedTokenData->token);
+
+		if (savedTokenData->expiryTimestamp > 0)
+		{
+			m_authService.SetTokenExpiryFromTimestamp(savedTokenData->expiryTimestamp);
+		}
+		else
+		{
+			// No expiry saved (old format) - set conservative default (23 hours)
+			m_authService.SetTokenExpiry(23 * 3600);
+		}
+
+		// If token is already expired, clear it and show login
+		if (m_authService.IsTokenExpired())
+		{
+			m_authService.ClearToken();
+			m_credentialManager.DeleteToken();
+		}
+		else
+		{
+			(void)m_featureFlagService->FetchFeatureFlags(m_authService.GetToken());
+		}
 	}
 
 	// Create ViewModels
@@ -78,6 +98,12 @@ int App::Run()
 	MSG msg = {};
 	while (GetMessage(&msg, nullptr, 0, 0))
 	{
+		if (msg.message == ws::utils::WM_AUTH_ERROR)
+		{
+			OnAuthenticationError();
+			continue;
+		}
+
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
@@ -167,7 +193,12 @@ void App::ShowProductListWindow()
 
 	m_productListWindow->RefreshList();
 
-	// Start polling
+	// Start polling with auth check
+	m_pollingService.SetAuthCheck([this]() -> bool
+	{
+		return !m_authService.IsTokenExpired();
+	});
+
 	m_pollingService.Start(
 		m_productListWindow->GetHandle(),
 		[this]()
@@ -271,8 +302,49 @@ void App::ShowFavoriteWindow()
 	m_favoriteWindow->RefreshList();
 }
 
+void App::OnAuthenticationError()
+{
+	m_pollingService.Stop();
+	m_authService.Logout();
+
+	MessageBoxW(
+		nullptr,
+		L"セッションが期限切れです。再ログインしてください。",
+		L"認証エラー",
+		MB_OK | MB_ICONWARNING);
+
+	// Hide all windows
+	if (m_productListWindow)
+	{
+		ShowWindow(m_productListWindow->GetHandle(), SW_HIDE);
+	}
+	if (m_productDetailWindow)
+	{
+		ShowWindow(m_productDetailWindow->GetHandle(), SW_HIDE);
+	}
+	if (m_purchaseWindow)
+	{
+		ShowWindow(m_purchaseWindow->GetHandle(), SW_HIDE);
+	}
+	if (m_favoriteWindow)
+	{
+		ShowWindow(m_favoriteWindow->GetHandle(), SW_HIDE);
+	}
+
+	ShowLoginWindow();
+}
+
 void App::OnLogout()
 {
+	int result = MessageBoxW(nullptr,
+		L"ログアウトしますか？",
+		L"確認",
+		MB_YESNO | MB_ICONQUESTION);
+	if (result != IDYES)
+	{
+		return;
+	}
+
 	m_pollingService.Stop();
 	m_authService.Logout();
 
@@ -305,6 +377,15 @@ void App::SetupCallbacks()
 		if (m_loginWindow)
 		{
 			PostMessage(m_loginWindow->GetHandle(), WM_APP + 100, 0, 0);
+		}
+	});
+
+	// Login error -> show error message (called from background thread or UI thread)
+	m_loginViewModel->SetOnLoginError([this](const ws::models::ApiError&)
+	{
+		if (m_loginWindow)
+		{
+			PostMessage(m_loginWindow->GetHandle(), WM_APP + 101, 0, 0);
 		}
 	});
 

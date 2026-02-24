@@ -15,8 +15,80 @@ LoginViewModel::LoginViewModel(
 {
 }
 
+std::optional<ValidationError> LoginViewModel::Validate(
+	const std::string& loginId,
+	const std::string& password) const
+{
+	ValidationError error;
+	bool hasError = false;
+
+	if (loginId.empty())
+	{
+		error.loginIdError = "ログインIDを入力してください";
+		hasError = true;
+	}
+	else if (static_cast<int>(loginId.length()) < kMinLoginIdLength)
+	{
+		error.loginIdError = "ログインIDは" + std::to_string(kMinLoginIdLength) + "文字以上で入力してください";
+		hasError = true;
+	}
+	else if (static_cast<int>(loginId.length()) > kMaxLoginIdLength)
+	{
+		error.loginIdError = "ログインIDは" + std::to_string(kMaxLoginIdLength) + "文字以下で入力してください";
+		hasError = true;
+	}
+
+	if (password.empty())
+	{
+		error.passwordError = "パスワードを入力してください";
+		hasError = true;
+	}
+	else if (static_cast<int>(password.length()) < kMinPasswordLength)
+	{
+		error.passwordError = "パスワードは" + std::to_string(kMinPasswordLength) + "文字以上で入力してください";
+		hasError = true;
+	}
+	else if (static_cast<int>(password.length()) > kMaxPasswordLength)
+	{
+		error.passwordError = "パスワードは" + std::to_string(kMaxPasswordLength) + "文字以下で入力してください";
+		hasError = true;
+	}
+
+	if (hasError)
+	{
+		return error;
+	}
+	return std::nullopt;
+}
+
 void LoginViewModel::Login(const std::string& loginId, const std::string& password)
 {
+	auto validationResult = Validate(loginId, password);
+	if (validationResult.has_value())
+	{
+		const auto& error = validationResult.value();
+		std::string message;
+		if (!error.loginIdError.empty())
+		{
+			message = error.loginIdError;
+		}
+		if (!error.passwordError.empty())
+		{
+			if (!message.empty())
+			{
+				message += "\n";
+			}
+			message += error.passwordError;
+		}
+
+		m_lastError = message;
+		if (m_onLoginError)
+		{
+			m_onLoginError(ws::models::ApiError("VALIDATION_ERROR", message));
+		}
+		return;
+	}
+
 	m_isLoading = true;
 	if (m_onLoadingChanged)
 	{
@@ -38,7 +110,8 @@ void LoginViewModel::Login(const std::string& loginId, const std::string& passwo
 		{
 			auto& loginResponse = result.value();
 			m_authService.SetToken(loginResponse.token);
-			(void)m_credentialManager.SaveToken(loginResponse.token);
+			auto expiryTs = m_authService.GetTokenExpiryTimestamp();
+			(void)m_credentialManager.SaveTokenWithExpiry(loginResponse.token, expiryTs);
 
 			if (m_onLoginSuccess)
 			{
@@ -47,6 +120,7 @@ void LoginViewModel::Login(const std::string& loginId, const std::string& passwo
 		}
 		else
 		{
+			m_lastError = result.error().message;
 			if (m_onLoginError)
 			{
 				m_onLoginError(result.error());
@@ -88,6 +162,11 @@ void LoginViewModel::SetLoginId(const std::string& loginId)
 void LoginViewModel::SetPassword(const std::string& password)
 {
 	m_password = password;
+}
+
+const std::string& LoginViewModel::GetLastError() const
+{
+	return m_lastError;
 }
 
 } // namespace ws::viewmodels

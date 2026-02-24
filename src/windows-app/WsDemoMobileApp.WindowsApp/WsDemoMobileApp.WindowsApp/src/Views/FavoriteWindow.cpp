@@ -46,6 +46,9 @@ HWND FavoriteWindow::GetHandle() const
 
 void FavoriteWindow::RefreshList()
 {
+	SetWindowTextW(m_statusLabel, L"読み込み中...");
+	ShowWindow(m_statusLabel, SW_SHOW);
+	ShowWindow(m_listView, SW_HIDE);
 	m_viewModel.FetchFavorites();
 }
 
@@ -103,6 +106,16 @@ LRESULT FavoriteWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		UpdateListView();
 		return 0;
 
+	case kWmShowError:
+	{
+		auto* errorMsg = reinterpret_cast<std::wstring*>(wParam);
+		ShowWindow(m_statusLabel, SW_HIDE);
+		ShowWindow(m_listView, SW_SHOW);
+		MessageBoxW(m_hwnd, errorMsg->c_str(), L"エラー", MB_OK | MB_ICONERROR);
+		delete errorMsg;
+		return 0;
+	}
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -141,10 +154,25 @@ void FavoriteWindow::OnCreate()
 	col.cx = 150;
 	ListView_InsertColumn(m_listView, 1, &col);
 
+	// Status label (loading / empty state)
+	m_statusLabel = CreateWindowExW(0, L"STATIC", L"",
+		WS_CHILD | SS_CENTER,
+		10, 300, 440, 30,
+		m_hwnd, ToHMenu(kIdStatusLabel), hInstance, nullptr);
+
 	// Register ViewModel callback to update UI when favorites change
 	m_viewModel.SetOnFavoritesChanged([hwnd = m_hwnd]()
 	{
 		PostMessage(hwnd, kWmFavoritesChanged, 0, 0);
+	});
+
+	// Register ViewModel error callback to show error dialog
+	m_viewModel.SetOnError([hwnd = m_hwnd](const ws::models::ApiError& error)
+	{
+		int len = MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, nullptr, 0);
+		auto* msg = new std::wstring(len - 1, L'\0');
+		MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, msg->data(), len);
+		PostMessage(hwnd, kWmShowError, reinterpret_cast<WPARAM>(msg), 0);
 	});
 }
 
@@ -190,6 +218,17 @@ void FavoriteWindow::UpdateListView()
 	ListView_DeleteAllItems(m_listView);
 
 	const auto& favorites = m_viewModel.GetFavorites();
+
+	if (favorites.empty())
+	{
+		SetWindowTextW(m_statusLabel, L"お気に入りはありません");
+		ShowWindow(m_statusLabel, SW_SHOW);
+		ShowWindow(m_listView, SW_HIDE);
+		return;
+	}
+
+	ShowWindow(m_statusLabel, SW_HIDE);
+	ShowWindow(m_listView, SW_SHOW);
 
 	for (int i = 0; i < static_cast<int>(favorites.size()); ++i)
 	{

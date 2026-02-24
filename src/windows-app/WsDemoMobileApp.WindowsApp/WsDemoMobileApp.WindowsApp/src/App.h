@@ -56,6 +56,7 @@ private:
 	void ShowPurchaseWindow();
 	void ShowFavoriteWindow();
 	void OnLogout();
+	void OnAuthenticationError();
 	void SetupCallbacks();
 
 	HINSTANCE m_hInstance = nullptr;

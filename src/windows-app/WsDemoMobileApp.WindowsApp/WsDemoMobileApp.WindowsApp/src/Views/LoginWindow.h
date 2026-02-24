@@ -45,6 +45,7 @@ private:
 	void ShowError(const std::string& message);
 
 	static constexpr const wchar_t* kClassName = L"LoginWindow";
+	static constexpr UINT kWmShowError = WM_APP + 200;
 	static constexpr int kIdLoginIdEdit = 1001;
 	static constexpr int kIdPasswordEdit = 1002;
 	static constexpr int kIdLoginButton = 1003;

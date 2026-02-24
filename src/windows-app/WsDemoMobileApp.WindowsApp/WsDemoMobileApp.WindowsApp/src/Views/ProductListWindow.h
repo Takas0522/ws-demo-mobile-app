@@ -51,11 +51,13 @@ private:
 
 	static constexpr const wchar_t* kClassName = L"ProductListWindow";
 	static constexpr UINT kWmProductsChanged = WM_APP + 1;
+	static constexpr UINT kWmShowError = WM_APP + 200;
 	static constexpr int kIdSearchEdit = 2001;
 	static constexpr int kIdSearchButton = 2002;
 	static constexpr int kIdListView = 2003;
 	static constexpr int kIdLogoutButton = 2004;
 	static constexpr int kIdFavoritesTab = 2005;
+	static constexpr int kIdStatusLabel = 2006;
 
 	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
 
@@ -63,6 +65,7 @@ private:
 	HWND m_hwnd = nullptr;
 	HWND m_searchEdit = nullptr;
 	HWND m_listView = nullptr;
+	HWND m_statusLabel = nullptr;
 
 	NavigateToDetailCallback m_onNavigateToDetail;
 	NavigateToFavoritesCallback m_onNavigateToFavorites;

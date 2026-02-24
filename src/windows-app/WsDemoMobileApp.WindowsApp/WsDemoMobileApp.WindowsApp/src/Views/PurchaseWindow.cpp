@@ -110,6 +110,14 @@ LRESULT PurchaseWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
+	case kWmShowError:
+	{
+		auto* errorMsg = reinterpret_cast<std::wstring*>(wParam);
+		MessageBoxW(m_hwnd, errorMsg->c_str(), L"エラー", MB_OK | MB_ICONERROR);
+		delete errorMsg;
+		return 0;
+	}
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -165,6 +173,15 @@ void PurchaseWindow::OnCreate()
 		WS_CHILD | WS_VISIBLE,
 		centerX, startY + 280, 300, 40,
 		m_hwnd, ToHMenu(kIdCancelButton), hInstance, nullptr);
+
+	// Register ViewModel error callback to show error dialog
+	m_viewModel.SetOnError([hwnd = m_hwnd](const ws::models::ApiError& error)
+	{
+		int len = MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, nullptr, 0);
+		auto* msg = new std::wstring(len - 1, L'\0');
+		MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, msg->data(), len);
+		PostMessage(hwnd, kWmShowError, reinterpret_cast<WPARAM>(msg), 0);
+	});
 }
 
 void PurchaseWindow::OnCommand(WPARAM wParam)

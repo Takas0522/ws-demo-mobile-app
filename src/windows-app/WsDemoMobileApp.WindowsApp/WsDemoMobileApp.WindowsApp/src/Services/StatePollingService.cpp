@@ -38,6 +38,11 @@ bool StatePollingService::IsRunning() const
 	return m_running.load();
 }
 
+void StatePollingService::SetAuthCheck(AuthCheckCallback callback)
+{
+	m_authCheck = std::move(callback);
+}
+
 void StatePollingService::PollingLoop()
 {
 	while (m_running.load())
@@ -46,6 +51,17 @@ void StatePollingService::PollingLoop()
 
 		if (!m_running.load())
 		{
+			break;
+		}
+
+		// Check if authentication is still valid before polling
+		if (m_authCheck && !m_authCheck())
+		{
+			m_running.store(false);
+			if (m_targetWindow)
+			{
+				PostMessage(m_targetWindow, ws::utils::WM_AUTH_ERROR, 0, 0);
+			}
 			break;
 		}
 

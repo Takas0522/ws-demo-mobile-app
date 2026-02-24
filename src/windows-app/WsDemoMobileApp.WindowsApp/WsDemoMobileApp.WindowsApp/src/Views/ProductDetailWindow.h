@@ -43,6 +43,7 @@ private:
 	void OnCommand(WPARAM wParam);
 
 	static constexpr const wchar_t* kClassName = L"ProductDetailWindow";
+	static constexpr UINT kWmShowError = WM_APP + 200;
 	static constexpr int kIdBackButton = 3001;
 	static constexpr int kIdFavoriteButton = 3002;
 	static constexpr int kIdPurchaseButton = 3003;

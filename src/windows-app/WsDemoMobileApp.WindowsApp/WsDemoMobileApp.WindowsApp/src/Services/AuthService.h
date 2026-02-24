@@ -3,6 +3,8 @@
 #include <string>
 #include <expected>
 #include <functional>
+#include <chrono>
+#include <cstdint>
 #include "Models/User.h"
 #include "Models/ApiError.h"
 
@@ -46,11 +48,17 @@ public:
 	[[nodiscard]] bool IsAuthenticated() const;
 	[[nodiscard]] const ws::models::User& GetCurrentUser() const;
 
+	[[nodiscard]] bool IsTokenExpired() const;
+	void SetTokenExpiry(int expiresInSeconds);
+	void SetTokenExpiryFromTimestamp(int64_t timestamp);
+	[[nodiscard]] int64_t GetTokenExpiryTimestamp() const;
+
 private:
 	const HttpClient& m_httpClient;
 	ws::utils::CredentialManager& m_credentialManager;
 	std::string m_token;
 	ws::models::User m_currentUser;
+	std::chrono::system_clock::time_point m_tokenExpiry{};
 };
 
 } // namespace ws::services

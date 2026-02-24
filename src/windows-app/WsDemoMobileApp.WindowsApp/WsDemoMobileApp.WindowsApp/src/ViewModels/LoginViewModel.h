@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include <optional>
 #include "Models/User.h"
 #include "Models/ApiError.h"
 
@@ -17,6 +18,17 @@ class CredentialManager;
 
 namespace ws::viewmodels
 {
+
+constexpr int kMinLoginIdLength = 4;
+constexpr int kMaxLoginIdLength = 20;
+constexpr int kMinPasswordLength = 8;
+constexpr int kMaxPasswordLength = 50;
+
+struct ValidationError
+{
+	std::string loginIdError;
+	std::string passwordError;
+};
 
 class LoginViewModel
 {
@@ -35,12 +47,17 @@ public:
 
 	void Login(const std::string& loginId, const std::string& password);
 
+	[[nodiscard]] std::optional<ValidationError> Validate(
+		const std::string& loginId,
+		const std::string& password) const;
+
 	void SetOnLoginSuccess(LoginSuccessCallback callback);
 	void SetOnLoginError(LoginErrorCallback callback);
 	void SetOnLoadingChanged(LoadingChangedCallback callback);
 
 	[[nodiscard]] bool IsLoading() const;
 	[[nodiscard]] const std::string& GetLoginId() const;
+	[[nodiscard]] const std::string& GetLastError() const;
 	void SetLoginId(const std::string& loginId);
 	void SetPassword(const std::string& password);
 
@@ -50,6 +67,7 @@ private:
 
 	std::string m_loginId;
 	std::string m_password;
+	std::string m_lastError;
 	bool m_isLoading = false;
 
 	LoginSuccessCallback m_onLoginSuccess;

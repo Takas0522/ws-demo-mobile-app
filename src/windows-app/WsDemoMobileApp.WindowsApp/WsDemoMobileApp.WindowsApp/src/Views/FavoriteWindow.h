@@ -48,14 +48,17 @@ private:
 
 	static constexpr const wchar_t* kClassName = L"FavoriteWindow";
 	static constexpr UINT kWmFavoritesChanged = WM_APP + 1;
+	static constexpr UINT kWmShowError = WM_APP + 200;
 	static constexpr int kIdListView = 5001;
 	static constexpr int kIdBackButton = 5002;
+	static constexpr int kIdStatusLabel = 5003;
 
 	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
 
 	ws::viewmodels::FavoriteViewModel& m_viewModel;
 	HWND m_hwnd = nullptr;
 	HWND m_listView = nullptr;
+	HWND m_statusLabel = nullptr;
 
 	NavigateToDetailCallback m_onNavigateToDetail;
 	NavigateBackCallback m_onNavigateBack;
