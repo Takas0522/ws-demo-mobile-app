@@ -769,6 +769,42 @@
 
 ---
 
+### 機能追加・MSBuild対応 (2026-02-24)
+
+#### Commit 3: 9931be2
+
+**Message**: `feat: Add FeatureFlagService, Logout, and fix MSBuild compilation`
+
+**新規作成ファイル**: 3ファイル
+- `src/Models/FeatureFlag.h` - 機能フラグモデル（JSON シリアライズ対応）
+- `src/Services/FeatureFlagService.h` - 機能フラグサービスヘッダー
+- `src/Services/FeatureFlagService.cpp` - 機能フラグサービス実装
+
+**変更ファイル**: 7ファイル
+
+**実装内容**:
+
+1. **FeatureFlagService の追加**:
+   - `GET /api/mobile/feature-flags` エンドポイントを呼び出し
+   - フラグのキャッシュ機能
+   - `IsFavoriteEnabled()` でお気に入り機能の有効/無効判定
+   - ログイン後に自動取得、結果に基づきお気に入りタブの表示/非表示を制御
+
+2. **ログアウト機能の追加**:
+   - `AuthService::Logout()` メソッドを追加
+   - `POST /api/mobile/auth/logout` をBFFに送信（fire-and-forget）
+   - トークンクリア、CredentialManager からの資格情報削除
+   - App のログアウトフローに統合（ポーリング停止→ログアウト→ログイン画面表示）
+
+3. **MSBuild 対応**:
+   - vcxproj に `/utf-8` コンパイラオプションを追加
+   - 日本語ワイド文字列リテラルの C4819/C2001 エラーを解消
+   - Debug|x64 および Release|x64 の両構成で検証済み
+
+**ビルド結果**: ✅ build.bat・MSBuild 両方で BUILD SUCCEEDED（20 .cpp ファイル）
+
+---
+
 ## 変更統計
 
 ### フェーズ別ファイル数
