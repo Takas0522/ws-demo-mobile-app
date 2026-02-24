@@ -6,6 +6,11 @@
 #include "Models/User.h"
 #include "Models/ApiError.h"
 
+namespace ws::utils
+{
+class CredentialManager;
+}
+
 namespace ws::services
 {
 
@@ -22,7 +27,7 @@ struct LoginResponse
 class AuthService
 {
 public:
-	explicit AuthService(const HttpClient& httpClient);
+	explicit AuthService(const HttpClient& httpClient, ws::utils::CredentialManager& credentialManager);
 	~AuthService() = default;
 
 	AuthService(const AuthService&) = delete;
@@ -31,6 +36,8 @@ public:
 	[[nodiscard]] std::expected<LoginResponse, ws::models::ApiError> Login(
 		const std::string& loginId,
 		const std::string& password);
+
+	void Logout();
 
 	[[nodiscard]] const std::string& GetToken() const;
 	void SetToken(const std::string& token);
@@ -41,6 +48,7 @@ public:
 
 private:
 	const HttpClient& m_httpClient;
+	ws::utils::CredentialManager& m_credentialManager;
 	std::string m_token;
 	ws::models::User m_currentUser;
 };

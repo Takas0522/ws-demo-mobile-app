@@ -1,6 +1,7 @@
 #include "Services/AuthService.h"
 #include "Services/HttpClient.h"
 #include "Utils/Constants.h"
+#include "Utils/CredentialManager.h"
 #include "Utils/JsonHelper.h"
 
 #include <nlohmann/json.hpp>
@@ -8,8 +9,9 @@
 namespace ws::services
 {
 
-AuthService::AuthService(const HttpClient& httpClient)
+AuthService::AuthService(const HttpClient& httpClient, ws::utils::CredentialManager& credentialManager)
 	: m_httpClient(httpClient)
+	, m_credentialManager(credentialManager)
 {
 }
 
@@ -65,6 +67,22 @@ std::expected<LoginResponse, ws::models::ApiError> AuthService::Login(
 			"JSON_PARSE_ERROR",
 			std::string("レスポンスの解析に失敗しました: ") + e.what()});
 	}
+}
+
+void AuthService::Logout()
+{
+	// Fire-and-forget: POST to logout endpoint with current token
+	if (!m_token.empty())
+	{
+		(void)m_httpClient.Post(
+			ws::utils::kLogoutPath,
+			"{}",
+			m_token);
+	}
+
+	// Clear local state
+	ClearToken();
+	m_credentialManager.DeleteToken();
 }
 
 const std::string& AuthService::GetToken() const

@@ -18,7 +18,7 @@ namespace ws
 {
 
 App::App()
-	: m_authService(m_httpClient)
+	: m_authService(m_httpClient, m_credentialManager)
 	, m_productService(m_httpClient, m_authService)
 	, m_purchaseService(m_httpClient, m_authService)
 	, m_favoriteService(m_httpClient, m_authService)
@@ -34,11 +34,15 @@ bool App::Initialize(HINSTANCE hInstance, int nCmdShow)
 {
 	m_hInstance = hInstance;
 
+	// Initialize feature flag service
+	m_featureFlagService = std::make_unique<ws::services::FeatureFlagService>(m_httpClient);
+
 	// Try to restore saved token
 	auto savedToken = m_credentialManager.LoadToken();
 	if (savedToken.has_value())
 	{
 		m_authService.SetToken(savedToken.value());
+		(void)m_featureFlagService->FetchFeatureFlags(m_authService.GetToken());
 	}
 
 	// Create ViewModels
@@ -98,6 +102,10 @@ void App::ShowLoginWindow()
 
 		m_loginWindow->SetOnLoginSuccessNavigate([this]()
 		{
+			if (m_featureFlagService)
+			{
+				(void)m_featureFlagService->FetchFeatureFlags(m_authService.GetToken());
+			}
 			ShowProductListWindow();
 		});
 	}
@@ -145,6 +153,18 @@ void App::ShowProductListWindow()
 	}
 
 	m_productListWindow->Show(SW_SHOW);
+
+	// Control favorites tab visibility based on feature flag
+	if (m_featureFlagService)
+	{
+		// kIdFavoritesTab = 2005 (defined in ProductListWindow)
+		HWND favButton = GetDlgItem(m_productListWindow->GetHandle(), 2005);
+		if (favButton)
+		{
+			ShowWindow(favButton, m_featureFlagService->IsFavoriteEnabled() ? SW_SHOW : SW_HIDE);
+		}
+	}
+
 	m_productListWindow->RefreshList();
 
 	// Start polling
@@ -254,8 +274,7 @@ void App::ShowFavoriteWindow()
 void App::OnLogout()
 {
 	m_pollingService.Stop();
-	m_authService.ClearToken();
-	m_credentialManager.DeleteToken();
+	m_authService.Logout();
 
 	// Hide all windows
 	if (m_productListWindow)

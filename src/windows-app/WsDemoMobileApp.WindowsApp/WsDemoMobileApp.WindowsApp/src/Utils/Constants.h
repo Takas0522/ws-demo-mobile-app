@@ -13,6 +13,7 @@ constexpr int kBffPort = 8081;
 
 // API endpoints
 constexpr const char* kLoginPath = "/api/mobile/login";
+constexpr const char* kLogoutPath = "/api/mobile/auth/logout";
 constexpr const char* kProductsPath = "/api/mobile/products";
 constexpr const char* kProductsSearchPath = "/api/mobile/products/search";
 constexpr const char* kPurchasesPath = "/api/mobile/purchases";

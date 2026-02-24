@@ -12,6 +12,7 @@
 #include "Services/ProductService.h"
 #include "Services/PurchaseService.h"
 #include "Services/FavoriteService.h"
+#include "Services/FeatureFlagService.h"
 #include "Services/StatePollingService.h"
 #include "Utils/CredentialManager.h"
 
@@ -61,12 +62,13 @@ private:
 
 	// Services
 	ws::services::HttpClient m_httpClient;
+	ws::utils::CredentialManager m_credentialManager;
 	ws::services::AuthService m_authService;
 	ws::services::ProductService m_productService;
 	ws::services::PurchaseService m_purchaseService;
 	ws::services::FavoriteService m_favoriteService;
+	std::unique_ptr<ws::services::FeatureFlagService> m_featureFlagService;
 	ws::services::StatePollingService m_pollingService;
-	ws::utils::CredentialManager m_credentialManager;
 
 	// ViewModels
 	std::unique_ptr<ws::viewmodels::LoginViewModel> m_loginViewModel;

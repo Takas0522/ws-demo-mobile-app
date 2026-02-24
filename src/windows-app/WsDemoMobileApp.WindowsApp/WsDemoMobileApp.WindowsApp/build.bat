@@ -81,6 +81,7 @@ set SOURCES=^
  src\Services\ProductService.cpp^
  src\Services\PurchaseService.cpp^
  src\Services\FavoriteService.cpp^
+ src\Services\FeatureFlagService.cpp^
  src\Services\StatePollingService.cpp^
  src\Utils\CredentialManager.cpp^
  src\ViewModels\LoginViewModel.cpp^
