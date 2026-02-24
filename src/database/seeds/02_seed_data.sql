@@ -34,26 +34,26 @@ INSERT INTO users (user_name, login_id, password_hash, user_type) VALUES
 -- ======================================
 
 INSERT INTO products (product_name, unit_price, description, image_url) VALUES
-    ('商品A', 1000, '商品Aの詳細説明です。高品質で使いやすい商品です。', 'https://via.placeholder.com/300x300?text=Product+A'),
-    ('商品B', 1500, '商品Bの詳細説明です。多機能でコストパフォーマンスに優れています。', 'https://via.placeholder.com/300x300?text=Product+B'),
-    ('商品C', 2000, '商品Cの詳細説明です。プレミアム品質の商品です。', 'https://via.placeholder.com/300x300?text=Product+C'),
-    ('商品D', 2500, '商品Dの詳細説明です。最新技術を搭載した商品です。', 'https://via.placeholder.com/300x300?text=Product+D'),
-    ('商品E', 3000, '商品Eの詳細説明です。デザイン性に優れた商品です。', 'https://via.placeholder.com/300x300?text=Product+E'),
-    ('商品F', 3500, '商品Fの詳細説明です。耐久性抜群の商品です。', 'https://via.placeholder.com/300x300?text=Product+F'),
-    ('商品G', 4000, '商品Gの詳細説明です。環境に優しいエコ商品です。', 'https://via.placeholder.com/300x300?text=Product+G'),
-    ('商品H', 4500, '商品Hの詳細説明です。使いやすさを追求した商品です。', 'https://via.placeholder.com/300x300?text=Product+H'),
-    ('商品I', 5000, '商品Iの詳細説明です。プロフェッショナル向けの商品です。', 'https://via.placeholder.com/300x300?text=Product+I'),
-    ('商品J', 5500, '商品Jの詳細説明です。限定生産の特別な商品です。', 'https://via.placeholder.com/300x300?text=Product+J'),
-    ('商品K', 6000, '商品Kの詳細説明です。多用途に使える万能商品です。', 'https://via.placeholder.com/300x300?text=Product+K'),
-    ('商品L', 6500, '商品Lの詳細説明です。軽量で持ち運びやすい商品です。', 'https://via.placeholder.com/300x300?text=Product+L'),
-    ('商品M', 7000, '商品Mの詳細説明です。高級感あふれる商品です。', 'https://via.placeholder.com/300x300?text=Product+M'),
-    ('商品N', 7500, '商品Nの詳細説明です。初心者にも扱いやすい商品です。', 'https://via.placeholder.com/300x300?text=Product+N'),
-    ('商品O', 8000, '商品Oの詳細説明です。メンテナンスが簡単な商品です。', 'https://via.placeholder.com/300x300?text=Product+O'),
-    ('商品P', 8500, '商品Pの詳細説明です。安全性を重視した商品です。', 'https://via.placeholder.com/300x300?text=Product+P'),
-    ('商品Q', 9000, '商品Qの詳細説明です。長時間使用できる商品です。', 'https://via.placeholder.com/300x300?text=Product+Q'),
-    ('商品R', 9500, '商品Rの詳細説明です。コンパクト設計の商品です。', 'https://via.placeholder.com/300x300?text=Product+R'),
-    ('商品S', 10000, '商品Sの詳細説明です。最高品質の商品です。', 'https://via.placeholder.com/300x300?text=Product+S'),
-    ('商品T', 10500, '商品Tの詳細説明です。革新的な機能を持つ商品です。', 'https://via.placeholder.com/300x300?text=Product+T');
+    ('オーガニック緑茶 100g', 1000, '静岡県産の一番茶のみを使用した有機栽培の緑茶。深い旨味とすっきりとした後味が特徴です。', 'https://via.placeholder.com/300x300?text=Green+Tea'),
+    ('天然はちみつ 国産百花蜜 250g', 1500, '国内の養蜂場で採取された百花蜜。非加熱処理で酵素や栄養素をそのまま閉じ込めています。', 'https://via.placeholder.com/300x300?text=Honey'),
+    ('手摘みダージリンティー 50g', 2000, 'インド・ダージリン地方の標高2,000mの茶園で手摘みされたファーストフラッシュ。華やかなマスカテルフレーバーが楽しめます。', 'https://via.placeholder.com/300x300?text=Darjeeling'),
+    ('北海道産 小麦粉 はるゆたか 1kg', 2500, '北海道十勝産「はるゆたか」を100%使用した強力粉。パンやピザ生地に最適で、もっちりとした食感に仕上がります。', 'https://via.placeholder.com/300x300?text=Flour'),
+    ('エクストラバージンオリーブオイル 500ml', 3000, 'スペイン・アンダルシア産のピクアル種を使用。コールドプレス製法で搾油し、フルーティーな香りが特徴です。', 'https://via.placeholder.com/300x300?text=Olive+Oil'),
+    ('熟成バルサミコ酢 250ml', 3500, 'イタリア・モデナ産のぶどうを使用し、木樽で5年以上熟成。濃厚な甘みと芳醇な香りが料理を引き立てます。', 'https://via.placeholder.com/300x300?text=Balsamic'),
+    ('有機マカダミアナッツ 200g', 4000, 'オーストラリア産の有機栽培マカダミアナッツ。低温でじっくりローストし、クリーミーな味わいに仕上げました。', 'https://via.placeholder.com/300x300?text=Macadamia'),
+    ('十勝産あずき使用 つぶあん 500g', 4500, '北海道十勝産の大粒小豆を丁寧に炊き上げたつぶあん。和菓子作りやトーストのお供にどうぞ。', 'https://via.placeholder.com/300x300?text=Azuki+Paste'),
+    ('スペシャルティコーヒー エチオピア イルガチェフェ 200g', 5000, 'エチオピア・イルガチェフェ地区の標高1,800m以上で栽培されたアラビカ種。ジャスミンのような華やかな香りとレモンティーのような風味。', 'https://via.placeholder.com/300x300?text=Coffee'),
+    ('宇治抹茶 薄茶用 30g缶入り', 5500, '京都府宇治産の碾茶を石臼で丁寧に挽いた薄茶用抹茶。鮮やかな緑色と上品な甘みが特徴です。', 'https://via.placeholder.com/300x300?text=Matcha'),
+    ('国産 天日干し切り干し大根 100g×5袋', 6000, '宮崎県産の大根を寒風と天日でじっくり乾燥。歯ごたえが良く、煮物や和え物にぴったりの自然食品です。', 'https://via.placeholder.com/300x300?text=Dried+Radish'),
+    ('マヌカハニー UMF10+ 250g', 6500, 'ニュージーランド産マヌカハニー。UMF10+認定の高品質品。そのままスプーンで、またはヨーグルトに混ぜてどうぞ。', 'https://via.placeholder.com/300x300?text=Manuka+Honey'),
+    ('黒トリュフ塩 50g', 7000, 'イタリア・ウンブリア産の黒トリュフとフランス・ゲランドの塩をブレンド。パスタや卵料理に振りかけるだけで本格的な風味に。', 'https://via.placeholder.com/300x300?text=Truffle+Salt'),
+    ('有機ルイボスティー 100包入り', 7500, '南アフリカ・セダルバーグ山脈産のオーガニックルイボス。カフェインフリーでお子様からお年寄りまで安心して楽しめます。', 'https://via.placeholder.com/300x300?text=Rooibos+Tea'),
+    ('純粋国産アカシアはちみつ 500g', 8000, '長野県産のアカシア花から採取した純粋はちみつ。クセがなく上品な甘さで、パンケーキやヨーグルトに最適です。', 'https://via.placeholder.com/300x300?text=Acacia+Honey'),
+    ('瀬戸内レモン使用 レモンオリーブオイル 250ml', 8500, '瀬戸内海の温暖な気候で育った国産レモンとイタリア産オリーブオイルを独自製法でブレンド。サラダやカルパッチョに。', 'https://via.placeholder.com/300x300?text=Lemon+Oil'),
+    ('最高級キューバ産バニラビーンズ 5本入り', 9000, 'キューバ産の希少なバニラビーンズ。濃厚な甘い香りが特徴で、お菓子作りやアイスクリームに贅沢な風味を加えます。', 'https://via.placeholder.com/300x300?text=Vanilla+Beans'),
+    ('有機カカオニブ コロンビア産 150g', 9500, 'コロンビアの契約農家で有機栽培されたカカオ豆を発酵・乾燥・焙煎し砕いたニブ。そのままおやつに、またはスムージーのトッピングに。', 'https://via.placeholder.com/300x300?text=Cacao+Nibs'),
+    ('天然サフラン スペイン ラ・マンチャ産 2g', 10000, '世界最高品質と言われるスペイン・ラ・マンチャ産のサフラン。パエリアやブイヤベースに鮮やかな黄金色と独特の芳香を与えます。', 'https://via.placeholder.com/300x300?text=Saffron'),
+    ('白トリュフオイル 100ml', 10500, 'イタリア・ピエモンテ産の白トリュフで香り付けしたエクストラバージンオリーブオイル。リゾットやパスタの仕上げに数滴垂らすだけで芳醇な香りが広がります。', 'https://via.placeholder.com/300x300?text=Truffle+Oil');
 
 -- ======================================
 -- 3. 機能フラグデータ

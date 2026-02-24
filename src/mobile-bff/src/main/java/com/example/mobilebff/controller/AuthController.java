@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * Mobile BFFの認証API
  */
 @RestController
-@RequestMapping("/api/mobile/auth")
+@RequestMapping("/api/mobile")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
