@@ -11,23 +11,23 @@
 -- ======================================
 
 -- 管理者ユーザー（パスワード: admin123）
--- bcryptハッシュ: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+-- bcryptハッシュ: $2a$10$9XQy779t3Zn.q2vGeMn6we/cHZw5nDdKd7oD1hsn8Li5TWRKPD3HC
 INSERT INTO users (user_name, login_id, password_hash, user_type) VALUES
-    ('管理者', 'admin001', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin');
+    ('管理者', 'admin001', '$2a$10$9XQy779t3Zn.q2vGeMn6we/cHZw5nDdKd7oD1hsn8Li5TWRKPD3HC', 'admin');
 
 -- エンドユーザー（パスワード: password123）
--- bcryptハッシュ: $2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi
+-- bcryptハッシュ: $2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW
 INSERT INTO users (user_name, login_id, password_hash, user_type) VALUES
-    ('山田太郎', 'user001', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('佐藤花子', 'user002', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('鈴木一郎', 'user003', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('田中美咲', 'user004', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('伊藤健太', 'user005', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('渡辺さくら', 'user006', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('山本大輔', 'user007', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('中村愛', 'user008', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('小林拓也', 'user009', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-    ('加藤由美', 'user010', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
+    ('山田太郎', 'user001', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('佐藤花子', 'user002', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('鈴木一郎', 'user003', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('田中美咲', 'user004', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('伊藤健太', 'user005', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('渡辺さくら', 'user006', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('山本大輔', 'user007', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('中村愛', 'user008', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('小林拓也', 'user009', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user'),
+    ('加藤由美', 'user010', '$2a$10$Q2B8dO3dcrihBd5YUW.EUey01qRaHYhY0ReMrahFVIOMyq6BLtTuW', 'user');
 
 -- ======================================
 -- 2. 商品データ

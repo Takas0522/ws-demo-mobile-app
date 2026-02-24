@@ -72,7 +72,7 @@ export const adminApi = {
    */
   async login(request: LoginRequest): Promise<LoginResponse> {
     const response = await apiClient.post<ApiResponse<LoginResponse>>(
-      '/api/admin/login',
+      '/api/admin/auth/login',
       request
     )
     return response.data.data
