@@ -805,6 +805,46 @@
 
 ---
 
+### エラーハンドリング・バリデーション・トークン管理・テストドキュメント (2026-02-24)
+
+#### Commit 4: 54a8571
+
+**Message**: `feat: Add error handling, input validation, token expiration, and test docs`
+
+**新規作成ファイル**: 1ファイル
+- `docs/testing/windows-app-test-checklist.md` - Windows アプリ手動テストチェックリスト（43テストケース）
+
+**変更ファイル**: 22ファイル（+1,255行）
+
+**実装内容**:
+
+1. **エラーハンドリング**（5画面すべて）:
+   - 全 ViewModel に OnError コールバックを追加
+   - API エラー時に MessageBoxW でエラーダイアログ表示
+   - ProductListWindow / FavoriteWindow に「読み込み中...」ローディング表示
+   - 商品0件時「商品が見つかりません」、お気に入り0件時「お気に入りはありません」の空状態表示
+   - PostMessage による UI スレッドへのスレッドセーフなエラー通知
+
+2. **入力バリデーション**:
+   - ログインID: 4-20文字、パスワード: 8-50文字のクライアントサイドバリデーション
+   - LoginWindow にバリデーションエラー表示（赤色テキスト）
+   - PurchaseViewModel: 100単位の厳密な数量スナッピング（100-9900）
+   - ログアウト確認ダイアログ（はい/いいえ）
+
+3. **トークン有効期限管理**:
+   - AuthService: トークン有効期限の追跡、`IsTokenExpired()` チェック
+   - CredentialManager: トークン+有効期限の永続化（後方互換性あり）
+   - StatePollingService: ポーリング前の認証チェック、`WM_AUTH_ERROR` 通知
+   - App: 認証エラーの検出と自動ログアウト（「セッションが期限切れです」メッセージ）
+
+4. **テストドキュメント**:
+   - 全43テストケースの手動テストチェックリスト
+   - カバー範囲: ログイン、商品一覧、商品詳細、購入、お気に入り、ログアウト、エラーハンドリング、画面遷移
+
+**ビルド結果**: ✅ build.bat・MSBuild 両方で BUILD SUCCEEDED
+
+---
+
 ## 変更統計
 
 ### フェーズ別ファイル数
