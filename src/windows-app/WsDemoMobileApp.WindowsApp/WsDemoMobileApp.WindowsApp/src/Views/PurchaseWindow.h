@@ -41,6 +41,8 @@ private:
 
 	void OnCreate();
 	void OnCommand(WPARAM wParam);
+	void OnPaint();
+	void OnDrawItem(DRAWITEMSTRUCT* dis);
 
 	static constexpr const wchar_t* kClassName = L"PurchaseWindow";
 	static constexpr UINT kWmShowError = WM_APP + 200;

@@ -34,11 +34,11 @@ inline void from_json(const nlohmann::json& j, Product& p)
 	{
 		p.imageUrl = j.at("imageUrl").get<std::string>();
 	}
-	if (j.contains("createdAt"))
+	if (j.contains("createdAt") && !j.at("createdAt").is_null())
 	{
 		j.at("createdAt").get_to(p.createdAt);
 	}
-	if (j.contains("updatedAt"))
+	if (j.contains("updatedAt") && !j.at("updatedAt").is_null())
 	{
 		j.at("updatedAt").get_to(p.updatedAt);
 	}

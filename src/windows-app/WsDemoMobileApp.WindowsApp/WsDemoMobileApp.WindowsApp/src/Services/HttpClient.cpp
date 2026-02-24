@@ -6,6 +6,30 @@
 
 #pragma comment(lib, "winhttp.lib")
 
+namespace
+{
+
+std::string FormatWinHttpError(DWORD errorCode)
+{
+	switch (errorCode)
+	{
+	case ERROR_WINHTTP_CANNOT_CONNECT:
+		return "サーバーに接続できません。BFFサーバー(localhost:"
+			+ std::to_string(ws::utils::kBffPort)
+			+ ")が起動しているか確認してください";
+	case ERROR_WINHTTP_TIMEOUT:
+		return "サーバーへの接続がタイムアウトしました";
+	case ERROR_WINHTTP_NAME_NOT_RESOLVED:
+		return "ホスト名を解決できません";
+	case ERROR_WINHTTP_CONNECTION_ERROR:
+		return "接続中にエラーが発生しました";
+	default:
+		return "ネットワークエラー (コード: " + std::to_string(errorCode) + ")";
+	}
+}
+
+} // anonymous namespace
+
 namespace ws::services
 {
 
@@ -13,7 +37,7 @@ HttpClient::HttpClient()
 {
 	m_session = WinHttpOpen(
 		L"WsDemoMobileApp/1.0",
-		WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+		WINHTTP_ACCESS_TYPE_NO_PROXY,
 		WINHTTP_NO_PROXY_NAME,
 		WINHTTP_NO_PROXY_BYPASS,
 		0);
@@ -123,19 +147,21 @@ HttpResult HttpClient::SendRequest(
 
 	if (!result)
 	{
+		DWORD errorCode = GetLastError();
 		WinHttpCloseHandle(request);
 		WinHttpCloseHandle(connection);
 		return std::unexpected(ws::models::ApiError{
-			"NETWORK_002", "リクエストの送信に失敗しました"});
+			"NETWORK_002", FormatWinHttpError(errorCode)});
 	}
 
 	result = WinHttpReceiveResponse(request, nullptr);
 	if (!result)
 	{
+		DWORD errorCode = GetLastError();
 		WinHttpCloseHandle(request);
 		WinHttpCloseHandle(connection);
 		return std::unexpected(ws::models::ApiError{
-			"NETWORK_003", "レスポンスの受信に失敗しました"});
+			"NETWORK_003", FormatWinHttpError(errorCode)});
 	}
 
 	// Get status code

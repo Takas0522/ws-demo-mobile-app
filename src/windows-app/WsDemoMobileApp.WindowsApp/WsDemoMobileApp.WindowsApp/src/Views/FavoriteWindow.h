@@ -44,6 +44,8 @@ private:
 	void OnCreate();
 	void OnCommand(WPARAM wParam);
 	void OnNotify(LPARAM lParam);
+	void OnPaint();
+	void OnDrawItem(DRAWITEMSTRUCT* dis);
 	void UpdateListView();
 
 	static constexpr const wchar_t* kClassName = L"FavoriteWindow";

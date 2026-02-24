@@ -35,7 +35,7 @@ inline void from_json(const nlohmann::json& j, Favorite& f)
 	{
 		f.product = j.at("product").get<Product>();
 	}
-	if (j.contains("createdAt"))
+	if (j.contains("createdAt") && !j.at("createdAt").is_null())
 	{
 		j.at("createdAt").get_to(f.createdAt);
 	}

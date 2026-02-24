@@ -46,6 +46,8 @@ private:
 	void OnCreate();
 	void OnCommand(WPARAM wParam);
 	void OnNotify(LPARAM lParam);
+	void OnPaint();
+	void OnDrawItem(DRAWITEMSTRUCT* dis);
 	void UpdateListView();
 	void OnSearch();
 

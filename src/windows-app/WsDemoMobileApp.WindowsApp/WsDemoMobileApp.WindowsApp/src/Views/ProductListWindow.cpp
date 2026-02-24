@@ -1,6 +1,7 @@
 #include "Views/ProductListWindow.h"
 #include "ViewModels/ProductListViewModel.h"
 #include "Utils/Constants.h"
+#include "Utils/ModernTheme.h"
 
 #include <string>
 #include <functional>
@@ -27,7 +28,7 @@ bool ProductListWindow::Create(HINSTANCE hInstance, HWND parent, int width, int 
 	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = hInstance;
 	wc.lpszClassName = kClassName;
-	wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+	wc.hbrBackground = ws::utils::ModernTheme::Instance().GetBackgroundBrush();
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	RegisterClassExW(&wc);
 
@@ -101,11 +102,21 @@ LRESULT CALLBACK ProductListWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wPara
 
 LRESULT ProductListWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	auto& theme = ws::utils::ModernTheme::Instance();
+
 	switch (msg)
 	{
 	case WM_CREATE:
 		OnCreate();
 		return 0;
+
+	case WM_PAINT:
+		OnPaint();
+		return 0;
+
+	case WM_DRAWITEM:
+		OnDrawItem(reinterpret_cast<DRAWITEMSTRUCT*>(lParam));
+		return TRUE;
 
 	case WM_COMMAND:
 		OnCommand(wParam);
@@ -118,6 +129,22 @@ LRESULT ProductListWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 	case kWmProductsChanged:
 		UpdateListView();
 		return 0;
+
+	case WM_CTLCOLORSTATIC:
+	{
+		HDC hdc = reinterpret_cast<HDC>(wParam);
+		SetBkMode(hdc, TRANSPARENT);
+		SetTextColor(hdc, ws::utils::colors::kTextSecondary);
+		return reinterpret_cast<LRESULT>(theme.GetBackgroundBrush());
+	}
+
+	case WM_CTLCOLOREDIT:
+	{
+		HDC hdc = reinterpret_cast<HDC>(wParam);
+		SetTextColor(hdc, ws::utils::colors::kTextPrimary);
+		SetBkColor(hdc, ws::utils::colors::kEditBg);
+		return reinterpret_cast<LRESULT>(theme.GetEditBrush());
+	}
 
 	case kWmShowError:
 	{
@@ -141,55 +168,63 @@ LRESULT ProductListWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 void ProductListWindow::OnCreate()
 {
 	HINSTANCE hInstance = reinterpret_cast<HINSTANCE>(GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE));
+	auto& theme = ws::utils::ModernTheme::Instance();
 
 	// Search bar
 	m_searchEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
-		10, 10, 280, 28,
+		16, 16, 230, 32,
 		m_hwnd, ToHMenu(kIdSearchEdit), hInstance, nullptr);
 
 	CreateWindowExW(0, L"BUTTON", L"検索",
-		WS_CHILD | WS_VISIBLE,
-		300, 10, 60, 28,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		254, 16, 70, 32,
 		m_hwnd, ToHMenu(kIdSearchButton), hInstance, nullptr);
 
 	// Favorites tab button
-	CreateWindowExW(0, L"BUTTON", L"お気に入り",
-		WS_CHILD | WS_VISIBLE,
-		370, 10, 80, 28,
+	CreateWindowExW(0, L"BUTTON", L"★ お気に入り",
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		332, 16, 110, 32,
 		m_hwnd, ToHMenu(kIdFavoritesTab), hInstance, nullptr);
 
 	// ListView
 	m_listView = CreateWindowExW(0, WC_LISTVIEWW, L"",
-		WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SINGLESEL | WS_BORDER,
-		10, 50, 440, 550,
+		WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SINGLESEL,
+		16, 60, 430, 540,
 		m_hwnd, ToHMenu(kIdListView), hInstance, nullptr);
 
-	ListView_SetExtendedListViewStyle(m_listView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	ListView_SetExtendedListViewStyle(m_listView, LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
+	ListView_SetBkColor(m_listView, ws::utils::colors::kSurface);
+	ListView_SetTextBkColor(m_listView, ws::utils::colors::kSurface);
+	ListView_SetTextColor(m_listView, ws::utils::colors::kTextPrimary);
 
 	// Columns
 	LVCOLUMNW col = {};
 	col.mask = LVCF_TEXT | LVCF_WIDTH;
 
 	col.pszText = const_cast<LPWSTR>(L"商品名");
-	col.cx = 250;
+	col.cx = 270;
 	ListView_InsertColumn(m_listView, 0, &col);
 
 	col.pszText = const_cast<LPWSTR>(L"価格");
-	col.cx = 150;
+	col.cx = 140;
 	ListView_InsertColumn(m_listView, 1, &col);
 
-	// Logout button
+	// Logout button (owner-drawn)
 	CreateWindowExW(0, L"BUTTON", L"ログアウト",
-		WS_CHILD | WS_VISIBLE,
-		10, 610, 100, 30,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		16, 610, 110, 36,
 		m_hwnd, ToHMenu(kIdLogoutButton), hInstance, nullptr);
 
 	// Status label (loading / empty state)
 	m_statusLabel = CreateWindowExW(0, L"STATIC", L"",
 		WS_CHILD | SS_CENTER,
-		10, 280, 440, 30,
+		16, 300, 430, 30,
 		m_hwnd, ToHMenu(kIdStatusLabel), hInstance, nullptr);
+
+	// Apply font to all controls
+	ws::utils::ModernTheme::ApplyFont(m_hwnd, theme.GetFont());
+	SendMessageW(m_listView, WM_SETFONT, reinterpret_cast<WPARAM>(theme.GetFont()), TRUE);
 
 	// Register ViewModel callback to update UI when products change
 	m_viewModel.SetOnProductsChanged([hwnd = m_hwnd]()
@@ -287,6 +322,43 @@ void ProductListWindow::UpdateListView()
 		ListView_InsertItem(m_listView, &item);
 
 		ListView_SetItemText(m_listView, i, 1, const_cast<LPWSTR>(price.c_str()));
+	}
+}
+
+void ProductListWindow::OnPaint()
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(m_hwnd, &ps);
+	auto& theme = ws::utils::ModernTheme::Instance();
+
+	// Header divider
+	ws::utils::ModernTheme::DrawDivider(hdc, 16, 56, 430);
+
+	EndPaint(m_hwnd, &ps);
+}
+
+void ProductListWindow::OnDrawItem(DRAWITEMSTRUCT* dis)
+{
+	switch (dis->CtlID)
+	{
+	case kIdSearchButton:
+		ws::utils::ModernTheme::DrawButton(dis,
+			ws::utils::colors::kAccent,
+			ws::utils::colors::kAccentHover,
+			ws::utils::colors::kTextOnAccent, 6);
+		break;
+	case kIdFavoritesTab:
+		ws::utils::ModernTheme::DrawButton(dis,
+			ws::utils::colors::kSecondary,
+			ws::utils::colors::kSecondaryHover,
+			ws::utils::colors::kTextPrimary, 6);
+		break;
+	case kIdLogoutButton:
+		ws::utils::ModernTheme::DrawButton(dis,
+			ws::utils::colors::kSecondary,
+			ws::utils::colors::kSecondaryHover,
+			ws::utils::colors::kTextPrimary, 6);
+		break;
 	}
 }
 

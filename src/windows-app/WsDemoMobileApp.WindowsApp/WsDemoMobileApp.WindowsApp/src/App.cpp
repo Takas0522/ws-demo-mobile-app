@@ -13,6 +13,7 @@
 #include "Views/FavoriteWindow.h"
 
 #include "Utils/Constants.h"
+#include "Utils/ModernTheme.h"
 
 namespace ws
 {
@@ -28,11 +29,15 @@ App::App()
 App::~App()
 {
 	m_pollingService.Stop();
+	ws::utils::ModernTheme::Instance().Shutdown();
 }
 
 bool App::Initialize(HINSTANCE hInstance, int nCmdShow)
 {
 	m_hInstance = hInstance;
+
+	// Initialize modern theme (fonts, brushes)
+	ws::utils::ModernTheme::Instance().Initialize();
 
 	// Initialize feature flag service
 	m_featureFlagService = std::make_unique<ws::services::FeatureFlagService>(m_httpClient);

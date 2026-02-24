@@ -40,6 +40,8 @@ private:
 
 	void OnCreate();
 	void OnCommand(WPARAM wParam);
+	void OnPaint();
+	void OnDrawItem(DRAWITEMSTRUCT* dis);
 	void OnLogin();
 	void UpdateUI();
 	void ShowError(const std::string& message);

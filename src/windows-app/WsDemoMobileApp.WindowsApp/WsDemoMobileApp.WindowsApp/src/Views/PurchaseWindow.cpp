@@ -1,5 +1,6 @@
 #include "Views/PurchaseWindow.h"
 #include "ViewModels/PurchaseViewModel.h"
+#include "Utils/ModernTheme.h"
 
 #include <string>
 
@@ -18,7 +19,7 @@ bool PurchaseWindow::Create(HINSTANCE hInstance, HWND parent, int width, int hei
 	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = hInstance;
 	wc.lpszClassName = kClassName;
-	wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+	wc.hbrBackground = ws::utils::ModernTheme::Instance().GetBackgroundBrush();
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	RegisterClassExW(&wc);
 
@@ -88,15 +89,41 @@ LRESULT CALLBACK PurchaseWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, 
 
 LRESULT PurchaseWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	auto& theme = ws::utils::ModernTheme::Instance();
+
 	switch (msg)
 	{
 	case WM_CREATE:
 		OnCreate();
 		return 0;
 
+	case WM_PAINT:
+		OnPaint();
+		return 0;
+
+	case WM_DRAWITEM:
+		OnDrawItem(reinterpret_cast<DRAWITEMSTRUCT*>(lParam));
+		return TRUE;
+
 	case WM_COMMAND:
 		OnCommand(wParam);
 		return 0;
+
+	case WM_CTLCOLORSTATIC:
+	{
+		HDC hdc = reinterpret_cast<HDC>(wParam);
+		HWND hCtrl = reinterpret_cast<HWND>(lParam);
+		SetBkMode(hdc, TRANSPARENT);
+		if (hCtrl == m_totalLabel)
+		{
+			SetTextColor(hdc, ws::utils::colors::kAccent);
+		}
+		else
+		{
+			SetTextColor(hdc, ws::utils::colors::kTextPrimary);
+		}
+		return reinterpret_cast<LRESULT>(theme.GetBackgroundBrush());
+	}
 
 	case WM_APP + 102:
 		MessageBoxW(m_hwnd,
@@ -130,49 +157,61 @@ LRESULT PurchaseWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 void PurchaseWindow::OnCreate()
 {
 	HINSTANCE hInstance = reinterpret_cast<HINSTANCE>(GetWindowLongPtrW(m_hwnd, GWLP_HINSTANCE));
+	auto& theme = ws::utils::ModernTheme::Instance();
 
-	int centerX = 60;
+	RECT clientRc;
+	GetClientRect(m_hwnd, &clientRc);
+	int centerX = (clientRc.right - 320) / 2;
+	if (centerX < 20) centerX = 20;
 	int startY = 50;
 
-	// Product info label
-	CreateWindowExW(0, L"STATIC", L"購入確認",
+	// Title label
+	HWND titleLabel = CreateWindowExW(0, L"STATIC", L"購入確認",
 		WS_CHILD | WS_VISIBLE | SS_CENTER,
-		centerX, startY, 300, 30,
+		centerX, startY, 320, 30,
 		m_hwnd, nullptr, hInstance, nullptr);
+	SendMessageW(titleLabel, WM_SETFONT, reinterpret_cast<WPARAM>(theme.GetFontLarge()), TRUE);
 
 	// Quantity controls
 	CreateWindowExW(0, L"BUTTON", L"−",
-		WS_CHILD | WS_VISIBLE,
-		centerX, startY + 80, 50, 40,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		centerX, startY + 80, 60, 44,
 		m_hwnd, ToHMenu(kIdDecrementButton), hInstance, nullptr);
 
-	m_quantityLabel = CreateWindowExW(0, L"STATIC", L"数量: 100",
+	m_quantityLabel = CreateWindowExW(0, L"STATIC", L"数量: 1",
 		WS_CHILD | WS_VISIBLE | SS_CENTER,
-		centerX + 60, startY + 80, 180, 40,
+		centerX + 70, startY + 80, 180, 44,
 		m_hwnd, ToHMenu(kIdQuantityLabel), hInstance, nullptr);
 
 	CreateWindowExW(0, L"BUTTON", L"+",
-		WS_CHILD | WS_VISIBLE,
-		centerX + 250, startY + 80, 50, 40,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		centerX + 260, startY + 80, 60, 44,
 		m_hwnd, ToHMenu(kIdIncrementButton), hInstance, nullptr);
 
 	// Total
 	m_totalLabel = CreateWindowExW(0, L"STATIC", L"合計: ¥0",
 		WS_CHILD | WS_VISIBLE | SS_CENTER,
-		centerX, startY + 150, 300, 30,
+		centerX, startY + 150, 320, 36,
 		m_hwnd, ToHMenu(kIdTotalLabel), hInstance, nullptr);
+	SendMessageW(m_totalLabel, WM_SETFONT, reinterpret_cast<WPARAM>(theme.GetFontLarge()), TRUE);
 
-	// Confirm button
+	// Confirm button (accent)
 	CreateWindowExW(0, L"BUTTON", L"購入確定",
-		WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
-		centerX, startY + 220, 300, 40,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		centerX, startY + 220, 320, 48,
 		m_hwnd, ToHMenu(kIdConfirmButton), hInstance, nullptr);
 
-	// Cancel button
+	// Cancel button (secondary)
 	CreateWindowExW(0, L"BUTTON", L"キャンセル",
-		WS_CHILD | WS_VISIBLE,
-		centerX, startY + 280, 300, 40,
+		WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+		centerX, startY + 284, 320, 44,
 		m_hwnd, ToHMenu(kIdCancelButton), hInstance, nullptr);
+
+	// Apply font to all controls
+	ws::utils::ModernTheme::ApplyFont(m_hwnd, theme.GetFont());
+	SendMessageW(titleLabel, WM_SETFONT, reinterpret_cast<WPARAM>(theme.GetFontLarge()), TRUE);
+	SendMessageW(m_quantityLabel, WM_SETFONT, reinterpret_cast<WPARAM>(theme.GetFontBold()), TRUE);
+	SendMessageW(m_totalLabel, WM_SETFONT, reinterpret_cast<WPARAM>(theme.GetFontLarge()), TRUE);
 
 	// Register ViewModel error callback to show error dialog
 	m_viewModel.SetOnError([hwnd = m_hwnd](const ws::models::ApiError& error)
@@ -182,6 +221,52 @@ void PurchaseWindow::OnCreate()
 		MultiByteToWideChar(CP_UTF8, 0, error.message.c_str(), -1, msg->data(), len);
 		PostMessage(hwnd, kWmShowError, reinterpret_cast<WPARAM>(msg), 0);
 	});
+}
+
+void PurchaseWindow::OnPaint()
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(m_hwnd, &ps);
+
+	RECT clientRc;
+	GetClientRect(m_hwnd, &clientRc);
+	int centerX = (clientRc.right - 320) / 2;
+	if (centerX < 20) centerX = 20;
+
+	// Card surface behind quantity area
+	RECT cardRc = { centerX - 10, 40, centerX + 330, 260 };
+	ws::utils::ModernTheme::FillRoundRect(hdc, cardRc, ws::utils::colors::kSurface, 10);
+
+	// Divider between total and buttons
+	ws::utils::ModernTheme::DrawDivider(hdc, centerX, 258, 320);
+
+	EndPaint(m_hwnd, &ps);
+}
+
+void PurchaseWindow::OnDrawItem(DRAWITEMSTRUCT* dis)
+{
+	switch (dis->CtlID)
+	{
+	case kIdDecrementButton:
+	case kIdIncrementButton:
+		ws::utils::ModernTheme::DrawButton(dis,
+			ws::utils::colors::kSecondary,
+			ws::utils::colors::kSecondaryHover,
+			ws::utils::colors::kTextPrimary, 8);
+		break;
+	case kIdConfirmButton:
+		ws::utils::ModernTheme::DrawButton(dis,
+			ws::utils::colors::kAccent,
+			ws::utils::colors::kAccentHover,
+			ws::utils::colors::kTextOnAccent, 8);
+		break;
+	case kIdCancelButton:
+		ws::utils::ModernTheme::DrawButton(dis,
+			ws::utils::colors::kSecondary,
+			ws::utils::colors::kSecondaryHover,
+			ws::utils::colors::kTextPrimary, 6);
+		break;
+	}
 }
 
 void PurchaseWindow::OnCommand(WPARAM wParam)
