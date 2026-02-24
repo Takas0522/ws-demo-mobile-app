@@ -32,4 +32,13 @@ inline void from_json(const nlohmann::json& j, ApiError& e)
 	}
 }
 
+inline void to_json(nlohmann::json& j, const ApiError& error)
+{
+	j = nlohmann::json{{"code", error.code}, {"message", error.message}};
+	if (error.details.has_value())
+	{
+		j["details"] = error.details.value();
+	}
+}
+
 } // namespace ws::models

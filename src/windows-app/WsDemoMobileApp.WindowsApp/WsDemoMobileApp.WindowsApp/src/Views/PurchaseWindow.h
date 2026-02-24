@@ -50,6 +50,8 @@ private:
 	static constexpr int kIdConfirmButton = 4005;
 	static constexpr int kIdCancelButton = 4006;
 
+	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
+
 	ws::viewmodels::PurchaseViewModel& m_viewModel;
 	HWND m_hwnd = nullptr;
 	HWND m_quantityLabel = nullptr;

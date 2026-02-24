@@ -121,7 +121,7 @@ void LoginWindow::OnCreate()
 	m_loginIdEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
 		WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_AUTOHSCROLL,
 		centerX, startY + 25, 300, 28,
-		m_hwnd, reinterpret_cast<HMENU>(kIdLoginIdEdit), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdLoginIdEdit), hInstance, nullptr);
 
 	// Password label
 	CreateWindowExW(0, L"STATIC", L"パスワード:",
@@ -133,19 +133,19 @@ void LoginWindow::OnCreate()
 	m_passwordEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
 		WS_CHILD | WS_VISIBLE | WS_TABSTOP | ES_PASSWORD | ES_AUTOHSCROLL,
 		centerX, startY + 95, 300, 28,
-		m_hwnd, reinterpret_cast<HMENU>(kIdPasswordEdit), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdPasswordEdit), hInstance, nullptr);
 
 	// Login button
 	m_loginButton = CreateWindowExW(0, L"BUTTON", L"ログイン",
 		WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON,
 		centerX, startY + 150, 300, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdLoginButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdLoginButton), hInstance, nullptr);
 
 	// Error label
 	m_errorLabel = CreateWindowExW(0, L"STATIC", L"",
 		WS_CHILD | SS_CENTER,
 		centerX, startY + 200, 300, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdErrorLabel), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdErrorLabel), hInstance, nullptr);
 }
 
 void LoginWindow::OnCommand(WPARAM wParam)

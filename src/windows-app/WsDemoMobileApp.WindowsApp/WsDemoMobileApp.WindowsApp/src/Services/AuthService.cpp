@@ -15,7 +15,7 @@ AuthService::AuthService(const HttpClient& httpClient)
 
 std::expected<LoginResponse, ws::models::ApiError> AuthService::Login(
 	const std::string& loginId,
-	const std::string& password) const
+	const std::string& password)
 {
 	nlohmann::json requestBody = {
 		{"loginId", loginId},
@@ -54,6 +54,8 @@ std::expected<LoginResponse, ws::models::ApiError> AuthService::Login(
 		data.at("tokenType").get_to(loginResponse.tokenType);
 		data.at("expiresIn").get_to(loginResponse.expiresIn);
 		loginResponse.user = data.at("user").get<ws::models::User>();
+
+		m_currentUser = loginResponse.user;
 
 		return loginResponse;
 	}

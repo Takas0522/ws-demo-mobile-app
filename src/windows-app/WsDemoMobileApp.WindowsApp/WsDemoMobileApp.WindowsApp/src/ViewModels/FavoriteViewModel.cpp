@@ -50,9 +50,21 @@ void FavoriteViewModel::FetchFavorites()
 
 void FavoriteViewModel::RemoveFavorite(int64_t productId)
 {
+	m_isLoading = true;
+	if (m_onLoadingChanged)
+	{
+		m_onLoadingChanged(true);
+	}
+
 	std::thread([this, productId]()
 	{
 		auto result = m_favoriteService.RemoveFavorite(productId);
+
+		m_isLoading = false;
+		if (m_onLoadingChanged)
+		{
+			m_onLoadingChanged(false);
+		}
 
 		if (result.has_value())
 		{

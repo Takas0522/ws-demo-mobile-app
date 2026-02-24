@@ -38,7 +38,7 @@ void LoginViewModel::Login(const std::string& loginId, const std::string& passwo
 		{
 			auto& loginResponse = result.value();
 			m_authService.SetToken(loginResponse.token);
-			m_credentialManager.SaveToken(loginResponse.token);
+			(void)m_credentialManager.SaveToken(loginResponse.token);
 
 			if (m_onLoginSuccess)
 			{

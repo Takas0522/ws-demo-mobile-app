@@ -92,7 +92,7 @@ void App::ShowLoginWindow()
 	if (!m_loginWindow)
 	{
 		m_loginWindow = std::make_unique<ws::views::LoginWindow>(*m_loginViewModel);
-		m_loginWindow->Create(m_hInstance,
+		(void)m_loginWindow->Create(m_hInstance,
 			ws::utils::kDefaultWindowWidth,
 			ws::utils::kDefaultWindowHeight);
 
@@ -124,7 +124,7 @@ void App::ShowProductListWindow()
 	if (!m_productListWindow)
 	{
 		m_productListWindow = std::make_unique<ws::views::ProductListWindow>(*m_productListViewModel);
-		m_productListWindow->Create(m_hInstance, nullptr,
+		(void)m_productListWindow->Create(m_hInstance, nullptr,
 			ws::utils::kDefaultWindowWidth,
 			ws::utils::kDefaultWindowHeight);
 
@@ -168,7 +168,7 @@ void App::ShowProductDetailWindow(int64_t productId)
 	{
 		m_productDetailWindow = std::make_unique<ws::views::ProductDetailWindow>(
 			*m_productDetailViewModel);
-		m_productDetailWindow->Create(m_hInstance, nullptr,
+		(void)m_productDetailWindow->Create(m_hInstance, nullptr,
 			ws::utils::kDefaultWindowWidth,
 			ws::utils::kDefaultWindowHeight);
 
@@ -204,7 +204,7 @@ void App::ShowPurchaseWindow()
 	if (!m_purchaseWindow)
 	{
 		m_purchaseWindow = std::make_unique<ws::views::PurchaseWindow>(*m_purchaseViewModel);
-		m_purchaseWindow->Create(m_hInstance, nullptr,
+		(void)m_purchaseWindow->Create(m_hInstance, nullptr,
 			ws::utils::kDefaultWindowWidth, 500);
 
 		m_purchaseWindow->SetOnCancel([this]()
@@ -232,7 +232,7 @@ void App::ShowFavoriteWindow()
 	if (!m_favoriteWindow)
 	{
 		m_favoriteWindow = std::make_unique<ws::views::FavoriteWindow>(*m_favoriteViewModel);
-		m_favoriteWindow->Create(m_hInstance, nullptr,
+		(void)m_favoriteWindow->Create(m_hInstance, nullptr,
 			ws::utils::kDefaultWindowWidth,
 			ws::utils::kDefaultWindowHeight);
 

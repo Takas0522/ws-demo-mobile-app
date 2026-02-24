@@ -50,6 +50,8 @@ private:
 	static constexpr int kIdProductPrice = 3005;
 	static constexpr int kIdProductDesc = 3006;
 
+	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
+
 	ws::viewmodels::ProductDetailViewModel& m_viewModel;
 	HWND m_hwnd = nullptr;
 	HWND m_nameLabel = nullptr;

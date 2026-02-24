@@ -112,7 +112,12 @@ LRESULT ProductListWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		OnNotify(lParam);
 		return 0;
 
+	case kWmProductsChanged:
+		UpdateListView();
+		return 0;
+
 	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 
 	default:
@@ -128,24 +133,24 @@ void ProductListWindow::OnCreate()
 	m_searchEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
 		10, 10, 280, 28,
-		m_hwnd, reinterpret_cast<HMENU>(kIdSearchEdit), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdSearchEdit), hInstance, nullptr);
 
 	CreateWindowExW(0, L"BUTTON", L"検索",
 		WS_CHILD | WS_VISIBLE,
 		300, 10, 60, 28,
-		m_hwnd, reinterpret_cast<HMENU>(kIdSearchButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdSearchButton), hInstance, nullptr);
 
 	// Favorites tab button
 	CreateWindowExW(0, L"BUTTON", L"お気に入り",
 		WS_CHILD | WS_VISIBLE,
 		370, 10, 80, 28,
-		m_hwnd, reinterpret_cast<HMENU>(kIdFavoritesTab), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdFavoritesTab), hInstance, nullptr);
 
 	// ListView
 	m_listView = CreateWindowExW(0, WC_LISTVIEWW, L"",
 		WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SINGLESEL | WS_BORDER,
 		10, 50, 440, 550,
-		m_hwnd, reinterpret_cast<HMENU>(kIdListView), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdListView), hInstance, nullptr);
 
 	ListView_SetExtendedListViewStyle(m_listView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
@@ -165,7 +170,13 @@ void ProductListWindow::OnCreate()
 	CreateWindowExW(0, L"BUTTON", L"ログアウト",
 		WS_CHILD | WS_VISIBLE,
 		10, 610, 100, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdLogoutButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdLogoutButton), hInstance, nullptr);
+
+	// Register ViewModel callback to update UI when products change
+	m_viewModel.SetOnProductsChanged([hwnd = m_hwnd]()
+	{
+		PostMessage(hwnd, kWmProductsChanged, 0, 0);
+	});
 }
 
 void ProductListWindow::OnCommand(WPARAM wParam)

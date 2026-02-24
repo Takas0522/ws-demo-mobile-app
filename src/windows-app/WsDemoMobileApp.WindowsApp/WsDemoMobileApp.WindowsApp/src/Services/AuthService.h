@@ -30,7 +30,7 @@ public:
 
 	[[nodiscard]] std::expected<LoginResponse, ws::models::ApiError> Login(
 		const std::string& loginId,
-		const std::string& password) const;
+		const std::string& password);
 
 	[[nodiscard]] const std::string& GetToken() const;
 	void SetToken(const std::string& token);

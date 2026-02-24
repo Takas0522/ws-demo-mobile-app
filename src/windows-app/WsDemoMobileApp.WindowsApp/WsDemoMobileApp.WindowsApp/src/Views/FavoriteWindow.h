@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <CommCtrl.h>
 
+#include <cstdint>
 #include <functional>
 
 namespace ws::viewmodels
@@ -46,8 +47,11 @@ private:
 	void UpdateListView();
 
 	static constexpr const wchar_t* kClassName = L"FavoriteWindow";
+	static constexpr UINT kWmFavoritesChanged = WM_APP + 1;
 	static constexpr int kIdListView = 5001;
 	static constexpr int kIdBackButton = 5002;
+
+	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
 
 	ws::viewmodels::FavoriteViewModel& m_viewModel;
 	HWND m_hwnd = nullptr;

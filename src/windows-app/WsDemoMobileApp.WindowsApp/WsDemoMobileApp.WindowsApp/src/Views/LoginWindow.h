@@ -50,6 +50,8 @@ private:
 	static constexpr int kIdLoginButton = 1003;
 	static constexpr int kIdErrorLabel = 1004;
 
+	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
+
 	ws::viewmodels::LoginViewModel& m_viewModel;
 	HWND m_hwnd = nullptr;
 	HWND m_loginIdEdit = nullptr;

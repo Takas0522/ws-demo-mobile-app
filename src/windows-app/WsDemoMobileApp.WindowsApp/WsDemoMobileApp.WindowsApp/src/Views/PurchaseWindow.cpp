@@ -111,6 +111,7 @@ LRESULT PurchaseWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 
 	default:
@@ -135,35 +136,35 @@ void PurchaseWindow::OnCreate()
 	CreateWindowExW(0, L"BUTTON", L"−",
 		WS_CHILD | WS_VISIBLE,
 		centerX, startY + 80, 50, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdDecrementButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdDecrementButton), hInstance, nullptr);
 
 	m_quantityLabel = CreateWindowExW(0, L"STATIC", L"数量: 100",
 		WS_CHILD | WS_VISIBLE | SS_CENTER,
 		centerX + 60, startY + 80, 180, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdQuantityLabel), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdQuantityLabel), hInstance, nullptr);
 
 	CreateWindowExW(0, L"BUTTON", L"+",
 		WS_CHILD | WS_VISIBLE,
 		centerX + 250, startY + 80, 50, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdIncrementButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdIncrementButton), hInstance, nullptr);
 
 	// Total
 	m_totalLabel = CreateWindowExW(0, L"STATIC", L"合計: ¥0",
 		WS_CHILD | WS_VISIBLE | SS_CENTER,
 		centerX, startY + 150, 300, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdTotalLabel), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdTotalLabel), hInstance, nullptr);
 
 	// Confirm button
 	CreateWindowExW(0, L"BUTTON", L"購入確定",
 		WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
 		centerX, startY + 220, 300, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdConfirmButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdConfirmButton), hInstance, nullptr);
 
 	// Cancel button
 	CreateWindowExW(0, L"BUTTON", L"キャンセル",
 		WS_CHILD | WS_VISIBLE,
 		centerX, startY + 280, 300, 40,
-		m_hwnd, reinterpret_cast<HMENU>(kIdCancelButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdCancelButton), hInstance, nullptr);
 }
 
 void PurchaseWindow::OnCommand(WPARAM wParam)

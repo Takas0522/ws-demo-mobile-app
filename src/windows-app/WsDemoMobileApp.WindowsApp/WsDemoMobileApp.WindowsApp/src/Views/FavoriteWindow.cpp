@@ -99,7 +99,12 @@ LRESULT FavoriteWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 		OnNotify(lParam);
 		return 0;
 
+	case kWmFavoritesChanged:
+		UpdateListView();
+		return 0;
+
 	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 
 	default:
@@ -115,13 +120,13 @@ void FavoriteWindow::OnCreate()
 	CreateWindowExW(0, L"BUTTON", L"← 商品一覧",
 		WS_CHILD | WS_VISIBLE,
 		10, 10, 120, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdBackButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdBackButton), hInstance, nullptr);
 
 	// ListView
 	m_listView = CreateWindowExW(0, WC_LISTVIEWW, L"",
 		WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SINGLESEL | WS_BORDER,
 		10, 50, 440, 600,
-		m_hwnd, reinterpret_cast<HMENU>(kIdListView), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdListView), hInstance, nullptr);
 
 	ListView_SetExtendedListViewStyle(m_listView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
@@ -135,6 +140,12 @@ void FavoriteWindow::OnCreate()
 	col.pszText = const_cast<LPWSTR>(L"価格");
 	col.cx = 150;
 	ListView_InsertColumn(m_listView, 1, &col);
+
+	// Register ViewModel callback to update UI when favorites change
+	m_viewModel.SetOnFavoritesChanged([hwnd = m_hwnd]()
+	{
+		PostMessage(hwnd, kWmFavoritesChanged, 0, 0);
+	});
 }
 
 void FavoriteWindow::OnCommand(WPARAM wParam)

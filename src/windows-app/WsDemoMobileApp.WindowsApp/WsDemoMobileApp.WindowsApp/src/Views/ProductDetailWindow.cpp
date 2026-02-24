@@ -122,6 +122,7 @@ LRESULT ProductDetailWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lPara
 		return 0;
 
 	case WM_DESTROY:
+		PostQuitMessage(0);
 		return 0;
 
 	default:
@@ -137,13 +138,13 @@ void ProductDetailWindow::OnCreate()
 	CreateWindowExW(0, L"BUTTON", L"← 戻る",
 		WS_CHILD | WS_VISIBLE,
 		10, 10, 80, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdBackButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdBackButton), hInstance, nullptr);
 
 	// Favorite button
 	m_favoriteButton = CreateWindowExW(0, L"BUTTON", L"♡ お気に入り",
 		WS_CHILD | WS_VISIBLE,
 		300, 10, 140, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdFavoriteButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdFavoriteButton), hInstance, nullptr);
 
 	// Image placeholder
 	CreateWindowExW(0, L"STATIC", L"[商品画像]",
@@ -155,25 +156,25 @@ void ProductDetailWindow::OnCreate()
 	m_nameLabel = CreateWindowExW(0, L"STATIC", L"",
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		10, 260, 430, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdProductName), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdProductName), hInstance, nullptr);
 
 	// Price
 	m_priceLabel = CreateWindowExW(0, L"STATIC", L"",
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		10, 300, 430, 30,
-		m_hwnd, reinterpret_cast<HMENU>(kIdProductPrice), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdProductPrice), hInstance, nullptr);
 
 	// Description
 	m_descLabel = CreateWindowExW(0, L"STATIC", L"",
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		10, 340, 430, 200,
-		m_hwnd, reinterpret_cast<HMENU>(kIdProductDesc), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdProductDesc), hInstance, nullptr);
 
 	// Purchase button (bottom)
 	CreateWindowExW(0, L"BUTTON", L"購入する",
 		WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
 		10, 600, 430, 50,
-		m_hwnd, reinterpret_cast<HMENU>(kIdPurchaseButton), hInstance, nullptr);
+		m_hwnd, ToHMenu(kIdPurchaseButton), hInstance, nullptr);
 }
 
 void ProductDetailWindow::OnCommand(WPARAM wParam)

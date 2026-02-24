@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <CommCtrl.h>
 
+#include <cstdint>
 #include <functional>
 
 namespace ws::viewmodels
@@ -49,11 +50,14 @@ private:
 	void OnSearch();
 
 	static constexpr const wchar_t* kClassName = L"ProductListWindow";
+	static constexpr UINT kWmProductsChanged = WM_APP + 1;
 	static constexpr int kIdSearchEdit = 2001;
 	static constexpr int kIdSearchButton = 2002;
 	static constexpr int kIdListView = 2003;
 	static constexpr int kIdLogoutButton = 2004;
 	static constexpr int kIdFavoritesTab = 2005;
+
+	static HMENU ToHMenu(int id) { return reinterpret_cast<HMENU>(static_cast<INT_PTR>(id)); }
 
 	ws::viewmodels::ProductListViewModel& m_viewModel;
 	HWND m_hwnd = nullptr;
