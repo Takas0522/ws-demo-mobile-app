@@ -15,10 +15,11 @@
 ## 1. クライアント層概要
 
 本ドキュメントでは、mobile-app-system のクライアント層コンポーネントの詳細設計を定義します。
-以下の3つのクライアントアプリケーションのコンポーネント設計を記載します：
+以下の4つのクライアントアプリケーションのコンポーネント設計を記載します：
 
 - **iOS アプリ**（Swift / MVVM）
 - **Android アプリ**（Java / MVVM）
+- **Windows アプリ**（C++20 / Win32 API / MVVM）
 - **管理 Web アプリ**（Vue.js / Pinia）
 
 ## 2. コンポーネント全体図（C4モデル Level 3）
@@ -37,6 +38,13 @@ graph TB
         AndroidVM[ViewModel Layer<br/>MVVM]
         AndroidAPI[API Client<br/>Retrofit]
         AndroidSecure[Secure Storage<br/>EncryptedPrefs]
+    end
+    
+    subgraph "Windows App"
+        WinUI[UI Layer<br/>Win32 Window Proc]
+        WinVM[ViewModel Layer<br/>MVVM]
+        WinAPI[API Client<br/>WinHTTP]
+        WinSecure[Secure Storage<br/>Credential Manager]
     end
     
     subgraph "Admin Web App"
@@ -70,6 +78,7 @@ graph TB
     
     iOSAPI --> MobileBFFController
     AndroidAPI --> MobileBFFController
+    WinAPI --> MobileBFFController
     VueAPI --> AdminBFFController
     MobileBFFClient --> APIController
     AdminBFFClient --> APIController
@@ -537,9 +546,286 @@ Android版も iOS版と同様の画面遷移フローを実装します。
 
 ---
 
-## 5. 管理Webアプリコンポーネント
+## 5. Windows アプリコンポーネント（C++20 / Win32 API）
 
 ### 5.1 技術スタック
+
+| 項目 | 技術 |
+|------|------|
+| 言語 | C++20 |
+| UIフレームワーク | Win32 API (ネイティブ) |
+| アーキテクチャ | MVVM |
+| ビルドシステム | MSBuild / Visual Studio (.vcxproj) |
+| HTTP通信 | WinHTTP |
+| JSON解析 | nlohmann/json (header-only) |
+| セキュアストレージ | Windows Credential Manager (DPAPI) |
+| 最小OS | Windows 10 以上 |
+
+### 5.2 レイヤー構造
+
+```mermaid
+graph TD
+    UI[UI Layer<br/>Win32 Window Proc] --> VM[ViewModel Layer<br/>ビジネスロジック・状態管理]
+    VM --> Service[Service Layer<br/>HTTP通信・認証]
+    VM --> Storage[Storage<br/>Credential Manager]
+    Service --> HTTP[WinHTTP<br/>HTTPクライアント]
+```
+
+### 5.3 ディレクトリ構造
+
+```
+WsDemoMobileApp.WindowsApp/
+├── WsDemoMobileApp.WindowsApp.vcxproj
+├── src/
+│   ├── main.cpp                  # WinMain エントリポイント
+│   ├── App.h / App.cpp           # アプリケーション管理
+│   ├── Models/
+│   │   ├── User.h
+│   │   ├── Product.h
+│   │   ├── Purchase.h
+│   │   └── Favorite.h
+│   ├── ViewModels/
+│   │   ├── LoginViewModel.h / .cpp
+│   │   ├── ProductListViewModel.h / .cpp
+│   │   ├── ProductDetailViewModel.h / .cpp
+│   │   └── FavoriteViewModel.h / .cpp
+│   ├── Views/
+│   │   ├── LoginWindow.h / .cpp
+│   │   ├── ProductListWindow.h / .cpp
+│   │   ├── ProductDetailWindow.h / .cpp
+│   │   └── FavoriteWindow.h / .cpp
+│   ├── Services/
+│   │   ├── HttpClient.h / .cpp
+│   │   ├── AuthService.h / .cpp
+│   │   ├── ProductService.h / .cpp
+│   │   ├── FavoriteService.h / .cpp
+│   │   └── StatePollingService.h / .cpp
+│   └── Utils/
+│       ├── CredentialManager.h / .cpp
+│       ├── JsonHelper.h
+│       └── Constants.h
+├── resources/
+│   ├── resource.h
+│   └── app.rc
+└── include/
+    └── nlohmann/
+        └── json.hpp
+```
+
+### 5.4 主要コンポーネント
+
+#### Models（`ws::models` 名前空間）
+
+- `User` - ユーザー情報
+- `Product` - 商品情報
+- `Purchase` - 購入履歴
+- `Favorite` - お気に入り
+
+#### ViewModels（`ws::viewmodels` 名前空間）
+
+- `LoginViewModel` - ログイン処理
+- `ProductListViewModel` - 商品一覧
+- `ProductDetailViewModel` - 商品詳細
+- `FavoriteViewModel` - お気に入り管理
+
+#### Views（`ws::views` 名前空間）
+
+- `LoginWindow` - ログイン画面
+- `ProductListWindow` - 商品一覧画面
+- `ProductDetailWindow` - 商品詳細画面
+- `FavoriteWindow` - お気に入り画面
+
+#### Services（`ws::services` 名前空間）
+
+- `HttpClient` - WinHTTP ラッパー
+- `AuthService` - 認証サービス
+- `ProductService` - 商品API
+- `FavoriteService` - お気に入りAPI
+- `StatePollingService` - 定期状態更新
+
+#### Utils（`ws::utils` 名前空間）
+
+- `CredentialManager` - Windows Credential Manager ラッパー
+- `JsonHelper` - nlohmann/json ユーティリティ
+- `Constants` - 定数定義
+
+### 5.5 主要クラス設計
+
+#### HttpClient（シングルトン）
+
+```cpp
+#pragma once
+
+#include <string>
+#include <optional>
+#include <expected>
+#include <functional>
+#include <windows.h>
+#include <winhttp.h>
+
+namespace ws::services
+{
+
+enum class ApiError
+{
+	NetworkError,
+	Unauthorized,
+	NotFound,
+	ServerError,
+	ParseError
+};
+
+class HttpClient
+{
+public:
+	static HttpClient& GetInstance();
+
+	HttpClient(const HttpClient&) = delete;
+	HttpClient& operator=(const HttpClient&) = delete;
+
+	[[nodiscard]] std::expected<std::string, ApiError> Get(
+		const std::wstring& endpoint,
+		const std::optional<std::string>& token = std::nullopt);
+
+	[[nodiscard]] std::expected<std::string, ApiError> Post(
+		const std::wstring& endpoint,
+		const std::string& body,
+		const std::optional<std::string>& token = std::nullopt);
+
+private:
+	HttpClient();
+	~HttpClient();
+
+	HINTERNET m_hSession;
+	static constexpr wchar_t kBaseUrl[] = L"localhost";
+	static constexpr int kPort = 8081;
+};
+
+} // namespace ws::services
+```
+
+#### CredentialManager
+
+```cpp
+#pragma once
+
+#include <string>
+#include <optional>
+#include <windows.h>
+#include <wincred.h>
+
+namespace ws::utils
+{
+
+class CredentialManager
+{
+public:
+	static constexpr wchar_t kCredentialTarget[] = L"WsDemoMobileApp/JwtToken";
+
+	[[nodiscard]] static bool SaveToken(const std::string& token);
+	[[nodiscard]] static std::optional<std::string> GetToken();
+	static void DeleteToken();
+};
+
+} // namespace ws::utils
+```
+
+#### LoginViewModel
+
+```cpp
+#pragma once
+
+#include <string>
+#include <functional>
+
+namespace ws::viewmodels
+{
+
+class LoginViewModel
+{
+public:
+	using OnStateChanged = std::function<void()>;
+
+	void SetOnStateChanged(OnStateChanged callback);
+
+	void SetLoginId(const std::string& loginId);
+	void SetPassword(const std::string& password);
+
+	[[nodiscard]] bool IsLoading() const;
+	[[nodiscard]] const std::string& GetErrorMessage() const;
+
+	void Login(HWND hWnd);
+
+private:
+	std::string m_loginId;
+	std::string m_password;
+	bool m_isLoading = false;
+	std::string m_errorMessage;
+	OnStateChanged m_onStateChanged;
+};
+
+} // namespace ws::viewmodels
+```
+
+### 5.6 画面遷移図
+
+iOS / Android と同様の画面遷移フローを実装します。
+
+```mermaid
+graph TD
+    Start([アプリ起動]) --> CheckToken{Token保存済み?}
+    CheckToken -->|No| Login[ログイン画面]
+    CheckToken -->|Yes| Validate{Token有効?}
+    Validate -->|Yes| ProductList[商品一覧画面]
+    Validate -->|No| Login
+
+    Login -->|ログイン成功| ProductList
+    ProductList -->|商品選択| ProductDetail[商品詳細画面]
+    ProductList -->|お気に入りタブ| FavoriteList[お気に入り一覧]
+    ProductDetail -->|購入| Purchase[購入確認]
+    Purchase -->|確定| ProductList
+    ProductDetail -->|お気に入り登録| FavoriteList
+```
+
+### 5.7 スレッディングモデル
+
+- HTTPリクエスト: バックグラウンドスレッドで実行（`std::thread` / `std::async`）
+- UI更新: `PostMessage` / `SendMessage` でUIスレッドに通知
+- 定期更新: `SetTimer` / `WM_TIMER` でトリガー
+
+### 5.8 セキュアストレージ
+
+JWTトークンは Windows Credential Manager（DPAPI）を使用して安全に保存します。`wincred.h` の `CredWrite` / `CredRead` / `CredDelete` API を使用し、`CredentialManager` ユーティリティクラスで抽象化します。
+
+### 5.9 エラーハンドリング
+
+例外は使用せず、`std::expected` または `std::optional` + エラーコードで処理します。
+
+```cpp
+namespace ws::services
+{
+
+enum class ApiError
+{
+	NetworkError,
+	Unauthorized,
+	NotFound,
+	ServerError,
+	ParseError
+};
+
+// 使用例
+[[nodiscard]] std::expected<std::vector<ws::models::Product>, ApiError>
+FetchProducts();
+
+} // namespace ws::services
+```
+
+---
+
+## 6. 管理Webアプリコンポーネント
+
+### 6.1 技術スタック
 
 | 項目 | 技術 | バージョン |
 |------|------|----------|
@@ -552,7 +838,7 @@ Android版も iOS版と同様の画面遷移フローを実装します。
 | ビルドツール | Vite | latest |
 | 静的解析 | ESLint | latest |
 
-### 5.2 レイヤー構造
+### 6.2 レイヤー構造
 
 ```mermaid
 graph TD
@@ -561,7 +847,7 @@ graph TD
     View --> Router[Router<br/>Vue Router]
 ```
 
-### 5.3 ディレクトリ構造
+### 6.3 ディレクトリ構造
 
 ```
 admin-web/
@@ -607,7 +893,7 @@ admin-web/
 └── .eslintrc.js
 ```
 
-### 5.4 主要モジュール設計
+### 6.4 主要モジュール設計
 
 #### API Client（api/client.js）
 
@@ -819,7 +1105,7 @@ router.beforeEach((to, from, next) => {
 export default router;
 ```
 
-### 5.5 画面遷移図
+### 6.5 画面遷移図
 
 ```mermaid
 graph TD
@@ -838,7 +1124,7 @@ graph TD
     FeatureFlag -->|保存| UserList
 ```
 
-### 5.6 コンポーネント設計例
+### 6.6 コンポーネント設計例
 
 #### Login.vue
 
@@ -927,7 +1213,7 @@ const handleLogin = async () => {
 
 ---
 
-## 6. 参照ドキュメント
+## 7. 参照ドキュメント
 
 | ドキュメント | パス |
 |------------|------|

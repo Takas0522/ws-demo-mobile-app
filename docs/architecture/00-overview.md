@@ -21,7 +21,7 @@
 
 ### 2.1 システムの目的
 
-mobile-app-system は、商品販売を行うネイティブモバイルアプリケーション（iOS/Android）と、そのアプリケーションを管理する管理者用Webアプリケーションから構成されるデモンストレーション用システムです。
+mobile-app-system は、商品販売を行うネイティブアプリケーション（iOS/Android/Windows）と、そのアプリケーションを管理する管理者用Webアプリケーションから構成されるデモンストレーション用システムです。
 
 **主要目的**:
 - エンドユーザーが商品を検索・購入できるモバイルアプリケーションの提供
@@ -51,7 +51,7 @@ graph TB
     end
     
     subgraph "Mobile App System"
-        MobileApp[モバイルアプリ<br/>iOS/Android]
+        MobileApp[モバイルアプリ<br/>iOS/Android/Windows]
         AdminWeb[管理Webアプリ<br/>Vue.js]
     end
     
@@ -69,6 +69,7 @@ graph TB
     subgraph "Client Layer"
         iOS[iOS App<br/>Swift]
         Android[Android App<br/>Java]
+        Windows[Windows App<br/>C++20/Win32]
         AdminWeb[Admin Web App<br/>Vue.js]
     end
     
@@ -87,6 +88,7 @@ graph TB
     
     iOS -->|HTTPS/REST| MobileBFF
     Android -->|HTTPS/REST| MobileBFF
+    Windows -->|HTTPS/REST| MobileBFF
     AdminWeb -->|HTTPS/REST| AdminBFF
     MobileBFF -->|HTTPS/JWT| WebAPI
     AdminBFF -->|HTTPS/JWT| WebAPI
@@ -94,6 +96,7 @@ graph TB
     
     style iOS fill:#e1f5ff
     style Android fill:#a5d6a7
+    style Windows fill:#fff9c4
     style AdminWeb fill:#c5e1a5
     style MobileBFF fill:#ffccbc
     style AdminBFF fill:#ffccbc
@@ -109,6 +112,7 @@ graph TD
         P1[iOSアプリ]
         P2[Androidアプリ]
         P3[管理Webアプリ]
+        P4[Windowsアプリ]
     end
     
     subgraph "BFF層"
@@ -130,6 +134,7 @@ graph TD
     
     P1 --> B1
     P2 --> B1
+    P4 --> B1
     P3 --> B2
     B1 --> BL
     B2 --> BL
@@ -145,6 +150,7 @@ graph TD
 |---------|------|----------|------|
 | **モバイル（iOS）** | Swift | latest | iOSネイティブアプリ |
 | **モバイル（Android）** | Java | latest | Androidネイティブアプリ |
+| **デスクトップ（Windows）** | C++20 / Win32 API | latest | Windowsネイティブアプリ |
 | **モバイルBFF** | Java Spring Boot | latest | モバイル向けBFF |
 | **管理Web（Frontend）** | Vue.js | latest | 管理画面SPA |
 | **管理BFF** | Java Spring Boot | latest | 管理画面向けBFF |
@@ -154,6 +160,7 @@ graph TD
 | **開発環境（Web）** | DevContainer | - | Docker開発環境 |
 | **IDE（iOS）** | Xcode | latest | iOS開発環境 |
 | **IDE（Android）** | Android Studio | latest | Android開発環境 |
+| **IDE（Windows）** | Visual Studio | latest | Windows開発環境 |
 
 ### 4.2 言語・フレームワークバージョン
 
@@ -185,6 +192,16 @@ graph TD
   - Retrofit（HTTPクライアント）
   - OkHttp（HTTPクライアント基盤）
   - EncryptedSharedPreferences（セキュアストレージ）
+
+#### C++（Windows App）
+- **言語**: C++20
+- **UIフレームワーク**: Win32 API (ネイティブ)
+- **ビルドシステム**: MSBuild (.vcxproj)
+- **アーキテクチャ**: MVVM
+- **主要ライブラリ**:
+  - WinHTTP（HTTPクライアント）
+  - nlohmann/json（JSON解析）
+  - Windows Credential Manager / DPAPI（セキュアストレージ）
 
 #### Vue.js（管理Web）
 - **言語**: JavaScript
@@ -240,7 +257,7 @@ graph TD
 
 | 層 | 責務 | 実装 |
 |---|-----|------|
-| **プレゼンテーション層** | UI/UX、ユーザー入力受付 | iOS/Android/Vue.js |
+| **プレゼンテーション層** | UI/UX、ユーザー入力受付 | iOS/Android/Windows/Vue.js |
 | **ビジネスロジック層** | 業務ロジック、認証・認可 | Spring Boot Web API |
 | **データアクセス層** | CRUD操作、トランザクション管理 | Spring Data JPA |
 

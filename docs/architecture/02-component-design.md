@@ -32,6 +32,13 @@ graph TB
         AndroidSecure[Secure Storage<br/>EncryptedPrefs]
     end
     
+    subgraph "Windows App"
+        WinUI[UI Layer<br/>Win32 Window]
+        WinVM[ViewModel Layer<br/>MVVM]
+        WinAPI[API Client<br/>WinHTTP]
+        WinSecure[Secure Storage<br/>Credential Manager]
+    end
+    
     subgraph "Admin Web App"
         VueUI[UI Components<br/>Vue Components]
         VueStore[State Management<br/>Vuex/Pinia]
@@ -63,6 +70,7 @@ graph TB
     
     iOSAPI --> MobileBFFController
     AndroidAPI --> MobileBFFController
+    WinAPI --> MobileBFFController
     VueAPI --> AdminBFFController
     MobileBFFClient --> APIController
     AdminBFFClient --> APIController
@@ -824,7 +832,7 @@ public class JwtTokenProvider {
 
 | 送信元 | 送信先 | プロトコル | 認証 |
 |-------|-------|----------|------|
-| iOS/Android | Mobile BFF | HTTPS/REST | JWT（ログイン後） |
+| iOS/Android/Windows | Mobile BFF | HTTPS/REST | JWT（ログイン後） |
 | Vue.js | Admin BFF | HTTPS/REST | JWT（ログイン後） |
 | Mobile BFF | Web API | HTTP/REST | JWT転送 |
 | Admin BFF | Web API | HTTP/REST | JWT転送 |

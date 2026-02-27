@@ -45,7 +45,7 @@ graph TB
 ### 2.2 システム境界
 
 **システム内**（In Scope）:
-- モバイルアプリ（iOS/Android）
+- モバイルアプリ（iOS/Android/Windows）
 - 管理Webアプリ（Vue.js）
 - Mobile BFF（Spring Boot）
 - Admin BFF（Spring Boot）
@@ -67,7 +67,7 @@ graph TB
 | 項目 | 詳細 |
 |------|------|
 | **ユーザー数** | 想定100ユーザー（デモ用途） |
-| **利用デバイス** | iOS端末、Android端末 |
+| **利用デバイス** | iOS端末、Android端末、Windows PC |
 | **認証方式** | ID/パスワード認証（JWT） |
 | **権限** | 商品閲覧・購入・お気に入り機能のみ |
 | **利用場所** | 任意（インターネット接続環境） |
@@ -119,6 +119,11 @@ graph TB
             Android[Androidアプリ]
         end
         
+        subgraph "Windows開発"
+            VisualStudio[Visual Studio]
+            Windows[Windowsアプリ]
+        end
+        
         subgraph "DevContainer"
             Vue[Vue.js開発]
             MobileBFF[Mobile BFF開発]
@@ -133,6 +138,7 @@ graph TB
     
     iOS -.->|localhost:8081| MobileBFF
     Android -.->|localhost:8081| MobileBFF
+    Windows -.->|localhost:8081| MobileBFF
     Vue -.->|localhost:8082| AdminBFF
     MobileBFF -.->|localhost:8080| WebAPI
     AdminBFF -.->|localhost:8080| WebAPI
@@ -140,6 +146,7 @@ graph TB
     
     style Xcode fill:#e1f5ff
     style AndroidStudio fill:#a5d6a7
+    style VisualStudio fill:#fff9c4
     style Vue fill:#c5e1a5
     style MobileBFF fill:#ffccbc
     style AdminBFF fill:#ffccbc
@@ -155,7 +162,7 @@ graph TB
 |--------------|------|-------|----------|----------|
 | SQLite | localhost | - | ファイルアクセス | Web API |
 | Web API | localhost | 8080 | HTTP | BFF |
-| Mobile BFF | localhost | 8081 | HTTP | モバイルアプリ |
+| Mobile BFF | localhost | 8081 | HTTP | モバイルアプリ / Windowsアプリ |
 | Admin BFF | localhost | 8082 | HTTP | 管理Webアプリ |
 | 管理Web（開発サーバー） | localhost | 3000 | HTTP | ブラウザ |
 
@@ -379,7 +386,7 @@ graph LR
     end
     
     subgraph "Storage"
-        Keychain[Keychain/EncryptedPrefs<br/>暗号化ストレージ]
+        Keychain[Keychain/EncryptedPrefs/<br/>Credential Manager<br/>暗号化ストレージ]
         DB[(SQLite<br/>パスワードハッシュ化)]
     end
     
@@ -426,7 +433,7 @@ graph LR
 
 | インターフェース | プロトコル | データ形式 | 認証 |
 |---------------|----------|----------|------|
-| モバイルアプリ ↔ Mobile BFF | HTTPS/REST | JSON | JWT（ログイン後） |
+| モバイルアプリ / Windowsアプリ ↔ Mobile BFF | HTTPS/REST | JSON | JWT（ログイン後） |
 | 管理Webアプリ ↔ Admin BFF | HTTPS/REST | JSON | JWT（ログイン後） |
 | BFF ↔ Web API | HTTPS/REST | JSON | JWT転送 |
 | Web API ↔ SQLite | JDBC/ファイル | SQL | 不要（ファイルベース） |
