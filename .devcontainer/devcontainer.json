@@ -43,7 +43,7 @@
     }
   },
 
-  "forwardPorts": [8080, 8081, 8082, 5173, 5432],
+  "forwardPorts": [8080, 8081, 8082, 5173],
   "portsAttributes": {
     "8080": {
       "label": "Web API",
@@ -60,10 +60,6 @@
     "5173": {
       "label": "Admin Web",
       "onAutoForward": "notify"
-    },
-    "5432": {
-      "label": "PostgreSQL",
-      "onAutoForward": "silent"
     }
   },
 

@@ -9,57 +9,63 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "========================================="
-echo "  Resetting Database"
+echo "  Resetting Database (SQLite)"
 echo "========================================="
 echo ""
 
-# PostgreSQLの接続情報
-DB_HOST="localhost"
-DB_PORT="5432"
-DB_NAME="demo_db"
-DB_USER="demouser"
+# SQLiteデータベースファイルのパス
+DB_DIR="$PROJECT_ROOT/data"
+DB_FILE="$DB_DIR/mobile_app.db"
 
-# データベースが起動しているか確認
-echo "Checking PostgreSQL connection..."
-if ! docker exec postgres-demo pg_isready -U "$DB_USER" > /dev/null 2>&1; then
-  echo "✗ PostgreSQL is not running!"
-  echo "  Please start PostgreSQL first:"
-  echo "  docker-compose up -d"
+# dataディレクトリを作成
+mkdir -p "$DB_DIR"
+
+# 既存のデータベースファイルを削除
+if [ -f "$DB_FILE" ]; then
+  echo "Removing existing database..."
+  rm "$DB_FILE"
+  echo "✓ Old database removed"
+  echo ""
+fi
+
+# sqlite3コマンドの確認
+if ! command -v sqlite3 &> /dev/null; then
+  echo "✗ sqlite3 command not found!"
+  echo "  Please install SQLite3:"
+  echo "  - macOS: brew install sqlite3"
+  echo "  - Ubuntu/Debian: sudo apt-get install sqlite3"
+  echo "  - Windows: download from https://www.sqlite.org/download.html"
   exit 1
 fi
-echo "✓ PostgreSQL is running"
+
+# スキーマ作成
+echo "Creating schema..."
+if [ -f "$PROJECT_ROOT/src/database/schema/01_create_tables.sql" ]; then
+  sqlite3 "$DB_FILE" < "$PROJECT_ROOT/src/database/schema/01_create_tables.sql"
+  echo "✓ Schema created"
+else
+  echo "✗ 01_create_tables.sql not found!"
+  exit 1
+fi
 echo ""
 
-# データのみ削除（TRUNCATE）
-echo "Truncating all tables..."
-docker exec -i postgres-demo psql -U "$DB_USER" -d "$DB_NAME" << 'EOF'
-TRUNCATE TABLE purchases CASCADE;
-TRUNCATE TABLE favorites CASCADE;
-TRUNCATE TABLE feature_flags CASCADE;
-TRUNCATE TABLE products RESTART IDENTITY CASCADE;
-TRUNCATE TABLE users RESTART IDENTITY CASCADE;
-TRUNCATE TABLE admins RESTART IDENTITY CASCADE;
-EOF
-echo "✓ All tables truncated"
-echo ""
-
-# 初期データを再投入
+# 初期データを投入
 echo "Inserting seed data..."
-if [ -f "$PROJECT_ROOT/src/database/seed.sql" ]; then
-  docker exec -i postgres-demo psql -U "$DB_USER" -d "$DB_NAME" < "$PROJECT_ROOT/src/database/seed.sql"
+if [ -f "$PROJECT_ROOT/src/database/seeds/02_seed_data.sql" ]; then
+  sqlite3 "$DB_FILE" < "$PROJECT_ROOT/src/database/seeds/02_seed_data.sql"
   echo "✓ Seed data inserted"
 else
-  echo "✗ seed.sql not found!"
+  echo "✗ 02_seed_data.sql not found!"
   exit 1
 fi
 echo ""
 
 # データ確認
 echo "Verifying data..."
-docker exec -i postgres-demo psql -U "$DB_USER" -d "$DB_NAME" << 'EOF'
+sqlite3 "$DB_FILE" << 'EOF'
+.mode column
+.headers on
 SELECT 'users' as table_name, COUNT(*) as count FROM users
-UNION ALL
-SELECT 'admins', COUNT(*) FROM admins
 UNION ALL
 SELECT 'products', COUNT(*) FROM products
 UNION ALL
@@ -67,11 +73,15 @@ SELECT 'feature_flags', COUNT(*) FROM feature_flags
 UNION ALL
 SELECT 'purchases', COUNT(*) FROM purchases
 UNION ALL
-SELECT 'favorites', COUNT(*) FROM favorites;
+SELECT 'favorites', COUNT(*) FROM favorites
+UNION ALL
+SELECT 'user_feature_flags', COUNT(*) FROM user_feature_flags;
 EOF
 echo ""
 
 echo "========================================="
 echo "  Database Reset Complete!"
 echo "========================================="
+echo ""
+echo "Database file: $DB_FILE"
 echo ""

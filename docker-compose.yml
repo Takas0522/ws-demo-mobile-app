@@ -1,26 +1,8 @@
 version: '3.8'
 
-services:
-  postgres:
-    image: postgres:16
-    container_name: mobile-app-postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mobile_app
-      TZ: 'Asia/Tokyo'
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./src/database/schema:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres_data:
-    driver: local
+# SQLiteを使用するため、データベースコンテナは不要です。
+# データベースファイルはアプリケーションの data/ ディレクトリに保存されます。
+#
+# 使用方法:
+#   1. スキーマ初期化: sqlite3 data/mobile_app.db < src/database/schema/01_create_tables.sql
+#   2. データ投入: sqlite3 data/mobile_app.db < src/database/seeds/02_seed_data.sql

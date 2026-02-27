@@ -17,23 +17,19 @@ echo ""
 mkdir -p "$PROJECT_ROOT/logs"
 mkdir -p "$PROJECT_ROOT/pids"
 
-# PostgreSQLを起動
-echo "[1/5] Starting PostgreSQL..."
-cd "$PROJECT_ROOT"
-docker-compose up -d
-echo "✓ PostgreSQL started"
-echo ""
-
-# PostgreSQLの起動を待機
-echo "Waiting for PostgreSQL to be ready..."
-sleep 5
-
-# データベースの接続確認
-until docker exec postgres-demo pg_isready -U demouser > /dev/null 2>&1; do
-  echo "  Waiting for PostgreSQL..."
-  sleep 2
-done
-echo "✓ PostgreSQL is ready"
+# SQLiteデータベースの初期化
+DB_DIR="$PROJECT_ROOT/data"
+DB_FILE="$DB_DIR/mobile_app.db"
+echo "[1/5] Checking SQLite database..."
+mkdir -p "$DB_DIR"
+if [ ! -f "$DB_FILE" ]; then
+  echo "  Database not found. Initializing..."
+  sqlite3 "$DB_FILE" < "$PROJECT_ROOT/src/database/schema/01_create_tables.sql"
+  sqlite3 "$DB_FILE" < "$PROJECT_ROOT/src/database/seeds/02_seed_data.sql"
+  echo "✓ SQLite database initialized"
+else
+  echo "✓ SQLite database exists"
+fi
 echo ""
 
 # Web APIを起動
@@ -97,7 +93,7 @@ echo "  All Services Started!"
 echo "========================================="
 echo ""
 echo "Services:"
-echo "  - PostgreSQL:  localhost:5432"
+echo "  - SQLite DB:   $DB_FILE"
 echo "  - Web API:     http://localhost:8080"
 echo "  - Mobile BFF:  http://localhost:8081"
 echo "  - Admin BFF:   http://localhost:8082"

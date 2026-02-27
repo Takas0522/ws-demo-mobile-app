@@ -61,7 +61,7 @@ erDiagram
     }
     
     PURCHASES {
-        uuid purchase_id PK
+        text purchase_id PK
         bigint user_id FK
         bigint product_id FK
         integer quantity

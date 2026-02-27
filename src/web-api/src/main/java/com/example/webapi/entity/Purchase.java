@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class Purchase {
     
     @Id
-    @Column(name = "purchase_id", columnDefinition = "UUID")
+    @Column(name = "purchase_id", columnDefinition = "TEXT")
     private String purchaseId; // UUID as String
     
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,10 +1,13 @@
 -- ======================================
--- mobile-app-system 初期データ投入
+-- mobile-app-system 初期データ投入 (SQLite)
 -- ======================================
 -- 作成日: 2025-01-08
--- バージョン: 1.0
+-- バージョン: 1.1
 -- 参照: docs/specs/mobile-app-system/04-data-model.md
 -- ======================================
+
+-- 外部キー制約を有効化
+PRAGMA foreign_keys = ON;
 
 -- ======================================
 -- 1. ユーザーデータ
@@ -60,7 +63,7 @@ INSERT INTO products (product_name, unit_price, description, image_url) VALUES
 -- ======================================
 
 INSERT INTO feature_flags (flag_key, flag_name, default_value) VALUES
-    ('favorite_feature', 'お気に入り機能', false);
+    ('favorite_feature', 'お気に入り機能', 0);
 
 -- ======================================
 -- 4. ユーザー別機能フラグ設定
@@ -70,8 +73,8 @@ INSERT INTO feature_flags (flag_key, flag_name, default_value) VALUES
 -- user002: お気に入り機能ON
 -- その他のユーザーはデフォルト値（OFF）を使用
 INSERT INTO user_feature_flags (user_id, flag_id, is_enabled) VALUES
-    (2, 1, true),  -- user001
-    (3, 1, true);  -- user002
+    (2, 1, 1),  -- user001
+    (3, 1, 1);  -- user002
 
 -- ======================================
 -- 5. お気に入りデータ（サンプル）
@@ -93,29 +96,29 @@ INSERT INTO favorites (user_id, product_id) VALUES
 -- ======================================
 
 -- user001の購入履歴
-INSERT INTO purchases (user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
-    (2, 1, 100, 1000, 100000),
-    (2, 2, 200, 1500, 300000),
-    (2, 3, 100, 2000, 200000);
+INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567801', 2, 1, 100, 1000, 100000),
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567802', 2, 2, 200, 1500, 300000),
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567803', 2, 3, 100, 2000, 200000);
 
 -- user002の購入履歴
-INSERT INTO purchases (user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
-    (3, 1, 300, 1000, 300000),
-    (3, 4, 100, 2500, 250000);
+INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567804', 3, 1, 300, 1000, 300000),
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567805', 3, 4, 100, 2500, 250000);
 
 -- user003の購入履歴
-INSERT INTO purchases (user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
-    (4, 5, 100, 3000, 300000),
-    (4, 6, 200, 3500, 700000);
+INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567806', 4, 5, 100, 3000, 300000),
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567807', 4, 6, 200, 3500, 700000);
 
 -- user004の購入履歴
-INSERT INTO purchases (user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
-    (5, 7, 100, 4000, 400000),
-    (5, 8, 100, 4500, 450000);
+INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567808', 5, 7, 100, 4000, 400000),
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567809', 5, 8, 100, 4500, 450000);
 
 -- user005の購入履歴
-INSERT INTO purchases (user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
-    (6, 9, 200, 5000, 1000000);
+INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at_purchase, total_amount) VALUES
+    ('a1b2c3d4-e5f6-7890-abcd-ef1234567810', 6, 9, 200, 5000, 1000000);
 
 -- ======================================
 -- データ投入完了

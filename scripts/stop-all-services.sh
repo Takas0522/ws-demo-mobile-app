@@ -50,11 +50,8 @@ else
 fi
 echo ""
 
-# Docker Composeを停止
-echo "Stopping PostgreSQL (Docker)..."
-cd "$PROJECT_ROOT"
-docker-compose down
-echo "✓ PostgreSQL stopped"
+# SQLiteはファイルベースのため、停止処理は不要です
+echo "SQLite database: no shutdown required (file-based)"
 echo ""
 
 # Gradleデーモンを停止（オプション）

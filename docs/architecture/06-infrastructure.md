@@ -192,14 +192,11 @@ database/init/
 #### 01_create_database.sql
 
 ```sql
--- データベースは既にdocker-compose.ymlで作成済み
+-- SQLiteはファイルベースのため、DBファイルは初回アクセス時に自動作成されます
 -- 追加の設定があればここに記述
 
--- 拡張機能の有効化
 -- SQLiteは拡張機能不要（UUID生成はアプリケーション側で実施）
-
--- タイムゾーン設定
-SET timezone = 'Asia/Tokyo';
+-- SQLiteはタイムゾーン設定不要（アプリケーション側で管理）
 ```
 
 #### 02_create_tables.sql
