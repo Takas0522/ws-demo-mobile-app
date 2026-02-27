@@ -68,7 +68,7 @@ sequenceDiagram
     WebAPI->>WebAPI: JWT生成<br/>{userId, userType, exp}
     WebAPI-->>BFF: {token, userType}
     BFF-->>Client: {token, userType}
-    Client->>Client: Token保存（Keychain/Encrypted）
+    Client->>Client: Token保存（Keychain/Encrypted/CredentialManager）
     
     Note over Client,DB: API呼び出しフロー
     Client->>BFF: GET /products<br/>Authorization: Bearer {token}
@@ -203,6 +203,62 @@ public class SecureStorageManager {
 }
 ```
 
+#### Windows（Credential Manager）
+
+```cpp
+#pragma once
+
+#include <windows.h>
+#include <wincred.h>
+#include <string>
+#include <optional>
+
+#pragma comment(lib, "advapi32.lib")
+
+namespace ws::utils
+{
+
+class CredentialManager
+{
+public:
+	// 暗号化保存（DPAPI）
+	static bool SaveToken(const std::wstring& token)
+	{
+		CREDENTIALW cred = {};
+		cred.Type = CRED_TYPE_GENERIC;
+		cred.TargetName = const_cast<LPWSTR>(L"WsDemoMobileApp/jwt_token");
+		cred.CredentialBlobSize = static_cast<DWORD>(token.size() * sizeof(wchar_t));
+		cred.CredentialBlob = reinterpret_cast<LPBYTE>(const_cast<wchar_t*>(token.data()));
+		cred.Persist = CRED_PERSIST_LOCAL_MACHINE;
+		return CredWriteW(&cred, 0) == TRUE;
+	}
+
+	// 取得
+	[[nodiscard]]
+	static std::optional<std::wstring> GetToken()
+	{
+		PCREDENTIALW pCred = nullptr;
+		if (CredReadW(L"WsDemoMobileApp/jwt_token", CRED_TYPE_GENERIC, 0, &pCred) == TRUE)
+		{
+			std::wstring token(
+				reinterpret_cast<wchar_t*>(pCred->CredentialBlob),
+				pCred->CredentialBlobSize / sizeof(wchar_t));
+			CredFree(pCred);
+			return token;
+		}
+		return std::nullopt;
+	}
+
+	// 削除
+	static bool DeleteToken()
+	{
+		return CredDeleteW(L"WsDemoMobileApp/jwt_token", CRED_TYPE_GENERIC, 0) == TRUE;
+	}
+};
+
+} // namespace ws::utils
+```
+
 #### 管理Web（localStorage）
 
 ```javascript
@@ -328,12 +384,17 @@ server:
 
 **注意**: 開発環境ではHTTPを使用（localhost）
 
+#### Windows クライアントのTLS
+
+WindowsアプリではWinHTTPがOSレベルでTLS通信を処理します。Windows証明書ストアを利用してサーバー証明書の検証が自動的に行われます。
+
 ### 5.2 データ保存の暗号化
 
 | データ種別 | 保存場所 | 暗号化 | 方式 |
 |-----------|---------|-------|------|
 | **パスワード** | SQLite | ✅ | bcrypt (cost=10) |
 | **JWT Token（モバイル）** | Keychain/EncryptedPrefs | ✅ | AES-256 |
+| **JWT Token（Windows）** | Credential Manager | ✅ | DPAPI |
 | **JWT Token（Web）** | localStorage | ❌ | 平文（XSSリスク） |
 | **商品情報** | SQLite | ❌ | 平文（デモ用途） |
 | **購入情報** | SQLite | ❌ | 平文（デモ用途） |
@@ -447,6 +508,7 @@ ResultSet rs = stmt.executeQuery(sql);
 
 - iOS: 標準UIコンポーネント使用（自動エスケープ）
 - Android: 標準Viewコンポーネント使用（自動エスケープ）
+- Windows: Win32標準コントロール使用（自動エスケープ）
 
 #### 管理Webアプリ（Vue.js）
 

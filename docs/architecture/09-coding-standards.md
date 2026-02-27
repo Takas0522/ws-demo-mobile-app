@@ -398,9 +398,121 @@ ORDER BY
 - **インデント**: スペース4つ
 - **1行1カラム**: SELECTリストは改行
 
-## 7. コードレビュー基準
+## 7. C++ コーディング規約（Windows App）
 
-### 7.1 必須チェック項目
+### 7.1 準拠規約
+
+C++20 標準に準拠し、Win32 API ネイティブアプリケーション向けの規約を定義する。
+
+### 7.2 命名規則
+
+| 対象 | ケース | 例 |
+|------|--------|-----|
+| クラス / 構造体 | PascalCase | `ProductListViewModel`, `HttpClient` |
+| メンバ関数 | PascalCase | `FetchProducts()`, `GetToken()` |
+| メンバ変数 | m_ + camelCase | `m_products`, `m_isLoading` |
+| 静的メンバ変数 | s_ + camelCase | `s_instance` |
+| ローカル変数 | camelCase | `userId`, `productName` |
+| 定数 / constexpr | k + PascalCase | `kMaxRetryCount`, `kApiTimeout` |
+| マクロ | UPPER_SNAKE_CASE | `WS_APP_VERSION` |
+| 名前空間 | lowercase | `ws::models`, `ws::services` |
+| ファイル名 | PascalCase | `ProductListViewModel.cpp`, `HttpClient.h` |
+| enum class | PascalCase（型・値共に） | `enum class ApiError { NetworkError, Unauthorized }` |
+
+### 7.3 コードスタイル
+
+| 項目 | 規則 |
+|------|------|
+| **インデント** | タブ（幅4スペース相当） |
+| **行の最大長** | 120文字 |
+| **中括弧** | Allman スタイル（次の行に開始括弧） |
+| **ヘッダーガード** | `#pragma once` |
+| **名前空間** | `ws::` をトップレベルとして使用 |
+
+### 7.4 設計原則
+
+- **スマートポインタ**: `std::unique_ptr`, `std::shared_ptr` を使用、生ポインタは最小限
+- **文字列**: `std::wstring` を Windows API 連携に、`std::string` を内部処理に使用
+- **エラーハンドリング**: 例外は使用せず、`std::expected` または `std::optional` + エラーコードで処理
+- **RAII**: リソース管理は RAII パターンを徹底
+- **`[[nodiscard]]`**: 戻り値が無視されるべきでない関数に付与
+- **コピー禁止**: コピー不要なクラスは `= delete` で明示的に禁止
+
+### 7.5 ファイル構成
+
+```
+src/windows-app/WsDemoMobileApp.WindowsApp/
+├── WsDemoMobileApp.WindowsApp/       # メインプロジェクト
+│   ├── src/
+│   │   ├── main.cpp                  # WinMain エントリポイント
+│   │   ├── App.h / App.cpp           # アプリケーション管理
+│   │   ├── Models/                   # データモデル
+│   │   ├── ViewModels/               # ビジネスロジック
+│   │   ├── Views/                    # Win32 ウィンドウ / UI
+│   │   ├── Services/                 # ネットワーク・基盤サービス
+│   │   └── Utils/                    # ユーティリティ
+│   ├── resources/                    # リソースファイル
+│   └── include/                      # サードパーティヘッダー
+└── WsDemoMobileApp.WindowsApp.Tests/ # テストプロジェクト
+```
+
+### 7.6 スレッディング規則
+
+- HTTP リクエストはバックグラウンドスレッドで実行
+- UI 更新は `PostMessage` / `SendMessage` で UI スレッドに通知
+- 定期更新は `SetTimer` / `WM_TIMER` でトリガー
+- `std::mutex` / `std::lock_guard` でスレッド安全性を確保
+
+### 7.7 コード例
+
+```cpp
+#pragma once
+
+#include <string>
+#include <vector>
+#include <optional>
+#include <functional>
+
+namespace ws::viewmodels
+{
+
+class ProductListViewModel
+{
+public:
+    ProductListViewModel() = default;
+    ~ProductListViewModel() = default;
+
+    // コピー禁止
+    ProductListViewModel(const ProductListViewModel&) = delete;
+    ProductListViewModel& operator=(const ProductListViewModel&) = delete;
+
+    // 商品一覧を取得
+    [[nodiscard]] bool FetchProducts();
+
+    // 商品一覧を返す
+    [[nodiscard]] const std::vector<ws::models::Product>& GetProducts() const
+    {
+        return m_products;
+    }
+
+    // 変更通知コールバック
+    void SetOnProductsChanged(std::function<void()> callback)
+    {
+        m_onProductsChanged = std::move(callback);
+    }
+
+private:
+    std::vector<ws::models::Product> m_products;
+    bool m_isLoading = false;
+    std::function<void()> m_onProductsChanged;
+};
+
+} // namespace ws::viewmodels
+```
+
+## 8. コードレビュー基準
+
+### 8.1 必須チェック項目
 
 - [ ] 命名規則に従っているか
 - [ ] コメントが適切に記載されているか
@@ -410,16 +522,16 @@ ORDER BY
 - [ ] パフォーマンス上の問題はないか
 - [ ] テストパターンが定義されているか
 
-### 7.2 推奨チェック項目
+### 8.2 推奨チェック項目
 
 - [ ] 関数が短く単純か（1関数1責務）
 - [ ] ネストが深すぎないか（3段階以内推奨）
 - [ ] 重複コードがないか
 - [ ] マジックナンバーがないか（定数化）
 
-## 8. 静的解析ツール
+## 9. 静的解析ツール
 
-### 8.1 Java
+### 9.1 Java
 
 ```xml
 <!-- pom.xml -->
@@ -433,7 +545,7 @@ ORDER BY
 </plugin>
 ```
 
-### 8.2 Swift
+### 9.2 Swift
 
 ```yaml
 # .swiftlint.yml
@@ -448,7 +560,7 @@ line_length:
   error: 150
 ```
 
-### 8.3 JavaScript
+### 9.3 JavaScript
 
 ```bash
 # ESLint実行
@@ -458,7 +570,7 @@ npm run lint
 npm run lint:fix
 ```
 
-## 9. 参照ドキュメント
+## 10. 参照ドキュメント
 
 | ドキュメント | URL |
 |------------|-----|

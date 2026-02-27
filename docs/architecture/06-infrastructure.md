@@ -27,6 +27,7 @@ graph TB
         subgraph "ネイティブ開発環境"
             Xcode[Xcode<br/>iOS開発]
             AndroidStudio[Android Studio<br/>Android開発]
+            VisualStudio[Visual Studio<br/>Windows開発]
         end
         
         subgraph "DevContainer環境"
@@ -47,6 +48,7 @@ graph TB
     
     Xcode -.->|localhost:8081| MobileBFF
     AndroidStudio -.->|localhost:8081| MobileBFF
+    VisualStudio -.->|localhost:8081| MobileBFF
     Vue -.->|localhost:8082| AdminBFF
     MobileBFF -.->|localhost:8080| WebAPI
     AdminBFF -.->|localhost:8080| WebAPI
@@ -59,6 +61,7 @@ graph TB
 |------|------|------|
 | **iOS開発** | macOS、Xcode latest | Xcodeのみ |
 | **Android開発** | Windows/macOS/Linux、Android Studio latest | - |
+| **Windows App開発** | Windows 10+、Visual Studio latest | MSBuild使用 |
 | **Web開発** | Windows/macOS/Linux、VS Code、Docker | DevContainer使用 |
 | **SQLite** | ファイルベース | 全開発者共通 |
 
@@ -304,7 +307,7 @@ CREATE INDEX idx_purchases_purchased_at ON purchases(purchased_at);
 ```mermaid
 graph LR
     subgraph "localhost"
-        Client[クライアント<br/>Browser/Mobile]
+        Client[クライアント<br/>Browser/Mobile/Windows]
         
         subgraph "Application Layer"
             AdminWeb[Admin Web:3000]
