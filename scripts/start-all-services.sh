@@ -18,7 +18,7 @@ mkdir -p "$PROJECT_ROOT/logs"
 mkdir -p "$PROJECT_ROOT/pids"
 
 # SQLiteデータベースの初期化
-DB_DIR="$PROJECT_ROOT/data"
+DB_DIR="$PROJECT_ROOT/src/web-api/data"
 DB_FILE="$DB_DIR/mobile_app.db"
 echo "[1/5] Checking SQLite database..."
 mkdir -p "$DB_DIR"
@@ -35,14 +35,14 @@ echo ""
 # Web APIを起動
 echo "[2/5] Starting Web API (port 8080)..."
 cd "$PROJECT_ROOT/src/web-api"
-if [ -f "gradlew" ]; then
-  nohup ./gradlew bootRun > "$PROJECT_ROOT/logs/web-api.log" 2>&1 &
-  echo $! > "$PROJECT_ROOT/pids/web-api.pid"
-  echo "✓ Web API started (PID: $(cat $PROJECT_ROOT/pids/web-api.pid))"
-else
-  echo "✗ gradlew not found in src/web-api/"
-  exit 1
+JAR_FILE="target/web-api-1.0.0-SNAPSHOT.jar"
+if [ ! -f "$JAR_FILE" ]; then
+  echo "  JAR not found. Building..."
+  mvn clean package -q -DskipTests
 fi
+nohup java -jar "$JAR_FILE" > "$PROJECT_ROOT/logs/web-api.log" 2>&1 &
+echo $! > "$PROJECT_ROOT/pids/web-api.pid"
+echo "✓ Web API started (PID: $(cat $PROJECT_ROOT/pids/web-api.pid))"
 echo ""
 
 # Web APIの起動を待機
@@ -52,40 +52,39 @@ sleep 15
 # Mobile BFFを起動
 echo "[3/5] Starting Mobile BFF (port 8081)..."
 cd "$PROJECT_ROOT/src/mobile-bff"
-if [ -f "gradlew" ]; then
-  nohup ./gradlew bootRun > "$PROJECT_ROOT/logs/mobile-bff.log" 2>&1 &
-  echo $! > "$PROJECT_ROOT/pids/mobile-bff.pid"
-  echo "✓ Mobile BFF started (PID: $(cat $PROJECT_ROOT/pids/mobile-bff.pid))"
-else
-  echo "✗ gradlew not found in src/mobile-bff/"
-  exit 1
+JAR_FILE="target/mobile-bff-1.0.0-SNAPSHOT.jar"
+if [ ! -f "$JAR_FILE" ]; then
+  echo "  JAR not found. Building..."
+  mvn clean package -q -DskipTests
 fi
+nohup java -jar "$JAR_FILE" > "$PROJECT_ROOT/logs/mobile-bff.log" 2>&1 &
+echo $! > "$PROJECT_ROOT/pids/mobile-bff.pid"
+echo "✓ Mobile BFF started (PID: $(cat $PROJECT_ROOT/pids/mobile-bff.pid))"
 echo ""
 
 # Admin BFFを起動
 echo "[4/5] Starting Admin BFF (port 8082)..."
 cd "$PROJECT_ROOT/src/admin-bff"
-if [ -f "gradlew" ]; then
-  nohup ./gradlew bootRun > "$PROJECT_ROOT/logs/admin-bff.log" 2>&1 &
-  echo $! > "$PROJECT_ROOT/pids/admin-bff.pid"
-  echo "✓ Admin BFF started (PID: $(cat $PROJECT_ROOT/pids/admin-bff.pid))"
-else
-  echo "✗ gradlew not found in src/admin-bff/"
-  exit 1
+JAR_FILE="target/admin-bff-1.0.0-SNAPSHOT.jar"
+if [ ! -f "$JAR_FILE" ]; then
+  echo "  JAR not found. Building..."
+  mvn clean package -q -DskipTests
 fi
+nohup java -jar "$JAR_FILE" > "$PROJECT_ROOT/logs/admin-bff.log" 2>&1 &
+echo $! > "$PROJECT_ROOT/pids/admin-bff.pid"
+echo "✓ Admin BFF started (PID: $(cat $PROJECT_ROOT/pids/admin-bff.pid))"
 echo ""
 
 # Admin Webを起動
-echo "[5/5] Starting Admin Web (port 3000)..."
+echo "[5/5] Starting Admin Web (port 5173)..."
 cd "$PROJECT_ROOT/src/admin-web"
-if [ -f "package.json" ]; then
-  nohup npm run dev > "$PROJECT_ROOT/logs/admin-web.log" 2>&1 &
-  echo $! > "$PROJECT_ROOT/pids/admin-web.pid"
-  echo "✓ Admin Web started (PID: $(cat $PROJECT_ROOT/pids/admin-web.pid))"
-else
-  echo "✗ package.json not found in src/admin-web/"
-  exit 1
+if [ ! -d "node_modules" ]; then
+  echo "  Installing dependencies..."
+  npm install --silent
 fi
+nohup npm run dev > "$PROJECT_ROOT/logs/admin-web.log" 2>&1 &
+echo $! > "$PROJECT_ROOT/pids/admin-web.pid"
+echo "✓ Admin Web started (PID: $(cat $PROJECT_ROOT/pids/admin-web.pid))"
 echo ""
 
 echo "========================================="
@@ -97,7 +96,7 @@ echo "  - SQLite DB:   $DB_FILE"
 echo "  - Web API:     http://localhost:8080"
 echo "  - Mobile BFF:  http://localhost:8081"
 echo "  - Admin BFF:   http://localhost:8082"
-echo "  - Admin Web:   http://localhost:3000"
+echo "  - Admin Web:   http://localhost:5173"
 echo ""
 echo "Logs:"
 echo "  - ./logs/web-api.log"

@@ -10,7 +10,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     ca-certificates \
     gnupg \
     lsb-release \
-    postgresql-client \
+    sqlite3 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
