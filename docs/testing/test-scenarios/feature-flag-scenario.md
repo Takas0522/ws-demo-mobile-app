@@ -16,7 +16,7 @@
 
 ### 2.1 システム状態
 - [ ] すべてのサービスが起動している（Web API, Mobile BFF, Admin BFF, Admin Web）
-- [ ] PostgreSQLが起動している
+- [ ] SQLiteデータベースが作成されている
 - [ ] 初期データが投入されている
 
 ### 2.2 テストデータ

@@ -53,8 +53,8 @@
                         │
 ┌───────────────────────┴───────────────────────────────┐
 │                  Data Layer                           │
-│         PostgreSQL (Docker Container)                 │
-│                Port: 5432                             │
+│            SQLite (File-based)                        │
+│              ./data/mobile_app.db                     │
 └───────────────────────────────────────────────────────┘
 ```
 
@@ -62,7 +62,7 @@
 
 | サービス | ポート | 説明 |
 |---------|--------|------|
-| PostgreSQL | 5432 | データベース |
+| SQLite | - | データベース（ファイルベース） |
 | Web API | 8080 | REST API |
 | Mobile BFF | 8081 | モバイルアプリ用BFF |
 | Admin BFF | 8082 | 管理Web用BFF |
@@ -90,7 +90,7 @@
 |-------|------|------------|
 | **curl** | API動作確認 | 標準装備（macOS/Linux） |
 | **jq** | JSON整形 | `brew install jq` (macOS) |
-| **psql** | DB接続確認 | `brew install postgresql` (macOS) |
+| **sqlite3** | DB接続確認 | `brew install sqlite3` (macOS) |
 | **Postman** | API手動テスト | https://www.postman.com/ |
 
 ### 2.3 システム要件
@@ -110,8 +110,9 @@
 git clone <repository-url>
 cd ws-demo-mobile-app
 
-# 2. PostgreSQLを起動
-docker-compose up -d
+# 2. データベースを初期化
+mkdir -p data
+sqlite3 ./data/mobile_app.db < database/ddl.sql
 
 # 3. データベースを初期化
 cd database
@@ -163,39 +164,32 @@ git branch
 
 ---
 
-### Step 2: PostgreSQLのセットアップ
+### Step 2: SQLiteデータベースのセットアップ
 
-#### 2.1 Docker Composeで起動
+#### 2.1 データベースファイルの準備
 
 ```bash
-# docker-compose.yml の確認
-cat docker-compose.yml
+# データベースディレクトリの作成
+mkdir -p data
 
-# PostgreSQLコンテナを起動
-docker-compose up -d
+# SQLiteデータベースは初回起動時に自動作成されます
+# 手動で作成する場合:
+sqlite3 ./data/mobile_app.db < database/ddl.sql
 
-# 起動確認
-docker-compose ps
-
-# 期待される出力:
-# NAME                  IMAGE         STATUS
-# postgres-demo         postgres:15   Up X seconds
+# ファイル確認
+ls -la ./data/mobile_app.db
 ```
 
 #### 2.2 接続確認
 
 ```bash
-# PostgreSQLに接続
-docker exec -it postgres-demo psql -U demouser -d demo_db
-
-# または
-psql -h localhost -p 5432 -U demouser -d demo_db
-# パスワード: demopass
+# SQLiteに接続
+sqlite3 ./data/mobile_app.db
 
 # 接続成功したら
-demo_db=# \l        # データベース一覧
-demo_db=# \dt       # テーブル一覧（まだ空）
-demo_db=# \q        # 終了
+sqlite> .tables      # テーブル一覧
+sqlite> .schema      # スキーマ確認
+sqlite> .quit        # 終了
 ```
 
 ---
@@ -208,10 +202,10 @@ demo_db=# \q        # 終了
 cd database
 
 # DDLスクリプトを実行
-psql -h localhost -p 5432 -U demouser -d demo_db -f ddl.sql
+sqlite3 ./data/mobile_app.db < ddl.sql
 
 # 確認
-psql -h localhost -p 5432 -U demouser -d demo_db -c "\dt"
+sqlite3 ./data/mobile_app.db ".tables"
 
 # 期待される出力: 6つのテーブル
 # - users
@@ -226,12 +220,11 @@ psql -h localhost -p 5432 -U demouser -d demo_db -c "\dt"
 
 ```bash
 # 初期データを投入
-psql -h localhost -p 5432 -U demouser -d demo_db -f seed.sql
+sqlite3 ./data/mobile_app.db < seed.sql
 
 # データ確認
-psql -h localhost -p 5432 -U demouser -d demo_db << EOF
+sqlite3 ./data/mobile_app.db << EOF
 SELECT COUNT(*) FROM users;       -- 3件以上
-SELECT COUNT(*) FROM admins;      -- 1件以上
 SELECT COUNT(*) FROM products;    -- 3件以上
 SELECT COUNT(*) FROM feature_flags; -- users数と同じ
 EOF
@@ -246,8 +239,8 @@ cat > init-database.sh << 'EOF'
 set -e
 
 echo "Initializing database..."
-psql -h localhost -p 5432 -U demouser -d demo_db -f ddl.sql
-psql -h localhost -p 5432 -U demouser -d demo_db -f seed.sql
+sqlite3 ../data/mobile_app.db < ddl.sql
+sqlite3 ../data/mobile_app.db < seed.sql
 echo "Database initialized successfully!"
 EOF
 
@@ -266,11 +259,7 @@ cd src/web-api
 
 # .env ファイルを作成（または .env.example をコピー）
 cat > .env << EOF
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=demo_db
-DB_USER=demouser
-DB_PASSWORD=demopass
+DB_PATH=./data/mobile_app.db
 JWT_SECRET=your-secret-key-change-this-in-production-min-32-chars
 SERVER_PORT=8080
 EOF
@@ -413,7 +402,6 @@ ls -la dist/
 
 ```bash
 # すべてのサービスが起動しているか確認
-curl http://localhost:5432 2>&1 | grep -q "Connection refused" && echo "PostgreSQL is running"
 curl http://localhost:8080/actuator/health  # {"status":"UP"}
 curl http://localhost:8081/actuator/health  # {"status":"UP"}
 curl http://localhost:8082/actuator/health  # {"status":"UP"}
@@ -498,30 +486,31 @@ curl http://localhost:8081/api/v1/products \
 
 ## 6. トラブルシューティング
 
-### 6.1 PostgreSQLに接続できない
+### 6.1 SQLiteデータベースにアクセスできない
 
-**症状**: `Connection refused` または `FATAL: password authentication failed`
+**症状**: `unable to open database file` または `no such table`
 
 **原因と解決方法**:
 
-1. **Dockerコンテナが起動していない**
+1. **データベースファイルが存在しない**
    ```bash
-   docker-compose ps
-   # 起動していない場合
-   docker-compose up -d
+   ls -la ./data/mobile_app.db
+   # ファイルが存在しない場合
+   sqlite3 ./data/mobile_app.db < database/ddl.sql
    ```
 
-2. **パスワードが間違っている**
+2. **データベースディレクトリが存在しない**
    ```bash
-   # docker-compose.yml を確認
-   cat docker-compose.yml | grep POSTGRES_PASSWORD
+   mkdir -p data
+   sqlite3 ./data/mobile_app.db < database/ddl.sql
    ```
 
-3. **ポート5432が使用中**
+3. **ファイルのパーミッションが不正**
    ```bash
-   # ポート確認
-   lsof -i :5432
-   # 別のPostgreSQLが起動している場合は停止
+   # パーミッション確認
+   ls -la ./data/mobile_app.db
+   # 必要に応じて修正
+   chmod 644 ./data/mobile_app.db
    ```
 
 ---
@@ -551,8 +540,8 @@ curl http://localhost:8081/api/v1/products \
    ```bash
    # ログを確認
    tail -f web-api/logs/application.log
-   # PostgreSQLの起動を確認
-   docker-compose ps
+   # SQLiteデータベースファイルの確認
+   ls -la ./data/mobile_app.db
    ```
 
 4. **Javaバージョンが古い**
@@ -621,7 +610,7 @@ curl http://localhost:8081/api/v1/products \
 
 1. **初期データが投入されていない**
    ```sql
-   psql -h localhost -U demouser -d demo_db -c "SELECT * FROM users;"
+   sqlite3 ./data/mobile_app.db "SELECT * FROM users;"
    # データがない場合は seed.sql を実行
    ```
 
@@ -646,7 +635,7 @@ curl http://localhost:8081/api/v1/products \
 | Web API | `tail -f web-api/logs/application.log` |
 | Mobile BFF | `tail -f mobile-bff/logs/application.log` |
 | Admin BFF | `tail -f admin-bff/logs/application.log` |
-| PostgreSQL | `docker-compose logs -f postgres` |
+| SQLite | `sqlite3 ./data/mobile_app.db "PRAGMA integrity_check;"` |
 
 ---
 
@@ -755,27 +744,23 @@ curl http://localhost:8081/api/v1/products \
 cd database
 
 # データのみ削除（テーブル構造は保持）
-psql -h localhost -U demouser -d demo_db << EOF
-TRUNCATE TABLE purchases CASCADE;
-TRUNCATE TABLE favorites CASCADE;
-TRUNCATE TABLE feature_flags CASCADE;
-TRUNCATE TABLE products RESTART IDENTITY CASCADE;
-TRUNCATE TABLE users RESTART IDENTITY CASCADE;
-TRUNCATE TABLE admins RESTART IDENTITY CASCADE;
+sqlite3 ./data/mobile_app.db << EOF
+DELETE FROM purchases;
+DELETE FROM favorites;
+DELETE FROM feature_flags;
+DELETE FROM products;
+DELETE FROM users;
 EOF
 
 # 初期データを再投入
-psql -h localhost -U demouser -d demo_db -f seed.sql
+sqlite3 ./data/mobile_app.db < seed.sql
 ```
 
 ### 8.2 データベース全体を再作成
 
 ```bash
-# Docker Composeを停止し、ボリュームを削除
-docker-compose down -v
-
-# 再起動
-docker-compose up -d
+# データベースファイルを削除
+rm -f ./data/mobile_app.db
 
 # 初期化スクリプトを実行
 ./init-database.sh
@@ -790,8 +775,7 @@ docker-compose up -d
 pkill -f "gradle.*bootRun"
 pkill -f "vite"
 
-# PostgreSQLを停止
-docker-compose down
+# SQLiteはファイルベースのため停止不要
 ```
 
 ### 8.4 リセットスクリプト（推奨）
@@ -805,16 +789,12 @@ set -e
 echo "Stopping all services..."
 pkill -f "gradle.*bootRun" || true
 pkill -f "vite" || true
-docker-compose down -v
-
-echo "Restarting PostgreSQL..."
-docker-compose up -d
-sleep 5
 
 echo "Reinitializing database..."
+rm -f ./data/mobile_app.db
 cd database
-psql -h localhost -U demouser -d demo_db -f ddl.sql
-psql -h localhost -U demouser -d demo_db -f seed.sql
+sqlite3 ../data/mobile_app.db < ddl.sql
+sqlite3 ../data/mobile_app.db < seed.sql
 cd ..
 
 echo "Reset complete! You can now start services again."
@@ -836,11 +816,10 @@ cat > scripts/start-all.sh << 'EOF'
 #!/bin/bash
 set -e
 
-echo "Starting PostgreSQL..."
-docker-compose up -d
-
-echo "Waiting for PostgreSQL to be ready..."
-sleep 5
+echo "Initializing SQLite database..."
+mkdir -p data
+sqlite3 ./data/mobile_app.db < database/ddl.sql
+sqlite3 ./data/mobile_app.db < database/seed.sql
 
 echo "Starting Web API..."
 cd src/web-api
@@ -896,8 +875,7 @@ if [ -d "pids" ]; then
   done
 fi
 
-# Docker停止
-docker-compose down
+# Docker停止（不要 - SQLiteはファイルベース）
 
 echo "All services stopped!"
 EOF

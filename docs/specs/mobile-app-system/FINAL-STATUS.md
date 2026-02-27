@@ -18,7 +18,7 @@
 | 項目 | 状態 | 詳細 |
 |-----|------|-----|
 | **バックエンド** | ✅ **100%完成** | Web API + Mobile BFF + Admin BFF |
-| **データベース** | ✅ **完全稼働** | PostgreSQL 16、6テーブル |
+| **データベース** | ✅ **完全稼働** | SQLite、6テーブル |
 | **認証システム** | ✅ **完全稼働** | JWT認証、全エンドポイント保護 |
 | **API実装** | ✅ **56エンドポイント** | 全て動作確認済み |
 | **ドキュメント** | ✅ **完全整備** | 50ファイル、24,700行 |
@@ -56,8 +56,8 @@
                   │ JDBC
                   ▼
          ┌─────────────────┐
-         │  PostgreSQL     │
-         │   Port: 5432    │
+         │  SQLite         │
+         │   ファイルベース │
          │  ✅ 6 tables    │
          └─────────────────┘
 ```
@@ -70,8 +70,8 @@
 | **フレームワーク** | Spring Boot | 3.2.1 | Webアプリケーション |
 | **セキュリティ** | Spring Security | 3.2.1 | 認証・認可 |
 | **JWT** | jjwt | 0.12.3 | トークン生成・検証 |
-| **データベース** | PostgreSQL | 16 | データ永続化 |
-| **JDBCドライバ** | postgresql | 42.7.1 | DB接続 |
+| **データベース** | SQLite | latest | データ永続化 |
+| **JDBCドライバ** | sqlite-jdbc | latest | DB接続 |
 | **ビルドツール** | Maven | 3.9+ | プロジェクト管理 |
 | **コンテナ** | Docker | Latest | 環境構築 |
 | **オーケストレーション** | Docker Compose | Latest | マルチコンテナ管理 |
@@ -318,19 +318,19 @@
 ### 1. データベース起動
 
 ```bash
-# PostgreSQLコンテナ起動
+# SQLiteデータベース確認
 docker-compose up -d
 
 # 起動確認
-docker ps | grep postgres
+ls -la ./data/mobile_app.db
 
 # データベース接続テスト
-docker exec -it mobile-app-postgres psql -U postgres -d mobile_app
+sqlite3 ./data/mobile_app.db
 \dt  # テーブル一覧表示
 \q   # 終了
 ```
 
-**結果**: PostgreSQL:5432 が起動、6テーブル作成、初期データ投入完了
+**結果**: SQLiteデータベースファイル作成、6テーブル作成、初期データ投入完了
 
 ### 2. Web API起動（Port: 8080）
 

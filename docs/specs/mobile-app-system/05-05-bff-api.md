@@ -36,7 +36,7 @@ graph LR
     AdminWeb[管理Web] -->|HTTPS| AdminBFF[Admin BFF]
     MobileBFF -->|JWT| WebAPI[Web API]
     AdminBFF -->|JWT| WebAPI
-    WebAPI -->|SQL| DB[(PostgreSQL)]
+    WebAPI -->|SQL| DB[(SQLite)]
 ```
 
 ---

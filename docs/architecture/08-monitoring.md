@@ -308,7 +308,7 @@ management:
     "db": {
       "status": "UP",
       "details": {
-        "database": "PostgreSQL",
+        "database": "SQLite",
         "validationQuery": "isValid()"
       }
     },
@@ -450,7 +450,7 @@ public class SecurityLogger {
 | Web API | `web-api/logs/application.log` |
 | Mobile BFF | `mobile-bff/logs/application.log` |
 | Admin BFF | `admin-bff/logs/application.log` |
-| PostgreSQL | Docker logs（`docker logs mobile-app-postgres`） |
+| SQLite | ファイルベースのため個別ログなし |
 | 管理Webアプリ | ブラウザコンソール |
 
 ### 11.2 本番環境（参考）

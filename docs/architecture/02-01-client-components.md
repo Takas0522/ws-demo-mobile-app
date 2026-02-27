@@ -65,7 +65,7 @@ graph TB
     end
     
     subgraph "Database"
-        DB[(PostgreSQL)]
+        DB[(SQLite)]
     end
     
     iOSAPI --> MobileBFFController

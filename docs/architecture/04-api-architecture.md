@@ -71,7 +71,7 @@ graph TB
     end
     
     subgraph "Layer 3: Database"
-        DB[(PostgreSQL)]
+        DB[(SQLite)]
     end
     
     Mobile -->|JWT転送| WebAPI

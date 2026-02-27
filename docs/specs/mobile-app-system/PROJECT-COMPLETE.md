@@ -17,7 +17,7 @@
 
 - ✅ **バックエンド**: 3層アーキテクチャ完全実装（Web API + 2つのBFF）
 - ✅ **フロントエンド**: iOSアプリ、Androidアプリ、管理Webアプリ全て実装
-- ✅ **データベース**: PostgreSQL 6テーブル完全稼働
+- ✅ **データベース**: SQLite 6テーブル完全稼働
 - ✅ **ドキュメント**: 包括的な仕様書・アーキテクチャドキュメント完備
 - ✅ **テスト**: 38テストケースの統合テスト完了
 - ✅ **CI/CD**: なし（次フェーズ）
@@ -78,8 +78,8 @@
              └──────┬──────┘
                     │ JDBC
              ┌──────▼──────┐
-             │ PostgreSQL  │
-             │   :5432     │
+             │ SQLite    │
+             │ ファイルベース │
              │ ✅6 tables  │
              │ 337行 SQL   │
              └─────────────┘
@@ -89,7 +89,7 @@
 
 | コンポーネント | 技術スタック | ファイル数 | 状態 | 備考 |
 |--------------|------------|----------|------|------|
-| **PostgreSQL Database** | PostgreSQL 16 | 2 SQL | ✅ 完成 | 6テーブル、337行 |
+| **SQLite Database** | SQLite | 2 SQL | ✅ 完成 | 6テーブル、337行 |
 | **Web API (Core)** | Spring Boot 3.2.1 | 51 Java | ✅ 完成 | 24エンドポイント |
 | **Mobile BFF** | Spring Boot 3.2.1 | 20 Java | ✅ 完成 | 17エンドポイント |
 | **Admin BFF** | Spring Boot 3.2.1 | 19 Java | ✅ 完成 | 15エンドポイント |
@@ -104,7 +104,7 @@
 
 ### 1. データベース層 ✅
 
-**技術**: PostgreSQL 16  
+**技術**: SQLite  
 **状態**: ✅ 完全稼働
 
 #### テーブル構成（6テーブル）
@@ -371,7 +371,7 @@
 #### テストカテゴリ（5種類）
 
 1. **全コンポーネント統合テスト（5ケース）** ✅
-   - PostgreSQL → Web API → BFF → Frontend のE2E
+   - SQLite → Web API → BFF → Frontend のE2E
    
 2. **機能フラグシナリオテスト（4ケース）** ✅
    - 機能フラグによる動的制御の検証
@@ -410,8 +410,8 @@ cd /path/to/ws-demo-mobile-app
 docker-compose up -d
 
 # 起動確認
-docker ps | grep postgres
-# PostgreSQL:5432 が起動し、スキーマ・初期データが自動投入される
+ls -la ./data/mobile_app.db
+# SQLiteデータベースが作成され、スキーマ・初期データが自動投入される
 ```
 
 #### Step 2: バックエンド起動
@@ -596,7 +596,8 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/mobile/products
   - Mobile BFF (x2)
   - Admin BFF (x2)
   ↓
-[RDS PostgreSQL] (Multi-AZ)
+[RDS] (Multi-AZ)
+  ※開発時はSQLite（本番時はRDS等に移行）
   ↓
 [S3] (静的ファイル、ログ)
 ```
@@ -612,7 +613,8 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/mobile/products
   - Mobile BFF (Auto-scaling)
   - Admin BFF (Auto-scaling)
   ↓
-[Cloud SQL PostgreSQL] (HA構成)
+[Cloud SQL] (HA構成)
+  ※開発時はSQLite（本番時はCloud SQL等に移行）
   ↓
 [Cloud Storage] (静的ファイル、ログ)
 ```
@@ -628,7 +630,8 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/mobile/products
   - Mobile BFF
   - Admin BFF
   ↓
-[Azure Database for PostgreSQL] (Flexible Server)
+[Azure Database] (Flexible Server)
+  ※開発時はSQLite（本番時はAzure Database等に移行）
   ↓
 [Azure Blob Storage] (静的ファイル、ログ)
 ```
@@ -640,8 +643,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8081/api/mobile/products
 **Web API**
 ```bash
 # データベース
-DB_HOST=<PostgreSQLホスト>
-DB_PORT=5432
+DB_PATH=./data/mobile_app.db
 DB_NAME=mobile_app_db
 DB_USER=<データベースユーザー>
 DB_PASSWORD=<データベースパスワード>
@@ -795,8 +797,8 @@ docker push <account-id>.dkr.ecr.ap-northeast-1.amazonaws.com/mobile-app/web-api
 #### 3. データベースマイグレーション
 
 ```bash
-# PostgreSQLに接続
-psql -h <本番DBホスト> -U <DBユーザー> -d mobile_app_db
+# SQLiteに接続
+sqlite3 ./data/mobile_app.db
 
 # スキーマ作成
 \i database/schema/01_create_tables.sql
@@ -933,7 +935,7 @@ gcloud run services update-traffic web-api --to-revisions=<前リビジョン>=1
 | | Java | 17 |
 | | Spring Security | 3.2.1 |
 | | JWT | jjwt 0.12.3 |
-| **データベース** | PostgreSQL | 16 |
+| **データベース** | SQLite | latest |
 | **iOS** | Swift | 5.9+ |
 | | SwiftUI | Latest |
 | **Android** | Kotlin | 1.9+ |

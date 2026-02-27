@@ -32,7 +32,7 @@
 | Mobile BFF | Spring Boot latest | 全エンドポイント |
 | Admin BFF | Spring Boot latest | 全エンドポイント |
 | Admin Web | Vue.js latest | 全画面 |
-| PostgreSQL | Latest | データ整合性 |
+| SQLite | Latest | データ整合性 |
 
 ### 2.2 テストレベル
 
@@ -50,7 +50,7 @@
 
 ```
 ┌─────────────────┐
-│   PostgreSQL    │ ← Port 5432
+│   SQLite        │ ← ファイルベース
 └────────┬────────┘
          │
 ┌────────┴────────┐
@@ -101,10 +101,10 @@
 
 **前提条件**:
 - Docker環境が利用可能
-- ポート 5432, 8080, 8081, 8082, 3000 が空いている
+- ポート 8080, 8081, 8082, 3000 が空いている
 
 **テスト手順**:
-1. `docker-compose up -d` でPostgreSQLを起動
+1. SQLiteデータベースを初期化
 2. Web APIを起動（`./gradlew bootRun` in web-api）
 3. Mobile BFFを起動（`./gradlew bootRun` in mobile-bff）
 4. Admin BFFを起動（`./gradlew bootRun` in admin-bff）
@@ -113,8 +113,8 @@
 
 **期待結果**:
 ```bash
-# PostgreSQL
-psql -h localhost -U demouser -d demo_db -c "SELECT 1;"
+# SQLite
+sqlite3 ./data/mobile_app.db "SELECT 1;"
 → 接続成功
 
 # Web API
@@ -140,7 +140,7 @@ curl http://localhost:3000/
 
 ### TC-INT-002: データベース接続確認
 
-**目的**: 全サービスからPostgreSQLへの接続を確認
+**目的**: 全サービスからSQLiteへの接続を確認
 
 **前提条件**:
 - すべてのサービスが起動済み
@@ -314,7 +314,7 @@ curl http://localhost:3000/
 |-------|------|------------|
 | curl | APIテスト | 標準装備 |
 | jq | JSON整形 | `apt-get install jq` |
-| psql | DB確認 | PostgreSQL Client |
+| sqlite3 | DB確認 | SQLite Client |
 | Postman | API手動テスト（オプション） | https://postman.com |
 
 ### 12.2 便利なコマンド
@@ -339,7 +339,7 @@ curl -w "@curl-format.txt" -o /dev/null -s ...
 | 問題 | 原因 | 解決方法 |
 |------|------|---------|
 | ポートが使用中 | 既にサービスが起動している | `lsof -i :8080` で確認、プロセス停止 |
-| DB接続エラー | PostgreSQLが起動していない | `docker-compose ps` で確認 |
+| DB接続エラー | SQLiteファイルが存在しない | `ls ./data/mobile_app.db` で確認 |
 | 401エラー | トークンが無効または期限切れ | 新しいトークンを取得 |
 | 404エラー | エンドポイントが間違っている | URLを確認 |
 
@@ -349,8 +349,8 @@ curl -w "@curl-format.txt" -o /dev/null -s ...
 # Web API
 tail -f web-api/logs/application.log
 
-# PostgreSQL
-docker-compose logs -f postgres
+# SQLite
+sqlite3 ./data/mobile_app.db "PRAGMA integrity_check;"
 
 # すべてのサービス
 tail -f web-api/logs/application.log \

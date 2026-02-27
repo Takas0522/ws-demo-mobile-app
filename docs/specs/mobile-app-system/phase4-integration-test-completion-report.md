@@ -44,7 +44,7 @@
 
 | スクリプト | パス | 説明 |
 |----------|------|------|
-| **全サービス起動** | `scripts/start-all-services.sh` | PostgreSQL, Web API, BFF, Admin Webを起動 |
+| **全サービス起動** | `scripts/start-all-services.sh` | SQLite初期化, Web API, BFF, Admin Webを起動 |
 | **全サービス停止** | `scripts/stop-all-services.sh` | すべてのサービスを停止 |
 | **DB リセット** | `scripts/reset-database.sh` | データベースを初期状態に戻す |
 
@@ -229,7 +229,7 @@ docs/
 ### 8.2 環境依存性
 
 - Dockerが必要
-- ポート5432, 8080, 8081, 8082, 3000が空いている必要がある
+- ポート8080, 8081, 8082, 3000が空いている必要がある
 - Java 17以上、Node.js 18以上が必要
 
 ---

@@ -481,7 +481,7 @@ public interface UserFeatureFlagRepository extends JpaRepository<UserFeatureFlag
 | Vue.js | Admin BFF | HTTPS/REST | JWT（ログイン後） |
 | Mobile BFF | Web API | HTTP/REST | JWT転送 |
 | Admin BFF | Web API | HTTP/REST | JWT転送 |
-| Web API | PostgreSQL | JDBC | DB認証 |
+| Web API | SQLite | JDBC/ファイル | 不要 |
 
 ### 4.2 データ形式
 

@@ -338,7 +338,7 @@
 
 | # | ファイルパス | 概要 |
 |---|------------|------|
-| 4 | `docker-compose.yml` | PostgreSQL環境定義 |
+| 4 | `database/init/*.sql` | SQLiteデータベース初期化 |
 
 ### インフラ成果物サマリ
 

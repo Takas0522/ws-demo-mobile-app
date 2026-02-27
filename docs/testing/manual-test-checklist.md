@@ -16,7 +16,7 @@
 
 ### 1.1 サービス起動確認
 
-- [ ] PostgreSQLが起動している（`docker ps`）
+- [ ] SQLiteデータベースファイルが存在する（`ls ./data/mobile_app.db`）
 - [ ] Web APIが起動している（Port 8080）
 - [ ] Mobile BFFが起動している（Port 8081）
 - [ ] Admin BFFが起動している（Port 8082）

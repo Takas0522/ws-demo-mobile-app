@@ -96,8 +96,8 @@
         
         <!-- Database -->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
             <scope>runtime</scope>
         </dependency>
         
@@ -151,7 +151,7 @@
 | Spring Boot | 3.2.x | フレームワーク |
 | Spring Data JPA | 3.2.x | データアクセス |
 | Spring Security | 6.2.x | セキュリティ |
-| PostgreSQL Driver | latest | DBドライバ |
+| SQLite JDBC Driver | latest | DBドライバ |
 | JJWT | 0.12.x | JWT処理 |
 | Lombok | 1.18.x | ボイラープレート削減 |
 
@@ -412,7 +412,7 @@ graph TD
     SpringBoot --> SpringWeb[Spring Web]
     SpringBoot --> SpringData[Spring Data JPA]
     SpringBoot --> SpringSecurity[Spring Security]
-    SpringData --> PostgreSQL[PostgreSQL Driver]
+    SpringData --> SQLite[SQLite JDBC Driver]
     App --> JWT[JJWT]
     App --> Lombok[Lombok]
 ```

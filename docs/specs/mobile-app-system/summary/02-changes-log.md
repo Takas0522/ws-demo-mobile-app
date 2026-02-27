@@ -230,27 +230,24 @@
   - Prettier
   - Docker
   - GitLens
-- ポートフォワーディング設定（8080, 8081, 8082, 5432）
+- ポートフォワーディング設定（8080, 8081, 8082）
 
 ---
 
-### Task 002: PostgreSQL環境構築 (2026-02-11 09:00:00 ～ 09:05:00)
+### Task 002: SQLiteデータベース構築 (2026-02-11 09:00:00 ～ 09:05:00)
 
 #### 作成ファイル
 
-1. `docker-compose.yml` - PostgreSQL環境定義
+1. `docker-compose.yml` - SQLite環境定義
 2. `.env.example` - 環境変数テンプレート
 
 #### 実装内容
 
-- PostgreSQL 16コンテナの設定
+- SQLiteデータベースの設定
 - データベース`mobile_app`の自動作成
 - ヘルスチェック機能の実装
-- ポート設定: 5432
 - 環境変数による設定外部化
-  - POSTGRES_USER
-  - POSTGRES_PASSWORD
-  - POSTGRES_DB
+  - DB_PATH
   - JWT_SECRET
   - JWT_EXPIRATION
 
@@ -282,7 +279,7 @@
 - `updated_at`自動更新トリガー（全テーブル）
 
 **拡張機能**:
-- UUID拡張の有効化（`uuid-ossp`）
+- UUID生成はアプリケーション側で実施
 
 ---
 
@@ -339,13 +336,13 @@
 - Spring Data JPA
 - Spring Security
 - Spring Actuator
-- PostgreSQL Driver
+- SQLite JDBC Driver
 - JWT (io.jsonwebtoken:jjwt 0.12.3)
 - Lombok
 
 **設定**:
 - サーバーポート: 8080
-- データソース設定（PostgreSQL接続）
+- データソース設定（SQLite接続）
 - JPA設定（DDL auto: validate）
 - JWT設定（有効期限: 24時間）
 - BCryptPasswordEncoderのBean定義
@@ -460,7 +457,7 @@
 
 **変更内容**:
 - DevContainer環境構築（Java 17、Maven、Node.js）
-- PostgreSQL環境構築（Docker Compose）
+- SQLiteデータベース構築
 - データベーススキーマ作成（6テーブル）
 - 初期データ投入スクリプト作成
 - Web API Spring Bootプロジェクト作成

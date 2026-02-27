@@ -63,7 +63,7 @@ graph TB
     end
     
     subgraph "Data Layer"
-        PostgreSQL[(PostgreSQL<br/>Database)]
+        SQLite[(SQLite<br/>Database)]
     end
     
     iOS -->|HTTPS| MobileBFF
@@ -71,7 +71,7 @@ graph TB
     AdminWeb -->|HTTPS| AdminBFF
     MobileBFF -->|JWT| WebAPI
     AdminBFF -->|JWT| WebAPI
-    WebAPI -->|SQL| PostgreSQL
+    WebAPI -->|SQL| SQLite
     
     style iOS fill:#e1f5ff
     style Android fill:#a5d6a7
@@ -79,7 +79,7 @@ graph TB
     style MobileBFF fill:#ffccbc
     style AdminBFF fill:#ffccbc
     style WebAPI fill:#ffab91
-    style PostgreSQL fill:#ce93d8
+    style SQLite fill:#ce93d8
 ```
 
 ### 2.2 コンポーネント詳細
@@ -92,7 +92,7 @@ graph TB
 | **Admin Web** | Vue.js (latest) | 管理者用Webアプリ | SPA構成 |
 | **Admin BFF** | Java Spring Boot (latest) | 管理Web用BFF | WebAPIのファサード |
 | **Web API** | Java Spring Boot (latest) | ビジネスロジック層 | JWT認証保護 |
-| **PostgreSQL** | PostgreSQL (latest) | データ永続化層 | Docker構築 |
+| **SQLite** | SQLite | データ永続化層 | ファイルベース |
 
 ## 3. 主要機能概要
 
@@ -140,7 +140,7 @@ graph TB
 - ✅ Vue.js SPAアプリケーション開発
 - ✅ Spring Boot BFF開発
 - ✅ Spring Boot Web API開発
-- ✅ PostgreSQL データベース設計・構築
+- ✅ SQLite データベース設計・構築
 - ✅ Docker環境構築
 - ✅ DevContainer開発環境構築（Web系）
 - ✅ JWT認証実装
@@ -188,7 +188,7 @@ graph TB
 | PRE-001 | デモ用途 | 本システムはデモンストレーション用であり、本番運用は想定しない |
 | PRE-002 | 開発環境 | Web開発はDevContainer環境で行われる |
 | PRE-003 | モバイル開発環境 | iOS: Xcode、Android: Android Studio |
-| PRE-004 | Docker環境 | PostgreSQLはDocker上で動作する |
+| PRE-004 | SQLite | SQLiteはファイルベースで動作する |
 | PRE-005 | マスタデータ | ユーザー・商品データは事前にDBに登録される |
 | PRE-006 | ネットワーク | 常時インターネット接続環境を想定 |
 
@@ -200,7 +200,7 @@ graph TB
 | CON-002 | 購入単位100個固定 | 仕様による制約 |
 | CON-003 | JWT認証必須 | セキュリティ要件 |
 | CON-004 | BFFパターン必須 | アーキテクチャ要件 |
-| CON-005 | 単一DB | PostgreSQL単一インスタンス |
+| CON-005 | 単一DB | SQLite単一ファイル |
 
 ### 5.3 ビジネス制約
 
@@ -278,7 +278,7 @@ graph TB
 ```mermaid
 graph LR
     A[リポジトリクローン] --> B[DevContainerセットアップ]
-    B --> C[PostgreSQL起動]
+    B --> C[SQLiteデータベース初期化]
     C --> D[初期データ投入]
     D --> E[開発開始]
     

@@ -108,7 +108,7 @@
 | Web API | 2コア | 2GB | 10GB |
 | Mobile BFF | 1コア | 1GB | 5GB |
 | Admin BFF | 1コア | 1GB | 5GB |
-| PostgreSQL | 2コア | 2GB | 20GB |
+| SQLite | - | - | 1GB |
 
 **注意**: デモ用途のため、本番環境でのリソース最適化は不要
 
@@ -586,7 +586,7 @@
 | Web開発 | DevContainer（Docker） |
 | iOS開発 | Xcode（macOS） |
 | Android開発 | Android Studio |
-| DB | Docker (PostgreSQL) |
+| DB | SQLite（ファイルベース） |
 
 ---
 

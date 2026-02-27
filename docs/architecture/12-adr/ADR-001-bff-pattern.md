@@ -37,8 +37,8 @@ mobile-app-system では、以下の要件があります：
 ### アーキテクチャ
 
 ```
-[iOS/Android] --> [Mobile BFF] --> [Web API] --> [PostgreSQL]
-[Admin Web]   --> [Admin BFF]  --> [Web API] --> [PostgreSQL]
+[iOS/Android] --> [Mobile BFF] --> [Web API] --> [SQLite]
+[Admin Web]   --> [Admin BFF]  --> [Web API] --> [SQLite]
 ```
 
 ### BFFの責務

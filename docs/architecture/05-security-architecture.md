@@ -305,7 +305,7 @@ public class PurchaseService {
 graph LR
     Client[クライアント] -->|TLS 1.2+<br/>HTTPS| BFF[BFF]
     BFF -->|TLS 1.2+<br/>HTTPS| WebAPI[Web API]
-    WebAPI -->|JDBC<br/>TLS可能| DB[(PostgreSQL)]
+    WebAPI -->|JDBC/ファイル| DB[(SQLite)]
     
     style Client fill:#e3f2fd
     style BFF fill:#fff9c4
@@ -332,11 +332,11 @@ server:
 
 | データ種別 | 保存場所 | 暗号化 | 方式 |
 |-----------|---------|-------|------|
-| **パスワード** | PostgreSQL | ✅ | bcrypt (cost=10) |
+| **パスワード** | SQLite | ✅ | bcrypt (cost=10) |
 | **JWT Token（モバイル）** | Keychain/EncryptedPrefs | ✅ | AES-256 |
 | **JWT Token（Web）** | localStorage | ❌ | 平文（XSSリスク） |
-| **商品情報** | PostgreSQL | ❌ | 平文（デモ用途） |
-| **購入情報** | PostgreSQL | ❌ | 平文（デモ用途） |
+| **商品情報** | SQLite | ❌ | 平文（デモ用途） |
+| **購入情報** | SQLite | ❌ | 平文（デモ用途） |
 
 #### パスワードハッシュ化（bcrypt）
 

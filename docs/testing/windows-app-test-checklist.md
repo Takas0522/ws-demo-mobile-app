@@ -28,14 +28,14 @@
 |------|------|
 | OS | Windows 10 以上 |
 | Backend | Mobile BFF が起動していること（Port 8081） |
-| データベース | PostgreSQL が起動し、初期データが投入されていること |
+| データベース | SQLite データベースファイルが存在し、初期データが投入されていること |
 | テストユーザー | user001 / password123 |
 | ネットワーク | localhost でBFFにアクセス可能であること |
 
 ### 1.2 事前確認チェックリスト
 
 - [ ] Windows 10 以上の環境が準備されている
-- [ ] PostgreSQL が起動している（`docker ps` で確認）
+- [ ] SQLite データベースファイルが存在する（`ls ./data/mobile_app.db` で確認）
 - [ ] Web API が起動している（Port 8080）
 - [ ] Mobile BFF が起動している（Port 8081）
 - [ ] テスト用ユーザーアカウント（user001 / password123）でAPIログインが成功する

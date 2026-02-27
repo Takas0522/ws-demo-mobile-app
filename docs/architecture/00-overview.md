@@ -82,7 +82,7 @@ graph TB
     end
     
     subgraph "Data Layer"
-        PostgreSQL[(PostgreSQL<br/>Port:5432)]
+        SQLite[(SQLite<br/>ファイルベース)]
     end
     
     iOS -->|HTTPS/REST| MobileBFF
@@ -90,7 +90,7 @@ graph TB
     AdminWeb -->|HTTPS/REST| AdminBFF
     MobileBFF -->|HTTPS/JWT| WebAPI
     AdminBFF -->|HTTPS/JWT| WebAPI
-    WebAPI -->|JDBC/SQL| PostgreSQL
+    WebAPI -->|JDBC/SQL| SQLite
     
     style iOS fill:#e1f5ff
     style Android fill:#a5d6a7
@@ -98,7 +98,7 @@ graph TB
     style MobileBFF fill:#ffccbc
     style AdminBFF fill:#ffccbc
     style WebAPI fill:#ffab91
-    style PostgreSQL fill:#ce93d8
+    style SQLite fill:#ce93d8
 ```
 
 ### 3.3 レイヤー構成
@@ -125,7 +125,7 @@ graph TD
     end
     
     subgraph "データ層"
-        DB[(PostgreSQL)]
+        DB[(SQLite)]
     end
     
     P1 --> B1
@@ -149,7 +149,7 @@ graph TD
 | **管理Web（Frontend）** | Vue.js | latest | 管理画面SPA |
 | **管理BFF** | Java Spring Boot | latest | 管理画面向けBFF |
 | **Web API** | Java Spring Boot | latest | ビジネスロジック層 |
-| **データベース** | PostgreSQL | latest | RDBMS |
+| **データベース** | SQLite | latest | 組み込みRDBMS |
 | **認証** | JWT | - | トークンベース認証 |
 | **開発環境（Web）** | DevContainer | - | Docker開発環境 |
 | **IDE（iOS）** | Xcode | latest | iOS開発環境 |
@@ -165,7 +165,7 @@ graph TD
   - Spring Data JPA
   - Spring Security
   - JWT Library (jjwt)
-  - PostgreSQL JDBC Driver
+  - SQLite JDBC Driver
   - Lombok（オプション）
   - Validation
 
@@ -201,7 +201,7 @@ graph TD
 |--------------|------|------|
 | コンテナ | Docker | アプリケーション実行環境 |
 | 開発環境 | DevContainer | Web開発環境 |
-| データベース | Docker PostgreSQL | データ永続化 |
+| データベース | SQLite（ファイルベース） | データ永続化 |
 | ネットワーク | Docker Compose Network | コンテナ間通信 |
 
 ## 5. アーキテクチャパターン
@@ -317,7 +317,7 @@ sequenceDiagram
 | ID | 制約 | 理由 | 影響 |
 |----|-----|------|------|
 | AC-001 | Spring Boot必須 | 標準化のため | Java最新版使用 |
-| AC-002 | PostgreSQL単一DB | デモ用途 | スケーリング制限 |
+| AC-002 | SQLite単一DB | デモ用途 | スケーリング制限 |
 | AC-003 | JWT認証必須 | セキュリティ要件 | セッション管理方式は使用不可 |
 | AC-004 | BFFパターン必須 | アーキテクチャ要件 | クライアントから直接Web APIアクセス不可 |
 | AC-005 | DevContainer（Web） | 開発環境統一 | Webコンポーネントのみ |
@@ -415,7 +415,7 @@ graph TD
 |------|-----|
 | Spring Boot公式 | https://spring.io/projects/spring-boot |
 | Vue.js公式 | https://vuejs.org/ |
-| PostgreSQL公式 | https://www.postgresql.org/ |
+| SQLite公式 | https://www.sqlite.org/ |
 | OWASP Top 10 | https://owasp.org/www-project-top-ten/ |
 | C4モデル | https://c4model.com/ |
 

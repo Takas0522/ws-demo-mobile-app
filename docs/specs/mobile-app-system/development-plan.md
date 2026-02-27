@@ -27,7 +27,7 @@
 ### 1.2 システム構成
 
 ```
-データ層: PostgreSQL（Docker）
+データ層: SQLite（ファイルベース）
     ↓
 API層: Web API（Spring Boot）
     ↓
@@ -61,7 +61,7 @@ BFF層: Mobile BFF、Admin BFF（Spring Boot）
 | ID | タスク名 | 依存 | 規模 | 優先度 | 検証方法 |
 |----|---------|------|------|--------|---------|
 | task-001 | DevContainer環境構築 | - | S | High | コンテナ起動 |
-| task-002 | PostgreSQL環境構築 | - | S | High | DB起動・接続確認 |
+| task-002 | SQLiteデータベース構築 | - | S | High | DB初期化・接続確認 |
 | task-003 | データベーススキーマ作成 | task-002 | M | High | テーブル作成確認 |
 | task-004 | 初期データ投入スクリプト作成 | task-003 | M | High | データ投入確認 |
 | task-005 | Web APIプロジェクト雛形作成 | task-001 | S | High | ビルド成功 |
@@ -70,7 +70,7 @@ BFF層: Mobile BFF、Admin BFF（Spring Boot）
 | task-008 | DB接続確認（Web API） | task-005, task-004 | S | High | DB接続成功 |
 
 **フェーズゴール**: 
-- PostgreSQLが起動し、テーブル・初期データが投入されている
+- SQLiteデータベースが作成され、テーブル・初期データが投入されている
 - Web API、2つのBFFプロジェクトがビルド可能
 
 ---
@@ -297,7 +297,7 @@ graph TD
 
 | コンポーネント | 環境 |
 |--------------|------|
-| データベース | PostgreSQL（Docker） |
+| データベース | SQLite（ファイルベース） |
 | Web API / BFF | Spring Boot（DevContainer） |
 | 管理Web | Vue.js（DevContainer） |
 | iOS | Xcode（ローカル） |

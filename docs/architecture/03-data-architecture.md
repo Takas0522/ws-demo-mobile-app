@@ -23,7 +23,7 @@
 
 | 層 | データストア | 用途 |
 |---|------------|------|
-| **永続層** | PostgreSQL | マスターデータ、トランザクションデータ |
+| **永続層** | SQLite | マスターデータ、トランザクションデータ |
 | **キャッシュ層** | なし | デモ用途のため不要 |
 | **クライアント層** | Keychain/EncryptedPrefs/localStorage | JWT Token保存 |
 
@@ -48,7 +48,7 @@ graph TD
     end
     
     subgraph "Database Layer"
-        DB[(PostgreSQL<br/>RDBMS)]
+        DB[(SQLite<br/>RDBMS)]
     end
     
     Client -->|HTTP/JSON| BFF
@@ -90,7 +90,7 @@ erDiagram
     FEATURE_FLAGS ||--o{ USER_FEATURE_FLAGS : "設定される"
     
     USERS {
-        bigserial user_id PK
+        integer user_id PK
         varchar user_name
         varchar login_id UK
         varchar password_hash
@@ -100,7 +100,7 @@ erDiagram
     }
     
     PRODUCTS {
-        bigserial product_id PK
+        integer product_id PK
         varchar product_name
         integer unit_price
         text description
@@ -120,14 +120,14 @@ erDiagram
     }
     
     FAVORITES {
-        bigserial favorite_id PK
+        integer favorite_id PK
         bigint user_id FK
         bigint product_id FK
         timestamp created_at
     }
     
     FEATURE_FLAGS {
-        bigserial flag_id PK
+        integer flag_id PK
         varchar flag_key UK
         varchar flag_name
         boolean default_value
@@ -135,7 +135,7 @@ erDiagram
     }
     
     USER_FEATURE_FLAGS {
-        bigserial user_flag_id PK
+        integer user_flag_id PK
         bigint user_id FK
         bigint flag_id FK
         boolean is_enabled
@@ -287,7 +287,7 @@ graph TD
     Service[Service Layer] --> Repository[Repository Interface]
     Repository --> JpaRepository[JpaRepository]
     JpaRepository --> EntityManager[EntityManager]
-    EntityManager --> DB[(PostgreSQL)]
+    EntityManager --> DB[(SQLite)]
 ```
 
 ### 4.2 Repository インターフェース設計
@@ -477,7 +477,7 @@ private Long version;
 ### 6.1 初期化スクリプト構成
 
 ```
-docker/postgres/init/
+database/init/
 ├── 01_create_database.sql     -- データベース作成
 ├── 02_create_tables.sql       -- テーブル作成
 ├── 03_create_indexes.sql      -- インデックス作成
@@ -587,18 +587,24 @@ CREATE UNIQUE INDEX idx_user_feature_flags_user_flag ON user_feature_flags(user_
 | 項目 | 戦略 |
 |------|------|
 | バックアップ頻度 | 手動（必要に応じて） |
-| バックアップ方式 | pg_dump |
+| バックアップ方式 | sqlite3 .dump またはDBファイルコピー |
 | 保存場所 | ローカルディスク |
 | 保持期間 | 規定なし |
 
 ### 8.2 バックアップコマンド
 
 ```bash
-# データベース全体のバックアップ
-pg_dump -U postgres -h localhost -p 5432 mobile_app_db > backup_$(date +%Y%m%d).sql
+# データベース全体のバックアップ（方法1: SQLダンプ）
+sqlite3 ./data/mobile_app.db .dump > backup_$(date +%Y%m%d).sql
 
-# リストア
-psql -U postgres -h localhost -p 5432 mobile_app_db < backup_20250108.sql
+# データベース全体のバックアップ（方法2: ファイルコピー）
+cp ./data/mobile_app.db backup_$(date +%Y%m%d).db
+
+# リストア（SQLダンプから）
+sqlite3 ./data/mobile_app.db < backup_20250108.sql
+
+# リストア（ファイルコピーから）
+cp backup_20250108.db ./data/mobile_app.db
 ```
 
 **注意**: デモ用途のため、自動バックアップは実装しない
@@ -616,12 +622,9 @@ psql -U postgres -h localhost -p 5432 mobile_app_db < backup_20250108.sql
 ### 9.2 アクセス制御
 
 ```sql
--- データベースユーザー作成
-CREATE USER app_user WITH PASSWORD 'app_password';
-
--- 権限付与
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;
+-- SQLiteはファイルベースのため、データベースユーザーやGRANT権限管理は不要です。
+-- アクセス制御はファイルシステムのパーミッションで管理します。
+-- 例: chmod 640 ./data/mobile_app.db
 ```
 
 ### 9.3 データ監査（将来拡張）

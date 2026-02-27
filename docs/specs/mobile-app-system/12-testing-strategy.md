@@ -552,7 +552,7 @@ graph TD
 | Web API | 開発環境サーバー |
 | Mobile BFF | 開発環境サーバー |
 | Admin BFF | 開発環境サーバー |
-| PostgreSQL | Dockerコンテナ |
+| SQLite | ファイルベース |
 | iOSシミュレータ | Xcode |
 | Androidエミュレータ | Android Studio |
 | Webブラウザ | Chrome最新版 |

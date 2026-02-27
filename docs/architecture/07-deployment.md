@@ -49,7 +49,7 @@ graph TB
         end
         
         subgraph "Docker"
-            DB[(PostgreSQL<br/>docker-compose up)]
+            DB[(SQLite<br/>ファイルベース)]
         end
     end
 ```
@@ -125,18 +125,17 @@ cd android
 
 ## 4. デプロイメント手順
 
-### 4.1 PostgreSQL デプロイ
+### 4.1 SQLite データベース準備
 
 ```bash
-# 1. PostgreSQLコンテナ起動
-cd docker/postgres
-docker-compose up -d
+# 1. データベースディレクトリ作成
+mkdir -p data
 
-# 2. 初期化確認
-docker logs mobile-app-postgres
+# 2. データベース初期化
+sqlite3 ./data/mobile_app.db < database/init/02_create_tables.sql
 
 # 3. 接続テスト
-psql -h localhost -p 5432 -U postgres -d mobile_app_db
+sqlite3 ./data/mobile_app.db ".tables"
 ```
 
 ### 4.2 Web API デプロイ
@@ -204,7 +203,7 @@ npm run dev
 
 ```mermaid
 graph TD
-    Start([デプロイ開始]) --> DB[1. PostgreSQL起動]
+    Start([デプロイ開始]) --> DB[1. SQLiteデータベース初期化]
     DB --> WebAPI[2. Web API起動]
     WebAPI --> BFF1[3. Mobile BFF起動]
     WebAPI --> BFF2[4. Admin BFF起動]
@@ -225,12 +224,11 @@ graph TD
 
 echo "Starting Mobile App System..."
 
-# 1. PostgreSQL起動
-echo "1. Starting PostgreSQL..."
-cd docker/postgres
-docker-compose up -d
-cd ../..
-sleep 5
+# 1. SQLiteデータベース初期化
+echo "1. Initializing SQLite database..."
+mkdir -p data
+sqlite3 ./data/mobile_app.db < database/init/02_create_tables.sql
+sleep 2
 
 # 2. Web API起動
 echo "2. Starting Web API..."
@@ -277,10 +275,7 @@ echo "Stopping Mobile App System..."
 pkill -f "spring-boot:run"
 pkill -f "npm run dev"
 
-# PostgreSQL停止
-cd docker/postgres
-docker-compose down
-cd ../..
+# SQLiteはファイルベースのため停止不要
 
 echo "All services stopped!"
 ```
@@ -353,26 +348,17 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: mobile_app_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
+  # SQLiteはファイルベースのため、データベースコンテナは不要
+  # データベースファイルはボリュームマウントで永続化
 
   web-api:
     build: ./src/web-api
     ports:
       - "8080:8080"
     environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
+      DB_PATH: /app/data/mobile_app.db
     depends_on:
-      - postgres
+      - web-api
 
   mobile-bff:
     build: ./src/mobile-bff
@@ -401,8 +387,7 @@ services:
     depends_on:
       - admin-bff
 
-volumes:
-  postgres-data:
+volumes: {}
 ```
 
 **注意**: デモ用途のため、現時点では実装しない
@@ -479,7 +464,7 @@ cd src/web-api
 java -jar target/web-api-0.9.0.jar
 
 # 3. データベースロールバック（必要に応じて）
-psql -h localhost -U postgres -d mobile_app_db < backup_20250107.sql
+sqlite3 ./data/mobile_app.db < backup_20250107.sql
 ```
 
 ### 9.2 本番環境ロールバック（参考）
@@ -498,7 +483,7 @@ psql -h localhost -U postgres -d mobile_app_db < backup_20250107.sql
 - [ ] コードがビルドできる
 - [ ] 環境変数が設定されている
 - [ ] データベースが起動している
-- [ ] ポートが空いている（8080, 8081, 8082, 5432, 3000）
+- [ ] ポートが空いている（8080, 8081, 8082, 3000）
 - [ ] 依存関係がインストールされている
 
 ### 10.2 デプロイ後チェック
@@ -517,7 +502,7 @@ psql -h localhost -U postgres -d mobile_app_db < backup_20250107.sql
 | 問題 | 原因 | 解決方法 |
 |------|------|---------|
 | ポートが使用中 | 既にプロセスが起動 | `lsof -i :8080` でプロセス確認、kill |
-| DB接続エラー | PostgreSQL未起動 | `docker-compose up -d` で起動 |
+| DB接続エラー | SQLiteファイル未作成 | データベースを初期化 |
 | ビルドエラー | 依存関係不足 | `mvn clean install` または `npm install` |
 | 環境変数エラー | .envファイル未設定 | .envファイルを作成・設定 |
 
@@ -527,8 +512,8 @@ psql -h localhost -U postgres -d mobile_app_db < backup_20250107.sql
 # Spring Bootアプリケーションログ
 tail -f logs/application.log
 
-# Docker PostgreSQLログ
-docker logs mobile-app-postgres
+# SQLiteデータベース確認
+sqlite3 ./data/mobile_app.db "PRAGMA integrity_check;"
 
 # Vue.js開発サーバーログ
 # コンソール出力を確認

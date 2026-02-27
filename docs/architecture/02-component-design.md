@@ -58,7 +58,7 @@ graph TB
     end
     
     subgraph "Database"
-        DB[(PostgreSQL)]
+        DB[(SQLite)]
     end
     
     iOSAPI --> MobileBFFController
@@ -691,7 +691,7 @@ graph TD
     Security --> Service[Service Layer<br/>@Service]
     Service --> Repository[Repository Layer<br/>@Repository]
     Repository --> JPA[JPA<br/>Spring Data JPA]
-    JPA --> DB[(PostgreSQL)]
+    JPA --> DB[(SQLite)]
 ```
 
 ### 8.3 パッケージ構造
@@ -828,7 +828,7 @@ public class JwtTokenProvider {
 | Vue.js | Admin BFF | HTTPS/REST | JWT（ログイン後） |
 | Mobile BFF | Web API | HTTP/REST | JWT転送 |
 | Admin BFF | Web API | HTTP/REST | JWT転送 |
-| Web API | PostgreSQL | JDBC | DB認証 |
+| Web API | SQLite | JDBC/ファイル | 不要 |
 
 ### 9.2 データ形式
 

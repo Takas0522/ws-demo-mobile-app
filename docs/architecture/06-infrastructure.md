@@ -41,7 +41,7 @@ graph TB
         end
         
         subgraph "Docker環境"
-            DB[(PostgreSQL<br/>:5432)]
+            DB[(SQLite<br/>ファイルベース)]
         end
     end
     
@@ -50,7 +50,7 @@ graph TB
     Vue -.->|localhost:8082| AdminBFF
     MobileBFF -.->|localhost:8080| WebAPI
     AdminBFF -.->|localhost:8080| WebAPI
-    WebAPI -.->|localhost:5432| DB
+    WebAPI -.->|file://| DB
 ```
 
 ### 2.2 開発環境要件
@@ -60,7 +60,7 @@ graph TB
 | **iOS開発** | macOS、Xcode latest | Xcodeのみ |
 | **Android開発** | Windows/macOS/Linux、Android Studio latest | - |
 | **Web開発** | Windows/macOS/Linux、VS Code、Docker | DevContainer使用 |
-| **PostgreSQL** | Docker環境 | 全開発者共通 |
+| **SQLite** | ファイルベース | 全開発者共通 |
 
 ## 3. DevContainer構成
 
@@ -112,7 +112,7 @@ Web関連の開発（Vue.js、Spring Boot）はDevContainer内で行います。
       }
     }
   },
-  "forwardPorts": [3000, 8080, 8081, 8082, 5432],
+  "forwardPorts": [3000, 8080, 8081, 8082],
   "postCreateCommand": "echo 'DevContainer ready!'"
 }
 ```
@@ -154,8 +154,8 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# PostgreSQL クライアント
-RUN apt-get install -y postgresql-client
+# SQLite クライアント
+RUN apt-get install -y sqlite3
 
 # クリーンアップ
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -163,43 +163,25 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ## 4. Docker構成
 
-### 4.1 PostgreSQL コンテナ
+### 4.1 SQLite データベース
 
-#### docker/postgres/docker-compose.yml
+#### データベース初期化
 
-```yaml
-version: '3.8'
+```bash
+# SQLiteはファイルベースのため、Dockerコンテナは不要です。
+# データベースファイルは ./data/mobile_app.db に作成されます。
 
-services:
-  postgres:
-    image: postgres:latest
-    container_name: mobile-app-postgres
-    environment:
-      POSTGRES_DB: mobile_app_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      TZ: Asia/Tokyo
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./init:/docker-entrypoint-initdb.d:ro
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres-data:
-    driver: local
+# 初期化スクリプトの実行
+sqlite3 ./data/mobile_app.db < database/init/02_create_tables.sql
+sqlite3 ./data/mobile_app.db < database/init/03_create_indexes.sql
+sqlite3 ./data/mobile_app.db < database/init/04_insert_master_data.sql
+sqlite3 ./data/mobile_app.db < database/init/05_insert_sample_data.sql
 ```
 
 ### 4.2 初期化スクリプト
 
 ```
-docker/postgres/init/
+database/init/
 ├── 01_create_database.sql      # データベース作成
 ├── 02_create_tables.sql        # テーブル作成
 ├── 03_create_indexes.sql       # インデックス作成
@@ -214,7 +196,7 @@ docker/postgres/init/
 -- 追加の設定があればここに記述
 
 -- 拡張機能の有効化
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- SQLiteは拡張機能不要（UUID生成はアプリケーション側で実施）
 
 -- タイムゾーン設定
 SET timezone = 'Asia/Tokyo';
@@ -225,7 +207,7 @@ SET timezone = 'Asia/Tokyo';
 ```sql
 -- ユーザーテーブル
 CREATE TABLE users (
-    user_id BIGSERIAL PRIMARY KEY,
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_name VARCHAR(100) NOT NULL,
     login_id VARCHAR(50) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -236,7 +218,7 @@ CREATE TABLE users (
 
 -- 商品テーブル
 CREATE TABLE products (
-    product_id BIGSERIAL PRIMARY KEY,
+    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_name VARCHAR(100) NOT NULL,
     unit_price INTEGER NOT NULL CHECK (unit_price >= 1),
     description TEXT,
@@ -247,7 +229,7 @@ CREATE TABLE products (
 
 -- 購入履歴テーブル
 CREATE TABLE purchases (
-    purchase_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    purchase_id TEXT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity > 0 AND quantity % 100 = 0),
@@ -261,7 +243,7 @@ CREATE TABLE purchases (
 
 -- お気に入りテーブル
 CREATE TABLE favorites (
-    favorite_id BIGSERIAL PRIMARY KEY,
+    favorite_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -272,7 +254,7 @@ CREATE TABLE favorites (
 
 -- 機能フラグマスタ
 CREATE TABLE feature_flags (
-    flag_id BIGSERIAL PRIMARY KEY,
+    flag_id INTEGER PRIMARY KEY AUTOINCREMENT,
     flag_key VARCHAR(50) NOT NULL UNIQUE,
     flag_name VARCHAR(100) NOT NULL,
     default_value BOOLEAN NOT NULL DEFAULT FALSE,
@@ -281,7 +263,7 @@ CREATE TABLE feature_flags (
 
 -- ユーザー別機能フラグ
 CREATE TABLE user_feature_flags (
-    user_flag_id BIGSERIAL PRIMARY KEY,
+    user_flag_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id BIGINT NOT NULL,
     flag_id BIGINT NOT NULL,
     is_enabled BOOLEAN NOT NULL DEFAULT FALSE,
@@ -314,7 +296,7 @@ CREATE INDEX idx_purchases_purchased_at ON purchases(purchased_at);
 
 | サービス | ポート | プロトコル | 用途 |
 |---------|-------|----------|------|
-| PostgreSQL | 5432 | TCP | データベース |
+| SQLite | - | ファイルアクセス | データベース（ファイルベース） |
 | Web API | 8080 | HTTP | ビジネスロジックAPI |
 | Mobile BFF | 8081 | HTTP | モバイルアプリ向けBFF |
 | Admin BFF | 8082 | HTTP | 管理Webアプリ向けBFF |
@@ -335,7 +317,7 @@ graph LR
         end
         
         subgraph "Database Layer"
-            DB[(PostgreSQL:5432)]
+            DB[(SQLite)]
         end
     end
     
@@ -344,7 +326,7 @@ graph LR
     AdminWeb -->|HTTP| AdminBFF
     AdminBFF -->|HTTP| WebAPI
     MobileBFF -->|HTTP| WebAPI
-    WebAPI -->|JDBC| DB
+    WebAPI -->|JDBC/File| DB
 ```
 
 ## 6. 環境変数管理
@@ -356,9 +338,8 @@ graph LR
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:mobile_app_db}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:sqlite:${DB_PATH:./data/mobile_app.db}
+    driver-class-name: org.sqlite.JDBC
   jpa:
     hibernate:
       ddl-auto: validate
@@ -408,11 +389,7 @@ logging:
 
 ```env
 # Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=mobile_app_db
-DB_USER=postgres
-DB_PASSWORD=postgres
+DB_PATH=./data/mobile_app.db
 
 # JWT
 JWT_SECRET_KEY=your-secret-key-at-least-32-characters-long
@@ -464,40 +441,39 @@ keystore.p12
 
 ## 7. データベース管理
 
-### 7.1 データベース起動・停止
+### 7.1 データベース管理
 
 ```bash
-# 起動
-cd docker/postgres
-docker-compose up -d
+# データベース初期化
+sqlite3 ./data/mobile_app.db < database/init/02_create_tables.sql
 
-# 停止
-docker-compose down
+# データベースファイル確認
+ls -la ./data/mobile_app.db
 
-# ログ確認
-docker-compose logs -f
-
-# データボリューム削除（注意: データが消えます）
-docker-compose down -v
+# データベース削除（注意: データが消えます）
+rm ./data/mobile_app.db
 ```
 
 ### 7.2 データベース接続
 
 ```bash
-# psqlでの接続
-psql -h localhost -p 5432 -U postgres -d mobile_app_db
+# sqlite3での接続
+sqlite3 ./data/mobile_app.db
 
-# パスワード: postgres
+# パスワード不要（ファイルベース）
 ```
 
 ### 7.3 バックアップ・リストア
 
 ```bash
-# バックアップ
-pg_dump -h localhost -p 5432 -U postgres mobile_app_db > backup_$(date +%Y%m%d).sql
+# バックアップ（SQLダンプ）
+sqlite3 ./data/mobile_app.db .dump > backup_$(date +%Y%m%d).sql
+
+# バックアップ（ファイルコピー）
+cp ./data/mobile_app.db backup_$(date +%Y%m%d).db
 
 # リストア
-psql -h localhost -p 5432 -U postgres mobile_app_db < backup_20250108.sql
+sqlite3 ./data/mobile_app.db < backup_20250108.sql
 ```
 
 ## 8. アプリケーション起動手順
@@ -548,7 +524,7 @@ npm run dev
 | Web API | http://localhost:8080/actuator/health | `{"status":"UP"}` |
 | Mobile BFF | http://localhost:8081/actuator/health | `{"status":"UP"}` |
 | Admin BFF | http://localhost:8082/actuator/health | `{"status":"UP"}` |
-| PostgreSQL | `pg_isready -h localhost -p 5432` | `localhost:5432 - accepting connections` |
+| SQLite | `test -f ./data/mobile_app.db` | ファイル存在確認 |
 
 ### 9.2 Spring Boot Actuator設定
 
@@ -567,18 +543,17 @@ management:
 
 ### 10.1 よくある問題
 
-#### PostgreSQLに接続できない
+#### SQLiteデータベースにアクセスできない
 
 ```bash
-# コンテナが起動しているか確認
-docker ps
+# データベースファイルが存在するか確認
+ls -la ./data/mobile_app.db
 
-# ログを確認
-docker logs mobile-app-postgres
+# データベースファイルの権限を確認
+stat ./data/mobile_app.db
 
-# ポートが使用中の場合
-lsof -i :5432  # macOS/Linux
-netstat -ano | findstr :5432  # Windows
+# データベースの整合性チェック
+sqlite3 ./data/mobile_app.db "PRAGMA integrity_check;"
 ```
 
 #### BFFからWeb APIに接続できない
@@ -632,7 +607,7 @@ graph TB
 ### 11.2 推奨インフラ
 
 - **コンピュート**: AWS ECS / Kubernetes
-- **データベース**: AWS RDS PostgreSQL（Multi-AZ）
+- **データベース**: SQLite（ファイルベース）または AWS RDS（本番移行時）
 - **ロードバランサー**: AWS ALB
 - **シークレット管理**: AWS Secrets Manager
 - **ログ**: CloudWatch Logs / ELK Stack

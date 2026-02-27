@@ -19,7 +19,7 @@ Web APIは以下の責務を持ちます：
 
 - **ビジネスロジックの実装**: 商品管理、購入処理、お気に入り管理、機能フラグ管理
 - **認証・認可**: JWTトークン検証、ユーザー種別による権限制御
-- **データアクセス**: PostgreSQLデータベースへのCRUD操作
+- **データアクセス**: SQLiteデータベースへのCRUD操作
 - **トランザクション管理**: データ整合性の保証
 
 ## 2. コンポーネント全体図
@@ -40,7 +40,7 @@ graph TB
     
     subgraph "Data Layer"
         JPA[Spring Data JPA]
-        DB[(PostgreSQL)]
+        DB[(SQLite)]
     end
     
     MobileBFF --> Controller
@@ -67,7 +67,7 @@ graph TB
 | データアクセス | Spring Data JPA | latest |
 | JWT | jjwt | latest |
 | バリデーション | Hibernate Validator | Spring標準 |
-| データベース | PostgreSQL | 16.x |
+| データベース | SQLite | latest |
 | コネクションプール | HikariCP | Spring標準 |
 
 ### 3.2 レイヤー構造
@@ -78,7 +78,7 @@ graph TD
     Security --> Service[Service Layer<br/>@Service]
     Service --> Repository[Repository Layer<br/>@Repository]
     Repository --> JPA[JPA<br/>Spring Data JPA]
-    JPA --> DB[(PostgreSQL)]
+    JPA --> DB[(SQLite)]
 ```
 
 ### 3.3 パッケージ構造
@@ -164,20 +164,18 @@ spring:
   
   # データベース設定
   datasource:
-    url: jdbc:postgresql://localhost:5432/mobile_app_db
-    username: app_user
-    password: ${DB_PASSWORD:password}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:sqlite:./data/mobile_app.db
+    driver-class-name: org.sqlite.JDBC
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
+      maximum-pool-size: 1
+      minimum-idle: 1
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
   
   # JPA設定
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.SQLiteDialect
     hibernate:
       ddl-auto: validate
     show-sql: false

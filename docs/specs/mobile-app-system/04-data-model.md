@@ -15,17 +15,17 @@
 ## 1. データモデル概要
 
 本ドキュメントでは、mobile-app-systemのデータモデルを定義します。
-PostgreSQLデータベースに格納される全テーブルの構造、リレーションシップ、制約を記載します。
+SQLiteデータベースに格納される全テーブルの構造、リレーションシップ、制約を記載します。
 
 ### 1.1 データベース情報
 
 | 項目 | 内容 |
 |------|------|
-| DBMS | PostgreSQL latest |
+| DBMS | SQLite |
 | データベース名 | mobile_app_db |
 | 文字コード | UTF-8 |
 | タイムゾーン | Asia/Tokyo (JST) |
-| 接続プールサイズ | 20 |
+| 接続プールサイズ | 1（SQLiteはシングルライター） |
 
 ## 2. ER図
 
@@ -41,7 +41,7 @@ erDiagram
     FEATURE_FLAGS ||--o{ USER_FEATURE_FLAGS : "設定される"
     
     USERS {
-        bigserial user_id PK
+        integer user_id PK
         varchar user_name
         varchar login_id UK
         varchar password_hash
@@ -51,7 +51,7 @@ erDiagram
     }
     
     PRODUCTS {
-        bigserial product_id PK
+        integer product_id PK
         varchar product_name
         integer unit_price
         text description
@@ -71,14 +71,14 @@ erDiagram
     }
     
     FAVORITES {
-        bigserial favorite_id PK
+        integer favorite_id PK
         bigint user_id FK
         bigint product_id FK
         timestamp created_at
     }
     
     FEATURE_FLAGS {
-        bigserial flag_id PK
+        integer flag_id PK
         varchar flag_key UK
         varchar flag_name
         boolean default_value
@@ -86,7 +86,7 @@ erDiagram
     }
     
     USER_FEATURE_FLAGS {
-        bigserial user_flag_id PK
+        integer user_flag_id PK
         bigint user_id FK
         bigint flag_id FK
         boolean is_enabled
@@ -106,7 +106,7 @@ erDiagram
 
 | 列名 | データ型 | NULL | デフォルト | 制約 | 説明 |
 |------|---------|------|-----------|------|------|
-| user_id | BIGSERIAL | NOT NULL | auto | PK | ユーザーID（主キー） |
+| user_id | INTEGER PRIMARY KEY AUTOINCREMENT | NOT NULL | auto | PK | ユーザーID（主キー） |
 | user_name | VARCHAR(100) | NOT NULL | - | - | ユーザー表示名 |
 | login_id | VARCHAR(50) | NOT NULL | - | UNIQUE | ログインID |
 | password_hash | VARCHAR(255) | NOT NULL | - | - | パスワードハッシュ（bcrypt） |
@@ -151,7 +151,7 @@ VALUES
 
 | 列名 | データ型 | NULL | デフォルト | 制約 | 説明 |
 |------|---------|------|-----------|------|------|
-| product_id | BIGSERIAL | NOT NULL | auto | PK | 商品ID（主キー） |
+| product_id | INTEGER PRIMARY KEY AUTOINCREMENT | NOT NULL | auto | PK | 商品ID（主キー） |
 | product_name | VARCHAR(100) | NOT NULL | - | - | 商品名 |
 | unit_price | INTEGER | NOT NULL | - | CHECK | 単価（円） |
 | description | TEXT | NULL | - | - | 商品説明 |
@@ -189,7 +189,7 @@ VALUES
 
 | 列名 | データ型 | NULL | デフォルト | 制約 | 説明 |
 |------|---------|------|-----------|------|------|
-| purchase_id | UUID | NOT NULL | uuid_generate_v4() | PK | 購入ID（主キー） |
+| purchase_id | TEXT | NOT NULL | アプリケーション側でUUID生成 | PK | 購入ID（主キー） |
 | user_id | BIGINT | NOT NULL | - | FK | ユーザーID |
 | product_id | BIGINT | NOT NULL | - | FK | 商品ID |
 | quantity | INTEGER | NOT NULL | - | CHECK | 購入個数 |
@@ -241,7 +241,7 @@ VALUES
 
 | 列名 | データ型 | NULL | デフォルト | 制約 | 説明 |
 |------|---------|------|-----------|------|------|
-| favorite_id | BIGSERIAL | NOT NULL | auto | PK | お気に入りID（主キー） |
+| favorite_id | INTEGER PRIMARY KEY AUTOINCREMENT | NOT NULL | auto | PK | お気に入りID（主キー） |
 | user_id | BIGINT | NOT NULL | - | FK | ユーザーID |
 | product_id | BIGINT | NOT NULL | - | FK | 商品ID |
 | created_at | TIMESTAMP | NOT NULL | CURRENT_TIMESTAMP | - | 登録日時 |
@@ -283,7 +283,7 @@ VALUES
 
 | 列名 | データ型 | NULL | デフォルト | 制約 | 説明 |
 |------|---------|------|-----------|------|------|
-| flag_id | BIGSERIAL | NOT NULL | auto | PK | フラグID（主キー） |
+| flag_id | INTEGER PRIMARY KEY AUTOINCREMENT | NOT NULL | auto | PK | フラグID（主キー） |
 | flag_key | VARCHAR(50) | NOT NULL | - | UNIQUE | フラグキー（一意） |
 | flag_name | VARCHAR(100) | NOT NULL | - | - | フラグ表示名 |
 | default_value | BOOLEAN | NOT NULL | false | - | デフォルト値 |
@@ -311,7 +311,7 @@ VALUES
 
 | 列名 | データ型 | NULL | デフォルト | 制約 | 説明 |
 |------|---------|------|-----------|------|------|
-| user_flag_id | BIGSERIAL | NOT NULL | auto | PK | 設定ID（主キー） |
+| user_flag_id | INTEGER PRIMARY KEY AUTOINCREMENT | NOT NULL | auto | PK | 設定ID（主キー） |
 | user_id | BIGINT | NOT NULL | - | FK | ユーザーID |
 | flag_id | BIGINT | NOT NULL | - | FK | フラグID |
 | is_enabled | BOOLEAN | NOT NULL | false | - | 有効/無効 |
@@ -455,7 +455,7 @@ UNIQUE (user_id, flag_id)
 
 | データ型 | 使用箇所 | 理由 |
 |---------|---------|------|
-| BIGSERIAL | 主キー（ID） | 自動採番、大容量対応 |
+| INTEGER AUTOINCREMENT | 主キー（ID） | 自動採番 |
 | UUID | purchase_id | グローバル一意性、分散環境対応 |
 | VARCHAR(n) | 文字列 | 可変長、最大長指定 |
 | TEXT | 長文 | 可変長、長さ制限なし |
@@ -465,7 +465,7 @@ UNIQUE (user_id, flag_id)
 
 ## 8. 初期化スクリプト
 
-初期化スクリプトは `/docker/postgres/init/` ディレクトリに配置します。
+初期化スクリプトは `/database/init/` ディレクトリに配置します。
 
 ### 8.1 スクリプト実行順序
 

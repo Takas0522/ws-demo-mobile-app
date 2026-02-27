@@ -87,9 +87,9 @@ Phase 3では、mobile-app-systemの全75タスクを洗い出し、開発計画
 | タスクID | タイトル | 検証コマンド |
 |---------|---------|-------------|
 | task-001 | DevContainer環境構築 | `java -version && node -version` |
-| task-002 | PostgreSQL環境構築 | `docker-compose ps && psql ...` |
-| task-003 | データベーススキーマ作成 | `psql -c '\dt'` |
-| task-004 | 初期データ投入 | `psql -c 'SELECT COUNT(*) FROM users'` |
+| task-002 | SQLiteデータベース構築 | `docker-compose ps && sqlite3 ...` |
+| task-003 | データベーススキーマ作成 | `sqlite3 -c '\dt'` |
+| task-004 | 初期データ投入 | `sqlite3 -c 'SELECT COUNT(*) FROM users'` |
 
 ### Phase 2: Web API実装
 
@@ -192,7 +192,7 @@ Phase 3では、mobile-app-systemの全75タスクを洗い出し、開発計画
 
 ```
 1. task-001（DevContainer構築）
-2. task-002（PostgreSQL構築）
+2. task-002（SQLiteデータベース構築）
 3. task-003（スキーマ作成）
 4. task-004（初期データ投入）
 5. task-005～007（プロジェクト雛形作成）

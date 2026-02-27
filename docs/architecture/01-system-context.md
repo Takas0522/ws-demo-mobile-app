@@ -50,7 +50,7 @@ graph TB
 - Mobile BFF（Spring Boot）
 - Admin BFF（Spring Boot）
 - Web API（Spring Boot）
-- PostgreSQLデータベース
+- SQLiteデータベース
 
 **システム外**（Out of Scope）:
 - 決済システム
@@ -127,7 +127,7 @@ graph TB
         end
         
         subgraph "Docker"
-            DB[(PostgreSQL)]
+            DB[(SQLite)]
         end
     end
     
@@ -136,7 +136,7 @@ graph TB
     Vue -.->|localhost:8082| AdminBFF
     MobileBFF -.->|localhost:8080| WebAPI
     AdminBFF -.->|localhost:8080| WebAPI
-    WebAPI -.->|localhost:5432| DB
+    WebAPI -.->|file://| DB
     
     style Xcode fill:#e1f5ff
     style AndroidStudio fill:#a5d6a7
@@ -153,7 +153,7 @@ graph TB
 
 | コンポーネント | ホスト | ポート | プロトコル | アクセス元 |
 |--------------|------|-------|----------|----------|
-| PostgreSQL | localhost | 5432 | TCP | Web API |
+| SQLite | localhost | - | ファイルアクセス | Web API |
 | Web API | localhost | 8080 | HTTP | BFF |
 | Mobile BFF | localhost | 8081 | HTTP | モバイルアプリ |
 | Admin BFF | localhost | 8082 | HTTP | 管理Webアプリ |
@@ -175,7 +175,7 @@ graph TB
     end
     
     subgraph "Database Network"
-        DB[(PostgreSQL<br/>:5432)]
+        DB[(SQLite)]
     end
     
     Mobile -->|HTTP| BFF1
@@ -339,7 +339,7 @@ graph TB
     
     subgraph "Trusted Zone（信頼できるゾーン）"
         API[Web API<br/>ビジネスロジック]
-        DB[(Database<br/>PostgreSQL)]
+        DB[(Database<br/>SQLite)]
     end
     
     Client -->|HTTPS<br/>入力検証不可| BFF
@@ -380,7 +380,7 @@ graph LR
     
     subgraph "Storage"
         Keychain[Keychain/EncryptedPrefs<br/>暗号化ストレージ]
-        DB[(PostgreSQL<br/>パスワードハッシュ化)]
+        DB[(SQLite<br/>パスワードハッシュ化)]
     end
     
     App -->|HTTPS| TLS
@@ -403,7 +403,7 @@ graph LR
 | API応答時間 | 3秒以内 | BFF → Web API → DB |
 | 画面表示時間 | 3秒以内 | クライアント → BFF → Web API |
 | 同時接続ユーザー | 100ユーザー | Web API |
-| DBコネクションプール | 20接続 | Web API → DB |
+| DBコネクションプール | 1接続（SQLite） | Web API → DB |
 
 ### 8.2 スケーラビリティ制約
 
@@ -429,7 +429,7 @@ graph LR
 | モバイルアプリ ↔ Mobile BFF | HTTPS/REST | JSON | JWT（ログイン後） |
 | 管理Webアプリ ↔ Admin BFF | HTTPS/REST | JSON | JWT（ログイン後） |
 | BFF ↔ Web API | HTTPS/REST | JSON | JWT転送 |
-| Web API ↔ PostgreSQL | JDBC/TCP | SQL | ユーザー名/パスワード |
+| Web API ↔ SQLite | JDBC/ファイル | SQL | 不要（ファイルベース） |
 
 ### 9.2 API バージョニング戦略
 
@@ -446,7 +446,7 @@ graph LR
 
 | 環境 | 用途 | ホスティング | データベース |
 |------|------|------------|------------|
-| **開発環境（Local）** | 開発・デバッグ | localhost / DevContainer | Docker PostgreSQL |
+| **開発環境（Local）** | 開発・デバッグ | localhost / DevContainer | SQLite（ファイルベース） |
 | **本番環境** | デモ実行 | TBD（現在未定義） | TBD |
 
 ### 10.2 環境ごとの設定
@@ -458,7 +458,7 @@ graph LR
 | Web API | `http://localhost:8080` |
 | Mobile BFF | `http://localhost:8081` |
 | Admin BFF | `http://localhost:8082` |
-| PostgreSQL | `localhost:5432` |
+| SQLite | `./data/mobile_app.db` |
 | DB名 | `mobile_app_db` |
 | ログレベル | DEBUG |
 
@@ -469,7 +469,7 @@ graph LR
 | Web API | TBD |
 | Mobile BFF | TBD |
 | Admin BFF | TBD |
-| PostgreSQL | TBD |
+| SQLite | TBD |
 | DB名 | TBD |
 | ログレベル | INFO |
 
