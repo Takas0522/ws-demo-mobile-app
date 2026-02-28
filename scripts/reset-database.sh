@@ -14,7 +14,7 @@ echo "========================================="
 echo ""
 
 # SQLiteデータベースファイルのパス
-DB_DIR="$PROJECT_ROOT/data"
+DB_DIR="$PROJECT_ROOT/src/web-api/data"
 DB_FILE="$DB_DIR/mobile_app.db"
 
 # dataディレクトリを作成

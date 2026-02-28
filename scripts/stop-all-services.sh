@@ -54,10 +54,15 @@ echo ""
 echo "SQLite database: no shutdown required (file-based)"
 echo ""
 
-# Gradleデーモンを停止（オプション）
-echo "Stopping Gradle daemons..."
-cd "$PROJECT_ROOT/src/web-api" && ./gradlew --stop 2>/dev/null || true
-echo "✓ Gradle daemons stopped"
+# Javaプロセスの残留確認
+echo "Checking for remaining Java processes..."
+JAVA_PIDS=$(pgrep -f 'java.*-jar.*\(web-api\|mobile-bff\|admin-bff\)' 2>/dev/null || true)
+if [ -n "$JAVA_PIDS" ]; then
+  echo "  Killing remaining Java processes: $JAVA_PIDS"
+  echo "$JAVA_PIDS" | xargs kill 2>/dev/null || true
+else
+  echo "✓ No remaining Java processes"
+fi
 echo ""
 
 echo "========================================="
