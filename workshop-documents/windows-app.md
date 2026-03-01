@@ -275,7 +275,7 @@ Windowsアプリで使用するWebAPIは別部隊で改修済みです。
   - autopilotモードで実施
 
 ``` markdown
-`docs/specs/{機能名}` に記載されている機能を実装するための開発プランを構築してください
+`docs/specs/{機能名}` に記載されている機能を実装します
 ```
 ※Free版の人はVS CodeのCopilotからPlanモードではなくAgentモードで実施してください
 

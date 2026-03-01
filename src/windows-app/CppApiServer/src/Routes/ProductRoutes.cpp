@@ -167,11 +167,12 @@ void ProductRoutes::HandleGetProductDetail(const httplib::Request& req, httplib:
 		return;
 	}
 
-	nlohmann::json productJson = product.value();
+	nlohmann::json data;
+	data["product"] = product.value();
 
 	res.status = 200;
 	res.set_content(
-		ws::utils::MakeSuccessResponse(productJson),
+		ws::utils::MakeSuccessResponse(data),
 		"application/json; charset=utf-8");
 }
 
