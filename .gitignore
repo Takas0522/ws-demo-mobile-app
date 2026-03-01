@@ -134,6 +134,27 @@ lerna-debug.log*
 *.swo
 *~
 
+# C++ / MSVC / Microsoft Unit Test Framework
+x64/
+Debug/
+Release/
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+*.idb
+*.tlog
+*.lastbuildstate
+*.recipe
+*.iobj
+*.ipdb
+*.vcxproj.FileListAbsolute.txt
+TestResults/
+
 # Application specific
 application-local.yml
 application-dev.yml
