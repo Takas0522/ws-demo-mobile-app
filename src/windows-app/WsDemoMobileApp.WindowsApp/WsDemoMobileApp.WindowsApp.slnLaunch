@@ -1,0 +1,33 @@
+[
+  {
+    "Name": "CppApiServer + WindowsApp",
+    "Projects": [
+      {
+        "Path": "..\\..\\cpp-api\\CppApiServer\\CppApiServer\\CppApiServer.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "WsDemoMobileApp.WindowsApp\\WsDemoMobileApp.WindowsApp.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "WindowsApp Only",
+    "Projects": [
+      {
+        "Path": "WsDemoMobileApp.WindowsApp\\WsDemoMobileApp.WindowsApp.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "CppApiServer Only",
+    "Projects": [
+      {
+        "Path": "..\\..\\cpp-api\\CppApiServer\\CppApiServer\\CppApiServer.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

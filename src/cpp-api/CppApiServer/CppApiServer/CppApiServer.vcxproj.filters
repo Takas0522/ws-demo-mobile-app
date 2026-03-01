@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- ============================================================ -->
+  <!-- Filter Definitions (physical directory structure)             -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Database">
+      <UniqueIdentifier>{6D8E1B2A-3C4F-5D6E-7A8B-9C0D1E2F3A4B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Middleware">
+      <UniqueIdentifier>{7E9F2C3B-4D5A-6E7F-8B9C-0D1E2F3A4B5C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Models">
+      <UniqueIdentifier>{8FA03D4C-5E6B-7F80-9CAD-1E2F3A4B5C6D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Routes">
+      <UniqueIdentifier>{9AB14E5D-6F7C-8091-ADBE-2F3A4B5C6D7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Services">
+      <UniqueIdentifier>{ABC25F6E-708D-91A2-BECF-3A4B5C6D7E8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{BCD3607F-819E-A2B3-CFD0-4B5C6D7E8F90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{CDE47180-92AF-B3C4-D0E1-5C6D7E8F90A1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\bcrypt">
+      <UniqueIdentifier>{DEF58291-A3B0-C4D5-E1F2-6D7E8F90A1B2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\nlohmann">
+      <UniqueIdentifier>{EF0693A2-B4C1-D5E6-F203-7E8F90A1B2C3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+
+  <!-- ============================================================ -->
+  <!-- Source Files (ClCompile)                                     -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Routes\AuthRoutes.cpp">
+      <Filter>src\Routes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Routes\ProductRoutes.cpp">
+      <Filter>src\Routes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Routes\PurchaseRoutes.cpp">
+      <Filter>src\Routes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Routes\FavoriteRoutes.cpp">
+      <Filter>src\Routes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Routes\FeatureFlagRoutes.cpp">
+      <Filter>src\Routes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\AuthService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\ProductService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\PurchaseService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\FavoriteService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\FeatureFlagService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DatabaseManager.cpp">
+      <Filter>src\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\UserRepository.cpp">
+      <Filter>src\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\ProductRepository.cpp">
+      <Filter>src\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\PurchaseRepository.cpp">
+      <Filter>src\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\FavoriteRepository.cpp">
+      <Filter>src\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\FeatureFlagRepository.cpp">
+      <Filter>src\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Middleware\AuthMiddleware.cpp">
+      <Filter>src\Middleware</Filter>
+    </ClCompile>
+    <ClCompile Include="include\sqlite3.c">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="include\bcrypt\bcrypt.c">
+      <Filter>include\bcrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="include\bcrypt\blowfish.c">
+      <Filter>include\bcrypt</Filter>
+    </ClCompile>
+  </ItemGroup>
+
+  <!-- ============================================================ -->
+  <!-- Header Files (ClInclude)                                     -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <ClInclude Include="src\Server.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Routes\AuthRoutes.h">
+      <Filter>src\Routes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Routes\ProductRoutes.h">
+      <Filter>src\Routes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Routes\PurchaseRoutes.h">
+      <Filter>src\Routes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Routes\FavoriteRoutes.h">
+      <Filter>src\Routes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Routes\FeatureFlagRoutes.h">
+      <Filter>src\Routes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\AuthService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\ProductService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\PurchaseService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\FavoriteService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\FeatureFlagService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Database\DatabaseManager.h">
+      <Filter>src\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Database\UserRepository.h">
+      <Filter>src\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Database\ProductRepository.h">
+      <Filter>src\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Database\PurchaseRepository.h">
+      <Filter>src\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Database\FavoriteRepository.h">
+      <Filter>src\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Database\FeatureFlagRepository.h">
+      <Filter>src\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Middleware\AuthMiddleware.h">
+      <Filter>src\Middleware</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\User.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Product.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Purchase.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Favorite.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\FeatureFlag.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Constants.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\JsonHelper.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\UuidGenerator.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\JwtHelper.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\httplib.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sqlite3.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bcrypt\bcrypt.h">
+      <Filter>include\bcrypt</Filter>
+    </ClInclude>
+  </ItemGroup>
+
+</Project>

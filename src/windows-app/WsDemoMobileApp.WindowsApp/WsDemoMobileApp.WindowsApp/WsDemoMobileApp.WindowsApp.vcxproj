@@ -153,6 +153,9 @@
   <ItemGroup>
     <PackageReference Include="nlohmann.json" Version="3.11.3" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="WsDemoMobileApp.WindowsApp.vcxproj.filters" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
