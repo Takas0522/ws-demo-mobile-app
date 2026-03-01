@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ..:/workspace:cached
+
+    command: sleep infinity
+
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8082:8082"
+      - "5173:5173"

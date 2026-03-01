@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- ============================================================ -->
+  <!-- Filter Definitions (physical directory structure)             -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Models">
+      <UniqueIdentifier>{1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ViewModels">
+      <UniqueIdentifier>{2B3C4D5E-6F7A-8B9C-0D1E-2F3A4B5C6D7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Views">
+      <UniqueIdentifier>{3C4D5E6F-7A8B-9C0D-1E2F-3A4B5C6D7E8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Services">
+      <UniqueIdentifier>{4D5E6F7A-8B9C-0D1E-2F3A-4B5C6D7E8F90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{5E6F7A8B-9C0D-1E2F-3A4B-5C6D7E8F90A1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{6F7A8B9C-0D1E-2F3A-4B5C-6D7E8F90A1B2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\nlohmann">
+      <UniqueIdentifier>{7A8B9C0D-1E2F-3A4B-5C6D-7E8F90A1B2C3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{8B9C0D1E-2F3A-4B5C-6D7E-8F90A1B2C3D4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+
+  <!-- ============================================================ -->
+  <!-- Source Files (ClCompile)                                     -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\LoginViewModel.cpp">
+      <Filter>src\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\ProductListViewModel.cpp">
+      <Filter>src\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\ProductDetailViewModel.cpp">
+      <Filter>src\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\PurchaseViewModel.cpp">
+      <Filter>src\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewModels\FavoriteViewModel.cpp">
+      <Filter>src\ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Views\LoginWindow.cpp">
+      <Filter>src\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Views\ProductListWindow.cpp">
+      <Filter>src\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Views\ProductDetailWindow.cpp">
+      <Filter>src\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Views\PurchaseWindow.cpp">
+      <Filter>src\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Views\FavoriteWindow.cpp">
+      <Filter>src\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\HttpClient.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\AuthService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\ProductService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\PurchaseService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\FavoriteService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\FeatureFlagService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\StatePollingService.cpp">
+      <Filter>src\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\CredentialManager.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\ModernTheme.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+
+  <!-- ============================================================ -->
+  <!-- Header Files (ClInclude)                                     -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <ClInclude Include="src\App.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\User.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Product.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Purchase.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Favorite.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\FeatureFlag.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\ApiError.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Models\Pagination.h">
+      <Filter>src\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewModels\LoginViewModel.h">
+      <Filter>src\ViewModels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewModels\ProductListViewModel.h">
+      <Filter>src\ViewModels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewModels\ProductDetailViewModel.h">
+      <Filter>src\ViewModels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewModels\PurchaseViewModel.h">
+      <Filter>src\ViewModels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewModels\FavoriteViewModel.h">
+      <Filter>src\ViewModels</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Views\LoginWindow.h">
+      <Filter>src\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Views\ProductListWindow.h">
+      <Filter>src\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Views\ProductDetailWindow.h">
+      <Filter>src\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Views\PurchaseWindow.h">
+      <Filter>src\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Views\FavoriteWindow.h">
+      <Filter>src\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\HttpClient.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\AuthService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\ProductService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\PurchaseService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\FavoriteService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\FeatureFlagService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\StatePollingService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Constants.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\JsonHelper.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\CredentialManager.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\ModernTheme.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nlohmann\json.hpp">
+      <Filter>include\nlohmann</Filter>
+    </ClInclude>
+  </ItemGroup>
+
+  <!-- ============================================================ -->
+  <!-- Resource Files                                               -->
+  <!-- ============================================================ -->
+  <ItemGroup>
+    <ResourceCompile Include="resources\app.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+
+</Project>

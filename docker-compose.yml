@@ -1,0 +1,20 @@
+version: '3.8'
+
+# ======================================
+# Mobile App System - Docker Compose
+# ======================================
+# SQLite を使用するため、データベースコンテナは不要です。
+# データベースファイル: src/web-api/data/mobile_app.db
+#
+# 使用方法:
+#   1. DB初期化: ./scripts/reset-database.sh
+#   2. 全サービス起動: ./scripts/start-all-services.sh
+#   3. 全サービス停止: ./scripts/stop-all-services.sh
+#
+# DevContainer を使用する場合は .devcontainer/docker-compose.yml を参照してください。
+# DevContainer 起動時にSQLiteデータベースは自動的に初期化されます。
+#
+# 手動でのDB操作:
+#   スキーマ作成: sqlite3 src/web-api/data/mobile_app.db < src/database/schema/01_create_tables.sql
+#   データ投入:   sqlite3 src/web-api/data/mobile_app.db < src/database/seeds/02_seed_data.sql
+# ======================================

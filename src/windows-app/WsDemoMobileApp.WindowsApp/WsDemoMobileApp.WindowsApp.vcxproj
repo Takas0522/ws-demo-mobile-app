@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{8AB7420C-458C-8247-8F71-7BD490A82361}</ProjectGuid>
+    <RootNamespace>WsDemoMobileApp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>_DEBUG;UNICODE;_UNICODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winhttp.lib;advapi32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>NDEBUG;UNICODE;_UNICODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>winhttp.lib;advapi32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\ViewModels\LoginViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\ProductListViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\ProductDetailViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\PurchaseViewModel.cpp" />
+    <ClCompile Include="src\ViewModels\FavoriteViewModel.cpp" />
+    <ClCompile Include="src\Views\LoginWindow.cpp" />
+    <ClCompile Include="src\Views\ProductListWindow.cpp" />
+    <ClCompile Include="src\Views\ProductDetailWindow.cpp" />
+    <ClCompile Include="src\Views\PurchaseWindow.cpp" />
+    <ClCompile Include="src\Views\FavoriteWindow.cpp" />
+    <ClCompile Include="src\Services\HttpClient.cpp" />
+    <ClCompile Include="src\Services\AuthService.cpp" />
+    <ClCompile Include="src\Services\ProductService.cpp" />
+    <ClCompile Include="src\Services\PurchaseService.cpp" />
+    <ClCompile Include="src\Services\FavoriteService.cpp" />
+    <ClCompile Include="src\Services\FeatureFlagService.cpp" />
+    <ClCompile Include="src\Services\StatePollingService.cpp" />
+    <ClCompile Include="src\Utils\CredentialManager.cpp" />
+    <ClCompile Include="src\Utils\ModernTheme.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\Models\User.h" />
+    <ClInclude Include="src\Models\Product.h" />
+    <ClInclude Include="src\Models\Purchase.h" />
+    <ClInclude Include="src\Models\Favorite.h" />
+    <ClInclude Include="src\Models\FeatureFlag.h" />
+    <ClInclude Include="src\Models\ApiError.h" />
+    <ClInclude Include="src\Models\Pagination.h" />
+    <ClInclude Include="src\ViewModels\LoginViewModel.h" />
+    <ClInclude Include="src\ViewModels\ProductListViewModel.h" />
+    <ClInclude Include="src\ViewModels\ProductDetailViewModel.h" />
+    <ClInclude Include="src\ViewModels\PurchaseViewModel.h" />
+    <ClInclude Include="src\ViewModels\FavoriteViewModel.h" />
+    <ClInclude Include="src\Views\LoginWindow.h" />
+    <ClInclude Include="src\Views\ProductListWindow.h" />
+    <ClInclude Include="src\Views\ProductDetailWindow.h" />
+    <ClInclude Include="src\Views\PurchaseWindow.h" />
+    <ClInclude Include="src\Views\FavoriteWindow.h" />
+    <ClInclude Include="src\Services\HttpClient.h" />
+    <ClInclude Include="src\Services\AuthService.h" />
+    <ClInclude Include="src\Services\ProductService.h" />
+    <ClInclude Include="src\Services\PurchaseService.h" />
+    <ClInclude Include="src\Services\FavoriteService.h" />
+    <ClInclude Include="src\Services\FeatureFlagService.h" />
+    <ClInclude Include="src\Services\StatePollingService.h" />
+    <ClInclude Include="src\Utils\Constants.h" />
+    <ClInclude Include="src\Utils\JsonHelper.h" />
+    <ClInclude Include="src\Utils\CredentialManager.h" />
+    <ClInclude Include="src\Utils\ModernTheme.h" />
+    <ClInclude Include="include\nlohmann\json.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="nlohmann.json" Version="3.11.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WsDemoMobileApp.WindowsApp.vcxproj.filters" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

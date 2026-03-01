@@ -1,0 +1,7 @@
+#include "resource.h"
+#include <winres.h>
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE "WS Demo Mobile App"
+END

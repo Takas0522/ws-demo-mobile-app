@@ -1,0 +1,9 @@
+# Build outputs
+bin/
+obj/
+
+# Database files (generated at runtime)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.db-journal
