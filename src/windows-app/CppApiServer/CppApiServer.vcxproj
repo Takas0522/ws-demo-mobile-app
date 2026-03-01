@@ -183,6 +183,7 @@
     <ClInclude Include="src\Services\FeatureFlagService.h" />
     <ClInclude Include="src\Database\DatabaseManager.h" />
     <ClInclude Include="src\Database\UserRepository.h" />
+    <ClInclude Include="src\Database\IProductRepository.h" />
     <ClInclude Include="src\Database\ProductRepository.h" />
     <ClInclude Include="src\Database\PurchaseRepository.h" />
     <ClInclude Include="src\Database\FavoriteRepository.h" />

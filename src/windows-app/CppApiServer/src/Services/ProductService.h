@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 #include "Models/Product.h"
 
-namespace ws::database { class ProductRepository; }
+namespace ws::database { class IProductRepository; }
 
 namespace ws::services
 {
@@ -14,7 +14,7 @@ namespace ws::services
 class ProductService
 {
 public:
-	explicit ProductService(ws::database::ProductRepository& productRepo);
+	explicit ProductService(ws::database::IProductRepository& productRepo);
 
 	ProductService(const ProductService&) = delete;
 	ProductService& operator=(const ProductService&) = delete;
@@ -26,7 +26,7 @@ public:
 	[[nodiscard]] std::optional<ws::models::Product> GetProductById(int64_t productId);
 
 private:
-	ws::database::ProductRepository& m_productRepo;
+	ws::database::IProductRepository& m_productRepo;
 };
 
 } // namespace ws::services

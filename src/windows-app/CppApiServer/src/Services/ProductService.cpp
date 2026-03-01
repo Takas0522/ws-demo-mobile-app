@@ -1,11 +1,11 @@
 #include "Services/ProductService.h"
 
-#include "Database/ProductRepository.h"
+#include "Database/IProductRepository.h"
 
 namespace ws::services
 {
 
-ProductService::ProductService(ws::database::ProductRepository& productRepo)
+ProductService::ProductService(ws::database::IProductRepository& productRepo)
 	: m_productRepo(productRepo)
 {
 }
