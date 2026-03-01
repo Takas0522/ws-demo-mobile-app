@@ -72,9 +72,15 @@ style: |
 
 ---
 
-## 1. 準備運動(2)
+## 1. 準備運動
 
-現在ドキュメントが存在しないため、コードからドキュメントの生成を行います。
+まずはこのアプリケーションについて質問します。Askモードで質問を行いましょう
+
+``` markdown
+このアプリケーションで提供されているビジネス要件について教えてください
+```
+
+現在ドキュメントが存在しないため、Agentモードでコードからドキュメントの生成を行います。
 
 ``` markdown
 <!-- sample -->
@@ -85,6 +91,7 @@ style: |
 - セクションごとにファイルを分けて作成し、読む順番などを考慮してファイル名に項番を付与してください。
 - `docs/Windowsアプリ`ディレクトリ内に格納されます
 ```
+まっている間にGitHub Copilotの基礎について
 
 ---
 
@@ -337,22 +344,27 @@ Windowsアプリで使用するWebAPIは別部隊で改修済みです。
 - ユーザーテスト: [経産省のシステム管理基準](https://www.meti.go.jp/policy/netsecurity/sys-kansa/sys-kanri-2023.pdf)の「ユーザ受入テスト」を参考にする
 
 カスタムエージェントの構築については下記を参考にすること
-- https://code.visualstudio.com/docs/copilot/customization/custom-agents
-- https://code.visualstudio.com/docs/copilot/agents/subagents
-- https://github.com/github/awesome-copilot/blob/main/instructions/agents.instructions.md
+#fetch https://code.visualstudio.com/docs/copilot/customization/custom-agents
+#fetch https://code.visualstudio.com/docs/copilot/agents/subagents
+#fetch https://github.com/github/awesome-copilot/blob/main/instructions/agents.instructions.md
 ```
 
 ---
 
 ## 6-2. 企画
 
-お題の企画をCopilotと練りブラッシュアップしていきます。
+エージェントが構築されている間に
+Askモードを使ってお題の企画をCopilotと壁打ちしてブラッシュアップしていきます。
+どんなライブラリ使った方がいいかとかどんな機能あったほうがいいかとか。
+ある程度まとめれたらAgentモードに変更して要約を `docs/specs/新機能追加` にMarkdownとしてまとめてもらいます。
+※Free版の人は1~2ラリーくらいでとどめておいた方が良いと思います。
 
 ---
 
 ## 6-3. 実装
 
-GitHub Copilot CLIで一気通貫で実装していきます
+GitHub Copilot CLIで一気通貫で実装していきます。
+Agentモードで作成されたオーケストレーターエージェントに `docs/specs/新機能追加` にある企画書の実装をお願いします。
 
 ---
 
