@@ -67,6 +67,8 @@ style: |
 - **GitHub Copilot CLI**
   - Windows: `winget install GitHub.Copilot`
   - MacOS: `brew install copilot-cli`
+- **.NET10**（任意）
+  - Officeファイルの解析に使用
 
 ---
 
@@ -258,6 +260,7 @@ Windowsアプリで使用するWebAPIは別部隊で改修済みです。
 `docs/specs/{機能名}`に解析された結果必要な改修内容を記載してください。
 ```
 ※モデルによってはちゃんと動かない可能性有。なので`docs/specs/cache`に読み込んだ結果を格納しています。
+※内部的に`dotnet`コマンドを使用しているため.NET(≠.NET framework)がインストールされていない場合は動作しません
 ※Free版の人はやらないほうがいいので上記に格納しているファイルを参照してください。
 
 ---
@@ -274,7 +277,7 @@ Windowsアプリで使用するWebAPIは別部隊で改修済みです。
 ``` markdown
 `docs/specs/{機能名}` に記載されている機能を実装するための開発プランを構築してください
 ```
-※Free版の人はVS CodeのCopilotからPlanモードではなくAgentモードで実施
+※Free版の人はVS CodeのCopilotからPlanモードではなくAgentモードで実施してください
 
 ---
 
@@ -285,6 +288,8 @@ Windowsアプリで使用するWebAPIは別部隊で改修済みです。
 - ビルド & 実行
 - デバッグによる問題の特定と修正
 - 最終確認
+
+※リクエストを消費しがちな作業となるためFree版の人はやらない方が良いかもしれません
 
 ---
 
