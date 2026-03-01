@@ -171,6 +171,7 @@ C++で構成されたWindowsApplicationの
   5. テスト結果のレポート作成
     - `temp/テストレポート_{timestamp}.md`
 - すでにテストシナリオが構築されている場合はテストシナリオを現在の実装をもとにレビューするところから開始します。
+- サンプルでテストが構成されているためその実装を参考にしてください
 
 下記のドキュメントや記事を**正確に**参考し作成してください。
 - #fetch https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions
