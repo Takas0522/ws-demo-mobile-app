@@ -88,7 +88,7 @@ echo.
 
 REM データ確認
 echo Verifying data...
-sqlite3 -header -column "%DB_FILE%" "SELECT 'users' as table_name, COUNT(*) as count FROM users UNION ALL SELECT 'products', COUNT(*) FROM products UNION ALL SELECT 'feature_flags', COUNT(*) FROM feature_flags UNION ALL SELECT 'purchases', COUNT(*) FROM purchases UNION ALL SELECT 'favorites', COUNT(*) FROM favorites UNION ALL SELECT 'user_feature_flags', COUNT(*) FROM user_feature_flags;"
+sqlite3 -header -column "%DB_FILE%" "SELECT 'users' as table_name, COUNT(*) as count FROM users UNION ALL SELECT 'products', COUNT(*) FROM products UNION ALL SELECT 'feature_flags', COUNT(*) FROM feature_flags UNION ALL SELECT 'purchases', COUNT(*) FROM purchases UNION ALL SELECT 'favorites', COUNT(*) FROM favorites UNION ALL SELECT 'user_feature_flags', COUNT(*) FROM user_feature_flags UNION ALL SELECT 'product_price_history', COUNT(*) FROM product_price_history;"
 echo.
 
 echo =========================================

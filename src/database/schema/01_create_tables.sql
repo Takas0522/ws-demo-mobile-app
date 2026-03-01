@@ -136,6 +136,39 @@ CREATE INDEX idx_user_feature_flags_user_id ON user_feature_flags(user_id);
 CREATE INDEX idx_user_feature_flags_flag_id ON user_feature_flags(flag_id);
 
 -- ======================================
+-- 7. PRODUCT_PRICE_HISTORY テーブル
+-- ======================================
+CREATE TABLE product_price_history (
+    price_history_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id        INTEGER NOT NULL,
+    old_price         INTEGER NOT NULL,
+    new_price         INTEGER NOT NULL,
+    changed_at        TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    changed_by        INTEGER NOT NULL,
+    change_reason     TEXT,
+    created_at        TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+
+    -- 外部キー
+    CONSTRAINT fk_price_hist_product FOREIGN KEY (product_id)
+        REFERENCES products(product_id) ON DELETE RESTRICT,
+    CONSTRAINT fk_price_hist_user FOREIGN KEY (changed_by)
+        REFERENCES users(user_id) ON DELETE RESTRICT,
+
+    -- 制約
+    CONSTRAINT chk_old_price     CHECK (old_price >= 1),
+    CONSTRAINT chk_new_price     CHECK (new_price >= 1),
+    CONSTRAINT chk_price_changed CHECK (old_price <> new_price)
+);
+
+-- インデックス
+CREATE INDEX idx_price_hist_product_id
+    ON product_price_history(product_id);
+CREATE INDEX idx_price_hist_changed_at
+    ON product_price_history(changed_at);
+CREATE INDEX idx_price_hist_prod_changed
+    ON product_price_history(product_id, changed_at);
+
+-- ======================================
 -- トリガー: updated_at 自動更新
 -- ======================================
 
@@ -159,6 +192,19 @@ CREATE TRIGGER update_user_feature_flags_updated_at AFTER UPDATE ON user_feature
     BEGIN
         UPDATE user_feature_flags SET updated_at = datetime('now', 'localtime') WHERE user_flag_id = NEW.user_flag_id;
     END;
+
+-- 価格変更時に product_price_history へ自動記録
+CREATE TRIGGER trg_record_price_history
+AFTER UPDATE OF unit_price ON products
+FOR EACH ROW
+WHEN OLD.unit_price <> NEW.unit_price
+BEGIN
+    INSERT INTO product_price_history
+        (product_id, old_price, new_price, changed_by, change_reason)
+    VALUES
+        (NEW.product_id, OLD.unit_price, NEW.unit_price,
+         0, '商品情報更新による自動記録');
+END;
 
 -- ======================================
 -- スキーマ作成完了

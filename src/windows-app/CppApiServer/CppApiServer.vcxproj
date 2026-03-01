@@ -144,12 +144,14 @@
     <ClCompile Include="src\Services\PurchaseService.cpp" />
     <ClCompile Include="src\Services\FavoriteService.cpp" />
     <ClCompile Include="src\Services\FeatureFlagService.cpp" />
+    <ClCompile Include="src\Services\PriceHistoryService.cpp" />
     <ClCompile Include="src\Database\DatabaseManager.cpp" />
     <ClCompile Include="src\Database\UserRepository.cpp" />
     <ClCompile Include="src\Database\ProductRepository.cpp" />
     <ClCompile Include="src\Database\PurchaseRepository.cpp" />
     <ClCompile Include="src\Database\FavoriteRepository.cpp" />
     <ClCompile Include="src\Database\FeatureFlagRepository.cpp" />
+    <ClCompile Include="src\Database\PriceHistoryRepository.cpp" />
     <ClCompile Include="src\Middleware\AuthMiddleware.cpp" />
     <!-- C sources: compiled as C, no precompiled headers -->
     <ClCompile Include="include\sqlite3.c">
@@ -181,6 +183,7 @@
     <ClInclude Include="src\Services\PurchaseService.h" />
     <ClInclude Include="src\Services\FavoriteService.h" />
     <ClInclude Include="src\Services\FeatureFlagService.h" />
+    <ClInclude Include="src\Services\PriceHistoryService.h" />
     <ClInclude Include="src\Database\DatabaseManager.h" />
     <ClInclude Include="src\Database\UserRepository.h" />
     <ClInclude Include="src\Database\IProductRepository.h" />
@@ -188,12 +191,14 @@
     <ClInclude Include="src\Database\PurchaseRepository.h" />
     <ClInclude Include="src\Database\FavoriteRepository.h" />
     <ClInclude Include="src\Database\FeatureFlagRepository.h" />
+    <ClInclude Include="src\Database\PriceHistoryRepository.h" />
     <ClInclude Include="src\Middleware\AuthMiddleware.h" />
     <ClInclude Include="src\Models\User.h" />
     <ClInclude Include="src\Models\Product.h" />
     <ClInclude Include="src\Models\Purchase.h" />
     <ClInclude Include="src\Models\Favorite.h" />
     <ClInclude Include="src\Models\FeatureFlag.h" />
+    <ClInclude Include="src\Models\PriceHistory.h" />
     <ClInclude Include="src\Utils\Constants.h" />
     <ClInclude Include="src\Utils\JsonHelper.h" />
     <ClInclude Include="src\Utils\UuidGenerator.h" />
