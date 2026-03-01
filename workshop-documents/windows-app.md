@@ -113,7 +113,7 @@ style: |
 ```markdown
 <!-- sample -->
 現在の`windows-app`のソースコードをベースに
-開発規約となるCustom Instructionsを作成してください。
+C++コード用の開発規約となるCustom Instructionsを作成してください。
 守らせたい規約は下記となります
 - 命名規則
 - 設計原則
