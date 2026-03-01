@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CppApiServer\CppApiServer.vcxproj" Id="a1b2c3d4-e5f6-7890-abcd-ef1234567890" />
+  <Project Path="WsDemoMobileApp.WindowsApp\WsDemoMobileApp.WindowsApp.vcxproj" />
+</Solution>

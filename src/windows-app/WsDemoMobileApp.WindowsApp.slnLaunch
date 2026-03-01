@@ -3,7 +3,7 @@
     "Name": "CppApiServer + WindowsApp",
     "Projects": [
       {
-        "Path": "..\\..\\cpp-api\\CppApiServer\\CppApiServer\\CppApiServer.vcxproj",
+        "Path": "CppApiServer\\CppApiServer.vcxproj",
         "Action": "Start"
       },
       {
@@ -25,7 +25,7 @@
     "Name": "CppApiServer Only",
     "Projects": [
       {
-        "Path": "..\\..\\cpp-api\\CppApiServer\\CppApiServer\\CppApiServer.vcxproj",
+        "Path": "CppApiServer\\CppApiServer.vcxproj",
         "Action": "Start"
       }
     ]
