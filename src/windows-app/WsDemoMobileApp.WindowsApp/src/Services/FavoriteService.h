@@ -1,37 +1,33 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <expected>
-#include "Models/Favorite.h"
-#include "Models/ApiError.h"
+#include "Services/IFavoriteService.h"
 
 namespace ws::services
 {
 
-class HttpClient;
-class AuthService;
+class IHttpClient;
+class IAuthService;
 
-class FavoriteService
+class FavoriteService : public IFavoriteService
 {
 public:
-	FavoriteService(const HttpClient& httpClient, const AuthService& authService);
-	~FavoriteService() = default;
+	FavoriteService(const IHttpClient& httpClient, const IAuthService& authService);
+	~FavoriteService() override = default;
 
 	FavoriteService(const FavoriteService&) = delete;
 	FavoriteService& operator=(const FavoriteService&) = delete;
 
 	[[nodiscard]] std::expected<ws::models::Favorite, ws::models::ApiError> AddFavorite(
-		int64_t productId) const;
+		int64_t productId) const override;
 
 	[[nodiscard]] std::expected<void, ws::models::ApiError> RemoveFavorite(
-		int64_t productId) const;
+		int64_t productId) const override;
 
-	[[nodiscard]] std::expected<std::vector<ws::models::Favorite>, ws::models::ApiError> FetchFavorites() const;
+	[[nodiscard]] std::expected<std::vector<ws::models::Favorite>, ws::models::ApiError> FetchFavorites() const override;
 
 private:
-	const HttpClient& m_httpClient;
-	const AuthService& m_authService;
+	const IHttpClient& m_httpClient;
+	const IAuthService& m_authService;
 };
 
 } // namespace ws::services

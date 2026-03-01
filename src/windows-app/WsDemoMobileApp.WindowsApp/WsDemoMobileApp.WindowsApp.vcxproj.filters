@@ -164,19 +164,37 @@
     <ClInclude Include="src\Services\HttpClient.h">
       <Filter>src\Services</Filter>
     </ClInclude>
+    <ClInclude Include="src\Services\IHttpClient.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
     <ClInclude Include="src\Services\AuthService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\IAuthService.h">
       <Filter>src\Services</Filter>
     </ClInclude>
     <ClInclude Include="src\Services\ProductService.h">
       <Filter>src\Services</Filter>
     </ClInclude>
+    <ClInclude Include="src\Services\IProductService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
     <ClInclude Include="src\Services\PurchaseService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\IPurchaseService.h">
       <Filter>src\Services</Filter>
     </ClInclude>
     <ClInclude Include="src\Services\FavoriteService.h">
       <Filter>src\Services</Filter>
     </ClInclude>
+    <ClInclude Include="src\Services\IFavoriteService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
     <ClInclude Include="src\Services\FeatureFlagService.h">
+      <Filter>src\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Services\IFeatureFlagService.h">
       <Filter>src\Services</Filter>
     </ClInclude>
     <ClInclude Include="src\Services\StatePollingService.h">
@@ -189,6 +207,9 @@
       <Filter>src\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\CredentialManager.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\ICredentialManager.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\ModernTheme.h">

@@ -7,8 +7,8 @@
 
 namespace ws::services
 {
-class ProductService;
-class FavoriteService;
+class IProductService;
+class IFavoriteService;
 }
 
 namespace ws::viewmodels
@@ -23,8 +23,8 @@ public:
 	using FavoriteChangedCallback = std::function<void(bool)>;
 
 	ProductDetailViewModel(
-		ws::services::ProductService& productService,
-		ws::services::FavoriteService& favoriteService);
+		ws::services::IProductService& productService,
+		ws::services::IFavoriteService& favoriteService);
 	~ProductDetailViewModel() = default;
 
 	ProductDetailViewModel(const ProductDetailViewModel&) = delete;
@@ -45,8 +45,8 @@ public:
 	void SetIsFavorite(bool isFavorite);
 
 private:
-	ws::services::ProductService& m_productService;
-	ws::services::FavoriteService& m_favoriteService;
+	ws::services::IProductService& m_productService;
+	ws::services::IFavoriteService& m_favoriteService;
 
 	std::optional<ws::models::Product> m_product;
 	bool m_isFavorite = false;

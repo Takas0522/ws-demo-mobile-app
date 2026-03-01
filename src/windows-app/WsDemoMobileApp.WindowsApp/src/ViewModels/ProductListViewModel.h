@@ -9,7 +9,7 @@
 
 namespace ws::services
 {
-class ProductService;
+class IProductService;
 }
 
 namespace ws::viewmodels
@@ -22,7 +22,7 @@ public:
 	using ErrorCallback = std::function<void(const ws::models::ApiError&)>;
 	using LoadingChangedCallback = std::function<void(bool)>;
 
-	explicit ProductListViewModel(ws::services::ProductService& productService);
+	explicit ProductListViewModel(ws::services::IProductService& productService);
 	~ProductListViewModel() = default;
 
 	ProductListViewModel(const ProductListViewModel&) = delete;
@@ -42,7 +42,7 @@ public:
 	[[nodiscard]] const std::string& GetSearchKeyword() const;
 
 private:
-	ws::services::ProductService& m_productService;
+	ws::services::IProductService& m_productService;
 
 	std::vector<ws::models::Product> m_products;
 	ws::models::Pagination m_pagination;

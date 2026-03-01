@@ -135,15 +135,22 @@
     <ClInclude Include="src\Views\PurchaseWindow.h" />
     <ClInclude Include="src\Views\FavoriteWindow.h" />
     <ClInclude Include="src\Services\HttpClient.h" />
+    <ClInclude Include="src\Services\IHttpClient.h" />
     <ClInclude Include="src\Services\AuthService.h" />
+    <ClInclude Include="src\Services\IAuthService.h" />
     <ClInclude Include="src\Services\ProductService.h" />
+    <ClInclude Include="src\Services\IProductService.h" />
     <ClInclude Include="src\Services\PurchaseService.h" />
+    <ClInclude Include="src\Services\IPurchaseService.h" />
     <ClInclude Include="src\Services\FavoriteService.h" />
+    <ClInclude Include="src\Services\IFavoriteService.h" />
     <ClInclude Include="src\Services\FeatureFlagService.h" />
+    <ClInclude Include="src\Services\IFeatureFlagService.h" />
     <ClInclude Include="src\Services\StatePollingService.h" />
     <ClInclude Include="src\Utils\Constants.h" />
     <ClInclude Include="src\Utils\JsonHelper.h" />
     <ClInclude Include="src\Utils\CredentialManager.h" />
+    <ClInclude Include="src\Utils\ICredentialManager.h" />
     <ClInclude Include="src\Utils\ModernTheme.h" />
     <ClInclude Include="include\nlohmann\json.hpp" />
   </ItemGroup>

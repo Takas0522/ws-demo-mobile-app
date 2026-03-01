@@ -1,5 +1,5 @@
 #include "ViewModels/PurchaseViewModel.h"
-#include "Services/PurchaseService.h"
+#include "Services/IPurchaseService.h"
 
 #include <thread>
 #include <algorithm>
@@ -7,7 +7,7 @@
 namespace ws::viewmodels
 {
 
-PurchaseViewModel::PurchaseViewModel(ws::services::PurchaseService& purchaseService)
+PurchaseViewModel::PurchaseViewModel(ws::services::IPurchaseService& purchaseService)
 	: m_purchaseService(purchaseService)
 {
 }

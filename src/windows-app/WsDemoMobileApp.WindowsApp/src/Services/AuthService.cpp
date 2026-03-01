@@ -1,7 +1,7 @@
 #include "Services/AuthService.h"
-#include "Services/HttpClient.h"
+#include "Services/IHttpClient.h"
+#include "Utils/ICredentialManager.h"
 #include "Utils/Constants.h"
-#include "Utils/CredentialManager.h"
 #include "Utils/JsonHelper.h"
 
 #include <nlohmann/json.hpp>
@@ -9,7 +9,7 @@
 namespace ws::services
 {
 
-AuthService::AuthService(const HttpClient& httpClient, ws::utils::CredentialManager& credentialManager)
+AuthService::AuthService(const IHttpClient& httpClient, ws::utils::ICredentialManager& credentialManager)
 	: m_httpClient(httpClient)
 	, m_credentialManager(credentialManager)
 {

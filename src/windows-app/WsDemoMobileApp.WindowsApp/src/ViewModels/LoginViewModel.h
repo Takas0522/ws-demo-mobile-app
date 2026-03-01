@@ -8,12 +8,12 @@
 
 namespace ws::services
 {
-class AuthService;
+class IAuthService;
 }
 
 namespace ws::utils
 {
-class CredentialManager;
+class ICredentialManager;
 }
 
 namespace ws::viewmodels
@@ -38,8 +38,8 @@ public:
 	using LoadingChangedCallback = std::function<void(bool)>;
 
 	LoginViewModel(
-		ws::services::AuthService& authService,
-		ws::utils::CredentialManager& credentialManager);
+		ws::services::IAuthService& authService,
+		ws::utils::ICredentialManager& credentialManager);
 	~LoginViewModel() = default;
 
 	LoginViewModel(const LoginViewModel&) = delete;
@@ -62,8 +62,8 @@ public:
 	void SetPassword(const std::string& password);
 
 private:
-	ws::services::AuthService& m_authService;
-	ws::utils::CredentialManager& m_credentialManager;
+	ws::services::IAuthService& m_authService;
+	ws::utils::ICredentialManager& m_credentialManager;
 
 	std::string m_loginId;
 	std::string m_password;
