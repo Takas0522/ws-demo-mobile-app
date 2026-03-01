@@ -10,11 +10,13 @@
 #include "Database/PurchaseRepository.h"
 #include "Database/FavoriteRepository.h"
 #include "Database/FeatureFlagRepository.h"
+#include "Database/PriceHistoryRepository.h"
 #include "Services/AuthService.h"
 #include "Services/ProductService.h"
 #include "Services/PurchaseService.h"
 #include "Services/FavoriteService.h"
 #include "Services/FeatureFlagService.h"
+#include "Services/PriceHistoryService.h"
 #include "Routes/AuthRoutes.h"
 #include "Routes/ProductRoutes.h"
 #include "Routes/PurchaseRoutes.h"
@@ -51,6 +53,7 @@ private:
 	std::unique_ptr<ws::database::PurchaseRepository> m_purchaseRepo;
 	std::unique_ptr<ws::database::FavoriteRepository> m_favoriteRepo;
 	std::unique_ptr<ws::database::FeatureFlagRepository> m_flagRepo;
+	std::unique_ptr<ws::database::PriceHistoryRepository> m_priceHistoryRepo;
 
 	// Services
 	std::unique_ptr<ws::services::AuthService> m_authService;
@@ -58,6 +61,7 @@ private:
 	std::unique_ptr<ws::services::PurchaseService> m_purchaseService;
 	std::unique_ptr<ws::services::FavoriteService> m_favoriteService;
 	std::unique_ptr<ws::services::FeatureFlagService> m_flagService;
+	std::unique_ptr<ws::services::PriceHistoryService> m_priceHistoryService;
 
 	// Routes
 	std::unique_ptr<ws::routes::AuthRoutes> m_authRoutes;

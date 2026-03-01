@@ -1,6 +1,6 @@
 #include "Services/ProductService.h"
-#include "Services/HttpClient.h"
-#include "Services/AuthService.h"
+#include "Services/IHttpClient.h"
+#include "Services/IAuthService.h"
 #include "Utils/Constants.h"
 #include "Utils/JsonHelper.h"
 
@@ -10,7 +10,7 @@
 namespace ws::services
 {
 
-ProductService::ProductService(const HttpClient& httpClient, const AuthService& authService)
+ProductService::ProductService(const IHttpClient& httpClient, const IAuthService& authService)
 	: m_httpClient(httpClient)
 	, m_authService(authService)
 {

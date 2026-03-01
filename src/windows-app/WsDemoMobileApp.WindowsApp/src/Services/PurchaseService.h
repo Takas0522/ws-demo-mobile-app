@@ -1,44 +1,33 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <expected>
-#include "Models/Purchase.h"
-#include "Models/Pagination.h"
-#include "Models/ApiError.h"
+#include "Services/IPurchaseService.h"
 
 namespace ws::services
 {
 
-class HttpClient;
-class AuthService;
+class IHttpClient;
+class IAuthService;
 
-struct PurchaseListResponse
-{
-	std::vector<ws::models::Purchase> purchases;
-	ws::models::Pagination pagination;
-};
-
-class PurchaseService
+class PurchaseService : public IPurchaseService
 {
 public:
-	PurchaseService(const HttpClient& httpClient, const AuthService& authService);
-	~PurchaseService() = default;
+	PurchaseService(const IHttpClient& httpClient, const IAuthService& authService);
+	~PurchaseService() override = default;
 
 	PurchaseService(const PurchaseService&) = delete;
 	PurchaseService& operator=(const PurchaseService&) = delete;
 
 	[[nodiscard]] std::expected<ws::models::Purchase, ws::models::ApiError> CreatePurchase(
 		int64_t productId,
-		int quantity) const;
+		int quantity) const override;
 
 	[[nodiscard]] std::expected<PurchaseListResponse, ws::models::ApiError> FetchPurchases(
 		int page = 1,
-		int limit = 20) const;
+		int limit = 20) const override;
 
 private:
-	const HttpClient& m_httpClient;
-	const AuthService& m_authService;
+	const IHttpClient& m_httpClient;
+	const IAuthService& m_authService;
 };
 
 } // namespace ws::services

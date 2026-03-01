@@ -1,32 +1,29 @@
 #pragma once
 
-#include <string>
 #include <vector>
-#include <expected>
-#include "Models/FeatureFlag.h"
-#include "Models/ApiError.h"
+#include "Services/IFeatureFlagService.h"
 
 namespace ws::services
 {
 
-class HttpClient;
+class IHttpClient;
 
-class FeatureFlagService
+class FeatureFlagService : public IFeatureFlagService
 {
 public:
-	explicit FeatureFlagService(const HttpClient& httpClient);
-	~FeatureFlagService() = default;
+	explicit FeatureFlagService(const IHttpClient& httpClient);
+	~FeatureFlagService() override = default;
 
 	FeatureFlagService(const FeatureFlagService&) = delete;
 	FeatureFlagService& operator=(const FeatureFlagService&) = delete;
 
 	[[nodiscard]] std::expected<std::vector<ws::models::FeatureFlag>, ws::models::ApiError> FetchFeatureFlags(
-		const std::string& token) const;
+		const std::string& token) const override;
 
-	[[nodiscard]] bool IsFavoriteEnabled() const;
+	[[nodiscard]] bool IsFavoriteEnabled() const override;
 
 private:
-	const HttpClient& m_httpClient;
+	const IHttpClient& m_httpClient;
 	mutable std::vector<ws::models::FeatureFlag> m_cachedFlags;
 };
 

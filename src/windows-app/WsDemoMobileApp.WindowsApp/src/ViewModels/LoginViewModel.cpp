@@ -1,6 +1,6 @@
 #include "ViewModels/LoginViewModel.h"
-#include "Services/AuthService.h"
-#include "Utils/CredentialManager.h"
+#include "Services/IAuthService.h"
+#include "Utils/ICredentialManager.h"
 
 #include <thread>
 
@@ -8,8 +8,8 @@ namespace ws::viewmodels
 {
 
 LoginViewModel::LoginViewModel(
-	ws::services::AuthService& authService,
-	ws::utils::CredentialManager& credentialManager)
+	ws::services::IAuthService& authService,
+	ws::utils::ICredentialManager& credentialManager)
 	: m_authService(authService)
 	, m_credentialManager(credentialManager)
 {

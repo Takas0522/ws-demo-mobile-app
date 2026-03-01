@@ -3,6 +3,7 @@
 #include <httplib.h>
 
 namespace ws::services { class ProductService; }
+namespace ws::services { class PriceHistoryService; }
 
 namespace ws::routes
 {
@@ -10,7 +11,8 @@ namespace ws::routes
 class ProductRoutes
 {
 public:
-	explicit ProductRoutes(ws::services::ProductService& productService);
+	ProductRoutes(ws::services::ProductService& productService,
+		ws::services::PriceHistoryService& priceHistoryService);
 
 	ProductRoutes(const ProductRoutes&) = delete;
 	ProductRoutes& operator=(const ProductRoutes&) = delete;
@@ -21,8 +23,10 @@ private:
 	void HandleGetProducts(const httplib::Request& req, httplib::Response& res);
 	void HandleSearchProducts(const httplib::Request& req, httplib::Response& res);
 	void HandleGetProductDetail(const httplib::Request& req, httplib::Response& res);
+	void HandleGetPriceHistory(const httplib::Request& req, httplib::Response& res);
 
 	ws::services::ProductService& m_productService;
+	ws::services::PriceHistoryService& m_priceHistoryService;
 };
 
 } // namespace ws::routes

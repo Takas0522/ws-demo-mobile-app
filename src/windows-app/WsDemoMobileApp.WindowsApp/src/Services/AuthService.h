@@ -1,61 +1,51 @@
 #pragma once
 
-#include <string>
-#include <expected>
-#include <functional>
 #include <chrono>
-#include <cstdint>
-#include "Models/User.h"
-#include "Models/ApiError.h"
+#include "Services/IAuthService.h"
+
+namespace ws::services
+{
+class IHttpClient;
+}
 
 namespace ws::utils
 {
-class CredentialManager;
+class ICredentialManager;
 }
 
 namespace ws::services
 {
 
-class HttpClient;
-
-struct LoginResponse
-{
-	std::string token;
-	std::string tokenType;
-	int expiresIn = 0;
-	ws::models::User user;
-};
-
-class AuthService
+class AuthService : public IAuthService
 {
 public:
-	explicit AuthService(const HttpClient& httpClient, ws::utils::CredentialManager& credentialManager);
-	~AuthService() = default;
+	explicit AuthService(const IHttpClient& httpClient, ws::utils::ICredentialManager& credentialManager);
+	~AuthService() override = default;
 
 	AuthService(const AuthService&) = delete;
 	AuthService& operator=(const AuthService&) = delete;
 
 	[[nodiscard]] std::expected<LoginResponse, ws::models::ApiError> Login(
 		const std::string& loginId,
-		const std::string& password);
+		const std::string& password) override;
 
-	void Logout();
+	void Logout() override;
 
-	[[nodiscard]] const std::string& GetToken() const;
-	void SetToken(const std::string& token);
-	void ClearToken();
+	[[nodiscard]] const std::string& GetToken() const override;
+	void SetToken(const std::string& token) override;
+	void ClearToken() override;
 
-	[[nodiscard]] bool IsAuthenticated() const;
-	[[nodiscard]] const ws::models::User& GetCurrentUser() const;
+	[[nodiscard]] bool IsAuthenticated() const override;
+	[[nodiscard]] const ws::models::User& GetCurrentUser() const override;
 
-	[[nodiscard]] bool IsTokenExpired() const;
-	void SetTokenExpiry(int expiresInSeconds);
-	void SetTokenExpiryFromTimestamp(int64_t timestamp);
-	[[nodiscard]] int64_t GetTokenExpiryTimestamp() const;
+	[[nodiscard]] bool IsTokenExpired() const override;
+	void SetTokenExpiry(int expiresInSeconds) override;
+	void SetTokenExpiryFromTimestamp(int64_t timestamp) override;
+	[[nodiscard]] int64_t GetTokenExpiryTimestamp() const override;
 
 private:
-	const HttpClient& m_httpClient;
-	ws::utils::CredentialManager& m_credentialManager;
+	const IHttpClient& m_httpClient;
+	ws::utils::ICredentialManager& m_credentialManager;
 	std::string m_token;
 	ws::models::User m_currentUser;
 	std::chrono::system_clock::time_point m_tokenExpiry{};

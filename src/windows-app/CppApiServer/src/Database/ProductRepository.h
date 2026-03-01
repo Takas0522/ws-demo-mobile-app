@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
-#include <optional>
-#include <vector>
-#include "Models/Product.h"
+#include "Database/IProductRepository.h"
 
 struct sqlite3;
 struct sqlite3_stmt;
@@ -13,21 +10,19 @@ namespace ws::database
 
 class DatabaseManager;
 
-struct ProductListResult
-{
-	std::vector<ws::models::Product> products;
-	int totalCount = 0;
-};
-
-class ProductRepository
+class ProductRepository : public IProductRepository
 {
 public:
 	explicit ProductRepository(DatabaseManager& dbManager);
+	~ProductRepository() override = default;
+
+	ProductRepository(const ProductRepository&) = delete;
+	ProductRepository& operator=(const ProductRepository&) = delete;
 
 	[[nodiscard]] ProductListResult FindAll(int page, int limit,
-		const std::string& sortBy = "created_at", const std::string& sortOrder = "DESC");
-	[[nodiscard]] ProductListResult SearchByKeyword(const std::string& keyword, int page, int limit);
-	[[nodiscard]] std::optional<ws::models::Product> FindById(int64_t productId);
+		const std::string& sortBy = "created_at", const std::string& sortOrder = "DESC") override;
+	[[nodiscard]] ProductListResult SearchByKeyword(const std::string& keyword, int page, int limit) override;
+	[[nodiscard]] std::optional<ws::models::Product> FindById(int64_t productId) override;
 
 private:
 	ws::models::Product MapRow(sqlite3_stmt* stmt);

@@ -1,12 +1,12 @@
 #include "ViewModels/ProductListViewModel.h"
-#include "Services/ProductService.h"
+#include "Services/IProductService.h"
 
 #include <thread>
 
 namespace ws::viewmodels
 {
 
-ProductListViewModel::ProductListViewModel(ws::services::ProductService& productService)
+ProductListViewModel::ProductListViewModel(ws::services::IProductService& productService)
 	: m_productService(productService)
 {
 }

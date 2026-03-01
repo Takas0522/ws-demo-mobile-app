@@ -24,6 +24,11 @@ constexpr const char* kPurchasesPath = "/api/mobile/purchases";
 constexpr const char* kFavoritesPath = "/api/mobile/favorites";
 constexpr const char* kFeatureFlagsPath = "/api/mobile/feature-flags";
 
+// Price history settings
+// Default start date: 5 years (1825 days) ago — matches data retention period
+constexpr const char* kPriceHistoryDefaultStartDate = "0001-01-01 00:00:00";
+constexpr const char* kPriceHistoryDefaultEndDate   = "9999-12-31 23:59:59";
+
 // Purchase constraints
 constexpr int kMinQuantity = 100;
 constexpr int kMaxQuantity = 9900;

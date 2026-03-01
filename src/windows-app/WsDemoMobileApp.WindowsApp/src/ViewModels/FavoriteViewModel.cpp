@@ -1,5 +1,5 @@
 #include "ViewModels/FavoriteViewModel.h"
-#include "Services/FavoriteService.h"
+#include "Services/IFavoriteService.h"
 
 #include <thread>
 #include <algorithm>
@@ -7,7 +7,7 @@
 namespace ws::viewmodels
 {
 
-FavoriteViewModel::FavoriteViewModel(ws::services::FavoriteService& favoriteService)
+FavoriteViewModel::FavoriteViewModel(ws::services::IFavoriteService& favoriteService)
 	: m_favoriteService(favoriteService)
 {
 }

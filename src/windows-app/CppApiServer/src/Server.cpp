@@ -27,6 +27,7 @@ bool Server::Initialize(const std::string& dbPath)
 	m_purchaseRepo = std::make_unique<ws::database::PurchaseRepository>(m_dbManager);
 	m_favoriteRepo = std::make_unique<ws::database::FavoriteRepository>(m_dbManager);
 	m_flagRepo = std::make_unique<ws::database::FeatureFlagRepository>(m_dbManager);
+	m_priceHistoryRepo = std::make_unique<ws::database::PriceHistoryRepository>(m_dbManager);
 
 	// Create services (inject dependencies)
 	m_authService = std::make_unique<ws::services::AuthService>(*m_userRepo);
@@ -34,10 +35,11 @@ bool Server::Initialize(const std::string& dbPath)
 	m_purchaseService = std::make_unique<ws::services::PurchaseService>(*m_purchaseRepo, *m_productRepo);
 	m_favoriteService = std::make_unique<ws::services::FavoriteService>(*m_favoriteRepo);
 	m_flagService = std::make_unique<ws::services::FeatureFlagService>(*m_flagRepo);
+	m_priceHistoryService = std::make_unique<ws::services::PriceHistoryService>(*m_priceHistoryRepo);
 
 	// Create route handlers
 	m_authRoutes = std::make_unique<ws::routes::AuthRoutes>(*m_authService);
-	m_productRoutes = std::make_unique<ws::routes::ProductRoutes>(*m_productService);
+	m_productRoutes = std::make_unique<ws::routes::ProductRoutes>(*m_productService, *m_priceHistoryService);
 	m_purchaseRoutes = std::make_unique<ws::routes::PurchaseRoutes>(*m_purchaseService);
 	m_favoriteRoutes = std::make_unique<ws::routes::FavoriteRoutes>(*m_favoriteService);
 	m_flagRoutes = std::make_unique<ws::routes::FeatureFlagRoutes>(*m_flagService);

@@ -1,5 +1,5 @@
 #include "Services/FeatureFlagService.h"
-#include "Services/HttpClient.h"
+#include "Services/IHttpClient.h"
 #include "Utils/Constants.h"
 #include "Utils/JsonHelper.h"
 
@@ -9,7 +9,7 @@
 namespace ws::services
 {
 
-FeatureFlagService::FeatureFlagService(const HttpClient& httpClient)
+FeatureFlagService::FeatureFlagService(const IHttpClient& httpClient)
 	: m_httpClient(httpClient)
 {
 }

@@ -8,7 +8,7 @@
 
 namespace ws::services
 {
-class PurchaseService;
+class IPurchaseService;
 }
 
 namespace ws::viewmodels
@@ -22,7 +22,7 @@ public:
 	using LoadingChangedCallback = std::function<void(bool)>;
 	using QuantityChangedCallback = std::function<void(int, int)>;
 
-	explicit PurchaseViewModel(ws::services::PurchaseService& purchaseService);
+	explicit PurchaseViewModel(ws::services::IPurchaseService& purchaseService);
 	~PurchaseViewModel() = default;
 
 	PurchaseViewModel(const PurchaseViewModel&) = delete;
@@ -45,7 +45,7 @@ public:
 	[[nodiscard]] bool IsLoading() const;
 
 private:
-	ws::services::PurchaseService& m_purchaseService;
+	ws::services::IPurchaseService& m_purchaseService;
 
 	ws::models::Product m_product;
 	int m_quantity = ws::utils::kMinQuantity;

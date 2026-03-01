@@ -7,7 +7,7 @@
 
 namespace ws::services
 {
-class FavoriteService;
+class IFavoriteService;
 }
 
 namespace ws::viewmodels
@@ -20,7 +20,7 @@ public:
 	using ErrorCallback = std::function<void(const ws::models::ApiError&)>;
 	using LoadingChangedCallback = std::function<void(bool)>;
 
-	explicit FavoriteViewModel(ws::services::FavoriteService& favoriteService);
+	explicit FavoriteViewModel(ws::services::IFavoriteService& favoriteService);
 	~FavoriteViewModel() = default;
 
 	FavoriteViewModel(const FavoriteViewModel&) = delete;
@@ -38,7 +38,7 @@ public:
 	[[nodiscard]] bool IsProductFavorited(int64_t productId) const;
 
 private:
-	ws::services::FavoriteService& m_favoriteService;
+	ws::services::IFavoriteService& m_favoriteService;
 
 	std::vector<ws::models::Favorite> m_favorites;
 	bool m_isLoading = false;

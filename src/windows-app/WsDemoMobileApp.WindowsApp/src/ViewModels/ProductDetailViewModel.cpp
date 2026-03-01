@@ -1,6 +1,6 @@
 #include "ViewModels/ProductDetailViewModel.h"
-#include "Services/ProductService.h"
-#include "Services/FavoriteService.h"
+#include "Services/IProductService.h"
+#include "Services/IFavoriteService.h"
 
 #include <thread>
 
@@ -8,8 +8,8 @@ namespace ws::viewmodels
 {
 
 ProductDetailViewModel::ProductDetailViewModel(
-	ws::services::ProductService& productService,
-	ws::services::FavoriteService& favoriteService)
+	ws::services::IProductService& productService,
+	ws::services::IFavoriteService& favoriteService)
 	: m_productService(productService)
 	, m_favoriteService(favoriteService)
 {

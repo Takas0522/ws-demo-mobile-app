@@ -174,6 +174,64 @@ INSERT OR IGNORE INTO purchases (purchase_id, user_id, product_id, quantity, uni
 )SQL";
 
 // ---------------------------------------------------------------------------
+// Embedded SQL: Price History Schema (applied on every startup, idempotent)
+// ---------------------------------------------------------------------------
+static const char* const kPriceHistoryDdlSql = R"SQL(
+CREATE TABLE IF NOT EXISTS product_price_history (
+    price_history_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id        INTEGER NOT NULL,
+    old_price         INTEGER NOT NULL,
+    new_price         INTEGER NOT NULL,
+    changed_at        TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    changed_by        INTEGER NOT NULL,
+    change_reason     TEXT,
+    created_at        TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+
+    CONSTRAINT fk_price_hist_product FOREIGN KEY (product_id)
+        REFERENCES products(product_id) ON DELETE RESTRICT,
+    CONSTRAINT fk_price_hist_user FOREIGN KEY (changed_by)
+        REFERENCES users(user_id) ON DELETE RESTRICT,
+
+    CONSTRAINT chk_old_price     CHECK (old_price >= 1),
+    CONSTRAINT chk_new_price     CHECK (new_price >= 1),
+    CONSTRAINT chk_price_changed CHECK (old_price <> new_price)
+);
+
+CREATE INDEX IF NOT EXISTS idx_price_hist_product_id
+    ON product_price_history(product_id);
+CREATE INDEX IF NOT EXISTS idx_price_hist_changed_at
+    ON product_price_history(changed_at);
+CREATE INDEX IF NOT EXISTS idx_price_hist_prod_changed
+    ON product_price_history(product_id, changed_at);
+
+CREATE TRIGGER IF NOT EXISTS trg_record_price_history
+AFTER UPDATE OF unit_price ON products
+FOR EACH ROW
+WHEN OLD.unit_price <> NEW.unit_price
+BEGIN
+    INSERT INTO product_price_history
+        (product_id, old_price, new_price, changed_by, change_reason)
+    VALUES
+        (NEW.product_id, OLD.unit_price, NEW.unit_price,
+         0, '商品情報更新による自動記録');
+END;
+)SQL";
+
+// ---------------------------------------------------------------------------
+// Embedded SQL: Price History Seed Data (idempotent)
+// ---------------------------------------------------------------------------
+static const char* const kPriceHistorySeedDataSql = R"SQL(
+INSERT OR IGNORE INTO product_price_history
+    (price_history_id, product_id, old_price, new_price, changed_at, changed_by, change_reason)
+VALUES
+    (1, 1,  900, 1000, '2024-01-15 10:00:00', 1, '原材料費高騰に伴う価格改定'),
+    (2, 1, 1000, 1100, '2024-06-01 14:30:00', 1, '春の価格見直し'),
+    (3, 1, 1100, 1000, '2024-09-01 09:00:00', 1, '秋の特別割引'),
+    (4, 2, 1400, 1500, '2024-03-20 11:00:00', 1, '品質向上に伴う価格改定'),
+    (5, 5, 2800, 3000, '2024-05-10 16:00:00', 1, '輸入コスト上昇のため');
+)SQL";
+
+// ---------------------------------------------------------------------------
 // DatabaseManager implementation
 // ---------------------------------------------------------------------------
 
@@ -237,6 +295,19 @@ std::expected<void, std::string> DatabaseManager::Initialize(const std::string& 
 	else
 	{
 		std::cerr << "[INFO] Database schema already initialized." << std::endl;
+	}
+
+	// Apply price history schema (idempotent — runs regardless of schema state)
+	auto phDdlResult = ExecuteSql(kPriceHistoryDdlSql);
+	if (!phDdlResult)
+	{
+		std::cerr << "[WARN] Failed to apply price history DDL: " << phDdlResult.error() << std::endl;
+	}
+
+	auto phSeedResult = ExecuteSql(kPriceHistorySeedDataSql);
+	if (!phSeedResult)
+	{
+		std::cerr << "[WARN] Failed to insert price history seed data: " << phSeedResult.error() << std::endl;
 	}
 
 	return {};

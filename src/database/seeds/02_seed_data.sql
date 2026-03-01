@@ -121,6 +121,24 @@ INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at
     ('a1b2c3d4-e5f6-7890-abcd-ef1234567810', 6, 9, 200, 5000, 1000000);
 
 -- ======================================
+-- 7. 価格履歴データ（サンプル）
+-- ======================================
+
+-- 商品1（オーガニック緑茶）の価格変更履歴
+INSERT INTO product_price_history (product_id, old_price, new_price, changed_at, changed_by, change_reason) VALUES
+    (1,  900, 1000, '2024-01-15 10:00:00', 1, '原材料費高騰に伴う価格改定'),
+    (1, 1000, 1100, '2024-06-01 14:30:00', 1, '春の価格見直し'),
+    (1, 1100, 1000, '2024-09-01 09:00:00', 1, '秋の特別割引');
+
+-- 商品2（天然はちみつ）の価格変更履歴
+INSERT INTO product_price_history (product_id, old_price, new_price, changed_at, changed_by, change_reason) VALUES
+    (2, 1400, 1500, '2024-03-20 11:00:00', 1, '品質向上に伴う価格改定');
+
+-- 商品5（エクストラバージンオリーブオイル）の価格変更履歴
+INSERT INTO product_price_history (product_id, old_price, new_price, changed_at, changed_by, change_reason) VALUES
+    (5, 2800, 3000, '2024-05-10 16:00:00', 1, '輸入コスト上昇のため');
+
+-- ======================================
 -- データ投入完了
 -- ======================================
 
@@ -131,3 +149,4 @@ INSERT INTO purchases (purchase_id, user_id, product_id, quantity, unit_price_at
 -- SELECT COUNT(*) AS favorite_count FROM favorites;
 -- SELECT COUNT(*) AS feature_flag_count FROM feature_flags;
 -- SELECT COUNT(*) AS user_feature_flag_count FROM user_feature_flags;
+-- SELECT COUNT(*) AS price_history_count FROM product_price_history;
