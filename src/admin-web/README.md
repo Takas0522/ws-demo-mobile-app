@@ -81,7 +81,7 @@ npm run lint
 
 管理者アカウント：
 - ログインID: `admin001`
-- パスワード: `adminpass123`
+- パスワード: `admin123`
 
 ## プロジェクト構造
 

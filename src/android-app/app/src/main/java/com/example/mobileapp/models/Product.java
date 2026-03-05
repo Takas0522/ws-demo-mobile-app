@@ -1,7 +1,5 @@
 package com.example.mobileapp.models;
 
-import java.util.List;
-
 public class Product {
     private int id;
     private int productId;
@@ -86,68 +84,5 @@ public class Product {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
-    }
-}
-
-class ProductListResponse {
-    private List<Product> data;
-    private String timestamp;
-
-    public List<Product> getData() {
-        return data;
-    }
-
-    public void setData(List<Product> data) {
-        this.data = data;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-}
-
-class ProductDetailResponse {
-    private ProductDetail data;
-    private String timestamp;
-
-    public ProductDetail getData() {
-        return data;
-    }
-
-    public void setData(ProductDetail data) {
-        this.data = data;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-}
-
-class ProductDetail {
-    private Product product;
-    private boolean isFavorite;
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
     }
 }

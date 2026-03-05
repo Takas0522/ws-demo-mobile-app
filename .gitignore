@@ -158,3 +158,9 @@ TestResults/
 # Application specific
 application-local.yml
 application-dev.yml
+
+# PID files
+pids/
+
+# Android local properties
+local.properties

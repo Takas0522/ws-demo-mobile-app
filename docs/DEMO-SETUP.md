@@ -436,7 +436,7 @@ curl -X POST http://localhost:8082/api/v1/auth/admin/login \
   -H "Content-Type: application/json" \
   -d '{
     "loginId": "admin001",
-    "password": "adminpass123"
+    "password": "admin123"
   }' | jq .
 
 # 期待される出力:
@@ -478,7 +478,7 @@ curl http://localhost:8081/api/v1/products \
 2. ログイン画面が表示される
 3. 以下の情報でログイン:
    - ログインID: `admin001`
-   - パスワード: `adminpass123`
+   - パスワード: `admin123`
 4. ダッシュボードが表示される
 5. サイドメニューから「商品管理」をクリック
 6. 商品一覧が表示される

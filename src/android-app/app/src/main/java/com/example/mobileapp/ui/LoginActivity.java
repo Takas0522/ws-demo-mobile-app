@@ -2,6 +2,7 @@ package com.example.mobileapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     
+    private static final String TAG = "LoginActivity";
     private ActivityLoginBinding binding;
     private SecureStorageManager secureStorage;
     
@@ -56,19 +58,22 @@ public class LoginActivity extends AppCompatActivity {
     
     private void performLogin(String loginId, String password) {
         setLoading(true);
-        
+        Log.d(TAG, "Performing login for user: " + loginId);
+
         LoginRequest request = new LoginRequest(loginId, password);
         ApiClient.getApiService().login(request).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 setLoading(false);
-                
+                Log.d(TAG, "Login response: code=" + response.code() + ", url=" + call.request().url());
+
                 if (response.isSuccessful() && response.body() != null) {
                     LoginData loginData = response.body().getData();
                     if (loginData != null) {
                         // トークンを保存
                         secureStorage.saveToken(loginData.getToken());
-                        
+                        Log.d(TAG, "Login successful, token saved");
+
                         Toast.makeText(
                             LoginActivity.this,
                             "ログインしました",
@@ -77,9 +82,11 @@ public class LoginActivity extends AppCompatActivity {
                         
                         navigateToMain();
                     } else {
+                        Log.w(TAG, "Login response body has no data");
                         showError("ログインに失敗しました");
                     }
                 } else {
+                    Log.w(TAG, "Login failed: code=" + response.code() + ", message=" + response.message());
                     if (response.code() == 401) {
                         showError("ユーザーIDまたはパスワードが正しくありません");
                     } else {
@@ -91,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 setLoading(false);
-                t.printStackTrace();
+                Log.e(TAG, "Login network error: url=" + call.request().url() + ", error=" + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                 showError("ネットワークエラーが発生しました");
             }
         });

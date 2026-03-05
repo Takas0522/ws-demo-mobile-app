@@ -2,6 +2,7 @@ package com.example.mobileapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     
+    private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
     private SecureStorageManager secureStorage;
     private ProductAdapter productAdapter;
@@ -80,22 +82,26 @@ public class MainActivity extends AppCompatActivity {
     
     private void loadProducts() {
         setLoading(true);
-        
+        Log.d(TAG, "Loading products...");
+
         ApiClient.getApiService().getProducts().enqueue(new Callback<ProductListResponse>() {
             @Override
             public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
                 setLoading(false);
-                
+                Log.d(TAG, "getProducts response: code=" + response.code() + ", url=" + call.request().url());
+
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Product> products = response.body().getData();
+                    List<Product> products = response.body().getData() != null ? response.body().getData().getProducts() : null;
                     if (products == null) {
                         products = new ArrayList<>();
                     }
+                    Log.d(TAG, "Products loaded: count=" + products.size());
                     productAdapter.submitList(products);
                     
                     binding.tvEmpty.setVisibility(products.isEmpty() ? View.VISIBLE : View.GONE);
                     binding.tvError.setVisibility(View.GONE);
                 } else {
+                    Log.w(TAG, "getProducts failed: code=" + response.code() + ", message=" + response.message());
                     showError("商品の読み込みに失敗しました");
                 }
             }
@@ -103,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ProductListResponse> call, Throwable t) {
                 setLoading(false);
-                t.printStackTrace();
+                Log.e(TAG, "getProducts network error: url=" + call.request().url() + ", error=" + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                 showError("ネットワークエラーが発生しました");
             }
         });
@@ -116,23 +122,27 @@ public class MainActivity extends AppCompatActivity {
         }
         
         setLoading(true);
-        
+        Log.d(TAG, "Searching products: keyword=" + keyword);
+
         ApiClient.getApiService().searchProducts(keyword).enqueue(new Callback<ProductListResponse>() {
             @Override
             public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
                 setLoading(false);
-                
+                Log.d(TAG, "searchProducts response: code=" + response.code() + ", url=" + call.request().url());
+
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Product> products = response.body().getData();
+                    List<Product> products = response.body().getData() != null ? response.body().getData().getProducts() : null;
                     if (products == null) {
                         products = new ArrayList<>();
                     }
+                    Log.d(TAG, "Search results: count=" + products.size());
                     productAdapter.submitList(products);
                     
                     binding.tvEmpty.setText(products.isEmpty() ? "該当する商品がありません" : "商品がありません");
                     binding.tvEmpty.setVisibility(products.isEmpty() ? View.VISIBLE : View.GONE);
                     binding.tvError.setVisibility(View.GONE);
                 } else {
+                    Log.w(TAG, "searchProducts failed: code=" + response.code() + ", message=" + response.message());
                     showError("検索に失敗しました");
                 }
             }
@@ -140,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ProductListResponse> call, Throwable t) {
                 setLoading(false);
-                t.printStackTrace();
+                Log.e(TAG, "searchProducts network error: url=" + call.request().url() + ", error=" + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                 showError("ネットワークエラーが発生しました");
             }
         });

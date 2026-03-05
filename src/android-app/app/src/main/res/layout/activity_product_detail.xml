@@ -70,12 +70,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnFavorite"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="お気に入りに追加"
+                android:textColor="@android:color/black"
                 app:icon="@drawable/ic_favorite_border"
-                app:backgroundTint="@android:color/white"
+                app:iconTint="@android:color/holo_red_light"
                 app:strokeColor="@android:color/darker_gray"
                 app:strokeWidth="1dp" />
 

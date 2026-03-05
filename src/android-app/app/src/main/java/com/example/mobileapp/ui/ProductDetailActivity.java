@@ -1,6 +1,7 @@
 package com.example.mobileapp.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
     
+    private static final String TAG = "ProductDetailActivity";
     private ActivityProductDetailBinding binding;
     private int productId = 0;
     private Product product = null;
@@ -52,12 +54,14 @@ public class ProductDetailActivity extends AppCompatActivity {
     
     private void loadProductDetail() {
         setLoading(true);
-        
+        Log.d(TAG, "Loading product detail: productId=" + productId);
+
         ApiClient.getApiService().getProductDetail(productId).enqueue(new Callback<ProductDetailResponse>() {
             @Override
             public void onResponse(Call<ProductDetailResponse> call, Response<ProductDetailResponse> response) {
                 setLoading(false);
-                
+                Log.d(TAG, "getProductDetail response: code=" + response.code() + ", url=" + call.request().url());
+
                 if (response.isSuccessful() && response.body() != null) {
                     ProductDetail detail = response.body().getData();
                     if (detail != null) {
@@ -82,7 +86,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ProductDetailResponse> call, Throwable t) {
                 setLoading(false);
-                t.printStackTrace();
+                Log.e(TAG, "getProductDetail network error: url=" + call.request().url() + ", error=" + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                 showError("ネットワークエラーが発生しました");
             }
         });
@@ -141,8 +145,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         // 初期値設定
         dialogBinding.tvProductName.setText(currentProduct.getProductName());
         dialogBinding.tvUnitPrice.setText("¥" + currentProduct.getUnitPrice());
-        dialogBinding.tvTotalAmount.setText("¥" + (currentProduct.getUnitPrice() * 100));
-        
+        dialogBinding.tvTotalAmount.setText("¥" + (currentProduct.getUnitPrice() * 1));
+
         new AlertDialog.Builder(this)
             .setTitle("購入確認")
             .setView(dialogBinding.getRoot())
@@ -181,7 +185,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<PurchaseResponse> call, Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
-                t.printStackTrace();
+                Log.e(TAG, "purchaseProduct network error: " + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                 Toast.makeText(
                     ProductDetailActivity.this,
                     "ネットワークエラーが発生しました",
@@ -217,7 +221,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         binding.progressBar.setVisibility(View.GONE);
-                        t.printStackTrace();
+                        Log.e(TAG, "removeFavorite network error: " + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                         Toast.makeText(
                             ProductDetailActivity.this,
                             "処理に失敗しました",
@@ -250,7 +254,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<FavoriteResponse> call, Throwable t) {
                     binding.progressBar.setVisibility(View.GONE);
-                    t.printStackTrace();
+                    Log.e(TAG, "addFavorite network error: " + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
                     Toast.makeText(
                         ProductDetailActivity.this,
                         "処理に失敗しました",
@@ -280,7 +284,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             
             @Override
             public void onFailure(Call<FavoriteListResponse> call, Throwable t) {
-                t.printStackTrace();
+                Log.e(TAG, "getFavorites network error: " + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
             }
         });
     }
