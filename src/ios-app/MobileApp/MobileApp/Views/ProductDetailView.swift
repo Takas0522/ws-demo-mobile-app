@@ -131,8 +131,7 @@ struct ProductDetailView: View {
     }
     
     private func shouldShowFavoriteButton() -> Bool {
-        guard let user = authService.currentUser else { return false }
-        return user.featureFlags["favorites"] ?? false
+        return authService.currentUser != nil
     }
 }
 
@@ -249,14 +248,8 @@ class ProductDetailViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            let detail = try await APIClient.shared.getProductDetail(productId: productId)
-            product = detail.product
-            isFavorite = detail.isFavorite
-            
-            // お気に入りIDを取得
-            if isFavorite {
-                await loadFavoriteId()
-            }
+            let productData = try await APIClient.shared.getProductDetail(productId: productId)
+            product = productData
         } catch {
             errorMessage = "商品詳細の読み込みに失敗しました"
         }

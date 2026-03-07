@@ -8,10 +8,10 @@
 import Foundation
 
 struct User: Codable {
-    let userId: String
+    let userId: Int
     let userName: String
-    let role: String
-    let featureFlags: [String: Bool]
+    let loginId: String
+    let userType: String
 }
 
 struct LoginRequest: Codable {
@@ -26,5 +26,7 @@ struct LoginResponse: Codable {
 
 struct LoginData: Codable {
     let token: String
+    let tokenType: String
+    let expiresIn: Int
     let user: User
 }

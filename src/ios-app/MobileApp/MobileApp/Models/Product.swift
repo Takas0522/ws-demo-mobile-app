@@ -8,29 +8,34 @@
 import Foundation
 
 struct Product: Codable, Identifiable {
-    let id: Int
+    var id: Int { productId }
     let productId: Int
     let productName: String
     let unitPrice: Int
     let description: String?
     let imageUrl: String?
-    let createdAt: String
-    let updatedAt: String
+    let createdAt: String?
+    let updatedAt: String?
     
-    var isFavorite: Bool = false
+    enum CodingKeys: String, CodingKey {
+        case productId, productName, unitPrice, description, imageUrl, createdAt, updatedAt
+    }
+}
+
+struct ProductListData: Codable {
+    let products: [Product]
 }
 
 struct ProductListResponse: Codable {
-    let data: [Product]
+    let data: ProductListData
     let timestamp: String
+}
+
+struct ProductDetailData: Codable {
+    let product: Product
 }
 
 struct ProductDetailResponse: Codable {
-    let data: ProductDetail
+    let data: ProductDetailData
     let timestamp: String
-}
-
-struct ProductDetail: Codable {
-    let product: Product
-    let isFavorite: Bool
 }

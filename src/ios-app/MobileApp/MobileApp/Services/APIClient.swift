@@ -91,18 +91,18 @@ class APIClient {
     
     func getProducts() async throws -> [Product] {
         let response: ProductListResponse = try await request(endpoint: "/api/mobile/products")
-        return response.data
+        return response.data.products
     }
     
     func searchProducts(keyword: String) async throws -> [Product] {
         let endpoint = "/api/mobile/products/search?keyword=\(keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
         let response: ProductListResponse = try await request(endpoint: endpoint)
-        return response.data
+        return response.data.products
     }
     
-    func getProductDetail(productId: Int) async throws -> ProductDetail {
+    func getProductDetail(productId: Int) async throws -> Product {
         let response: ProductDetailResponse = try await request(endpoint: "/api/mobile/products/\(productId)")
-        return response.data
+        return response.data.product
     }
     
     // MARK: - Purchase API
