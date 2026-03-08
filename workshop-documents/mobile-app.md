@@ -307,7 +307,7 @@ Skillを使用しAndroid アプリの `testProductCreation` と iOS アプリの
 
 ``` markdown
 <!-- dotnet10とGitHub Copilot CLIがつかえるのであればこちら -->
-Excel で構築された設計書を参照し、モバイルアプリのレイアウト変更とBFFの変更を実施します。
+Excel で構築された設計書を参照し、モバイルアプリのレイアウト変更とモバイル用のBFFの変更を実施します。
 BFFの接続元のWeb APIは別部隊で改修済みです。
 `docs/excel/価格履歴機能_設計書.xlsx` が対象となるファイルです。
 `docs/specs/{機能名}` に解析された結果として必要な改修内容を記載してください。
