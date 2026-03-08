@@ -7,11 +7,11 @@
 
 import Foundation
 
-class APIClient {
+final class APIClient: Sendable {
     static let shared = APIClient()
     
     private let baseURL = "http://localhost:8081"
-    private let session: URLSession
+    private nonisolated(unsafe) let session: URLSession
     
     private init() {
         let config = URLSessionConfiguration.default
@@ -22,10 +22,10 @@ class APIClient {
     
     // MARK: - Generic Request
     
-    private func request<T: Decodable>(
+    private func request<T: Decodable & Sendable>(
         endpoint: String,
         method: String = "GET",
-        body: Encodable? = nil,
+        body: (any Encodable & Sendable)? = nil,
         requiresAuth: Bool = true
     ) async throws -> T {
         guard let url = URL(string: "\(baseURL)\(endpoint)") else {
@@ -130,7 +130,7 @@ class APIClient {
     }
     
     func removeFavorite(favoriteId: Int) async throws {
-        struct EmptyResponse: Codable {}
+        struct EmptyResponse: Codable, Sendable {}
         let _: EmptyResponse = try await request(
             endpoint: "/api/mobile/favorites/\(favoriteId)",
             method: "DELETE"
