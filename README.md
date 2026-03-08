@@ -8,8 +8,8 @@
 |-----|------|-----|
 | **プロジェクト全体** | 🎉 **100%完了** | 全75タスク完了 |
 | **バックエンド** | ✅ **100%完成** | Web API + Mobile BFF + Admin BFF |
-| **データベース** | ✅ **完全稼働** | PostgreSQL 16、6テーブル |
-| **API実装** | ✅ **56エンドポイント** | 全て動作確認済み |
+| **データベース** | ✅ **完全稼働** | PostgreSQL 16、7テーブル |
+| **API実装** | ✅ **57エンドポイント** | 全て動作確認済み |
 | **iOSアプリ** | ✅ **100%完成** | SwiftUI、9機能実装済み |
 | **Androidアプリ** | ✅ **100%完成** | Kotlin/Compose、9機能実装済み |
 | **管理Webアプリ** | ✅ **100%完成** | Vue 3 + TypeScript、6画面実装済み |
@@ -109,10 +109,10 @@
 
 | サービス | エンドポイント数 | ポート | 状態 |
 |---------|----------------|--------|------|
-| Web API | 24 | 8080 | ✅ 稼働可能 |
+| Web API | 25 | 8080 | ✅ 稼働可能 |
 | Mobile BFF | 17 | 8081 | ✅ 稼働可能 |
 | Admin BFF | 15 | 8082 | ✅ 稼働可能 |
-| **合計** | **56** | - | ✅ 全て実装済み |
+| **合計** | **57** | - | ✅ 全て実装済み |
 
 ### コード統計
 
@@ -122,12 +122,12 @@
 | Swiftファイル | 12 |
 | Kotlinファイル | 13 |
 | Vue/TSファイル | 1538 |
-| エンティティ | 6 |
-| リポジトリ | 6 |
-| サービス | 7 |
+| エンティティ | 7 |
+| リポジトリ | 7 |
+| サービス | 8 |
 | コントローラー | 6 |
 | DTO | 20+ |
-| テーブル | 6 |
+| テーブル | 7 |
 | **総ファイル数** | **1650+** |
 
 ### ドキュメント統計
@@ -433,6 +433,7 @@ npm run dev
 - `POST /api/v1/products` - 商品作成（管理者）
 - `PUT /api/v1/products/{id}` - 商品更新（管理者）
 - `DELETE /api/v1/products/{id}` - 商品削除（管理者）
+- `GET /api/v1/products/{id}/price-history` - 価格履歴取得
 
 **購入API**
 - `POST /api/v1/purchases` - 商品購入
@@ -497,9 +498,9 @@ npm run dev
 │   ├── src/main/java/
 │   │   └── com/example/webapi/
 │   │       ├── controller/     # 6 コントローラー
-│   │       ├── service/        # 7 サービス
-│   │       ├── repository/     # 6 リポジトリ
-│   │       ├── entity/         # 6 エンティティ
+│   │       ├── service/        # 8 サービス
+│   │       ├── repository/     # 7 リポジトリ
+│   │       ├── entity/         # 7 エンティティ
 │   │       ├── dto/            # 20+ DTO
 │   │       ├── security/       # JWT認証実装
 │   │       ├── exception/      # 例外ハンドリング
@@ -536,7 +537,7 @@ npm run dev
 │
 ├── database/                   # データベース - ✅ 完成
 │   ├── schema/
-│   │   └── 01_create_tables.sql    # 6テーブル定義
+│   │   └── 01_create_tables.sql    # 7テーブル定義
 │   └── seeds/
 │       └── 02_seed_data.sql        # 初期データ
 │
@@ -698,7 +699,7 @@ curl -X POST http://localhost:8081/api/v1/auth/login \
 1. ✅ **完全なフルスタックシステム構築**
    - バックエンド（Web API + 2 BFF）
    - フロントエンド（iOS + Android + Admin Web）
-   - データベース（PostgreSQL 6テーブル）
+   - データベース（PostgreSQL 7テーブル）
 
 2. ✅ **統合テスト完了**
    - 38テストケース全て合格
@@ -762,8 +763,8 @@ curl -X POST http://localhost:8081/api/v1/auth/login \
 - **コード（Swift）**: 12 Swiftファイル
 - **コード（Kotlin）**: 13 Kotlinファイル
 - **コード（Vue/TS）**: 1538ファイル
-- **API**: 56エンドポイント
-- **データベース**: 6テーブル
+- **API**: 57エンドポイント
+- **データベース**: 7テーブル
 - **画面**: 15画面（iOS: 9機能、Android: 9機能、Admin Web: 6画面）
 - **統合テスト**: 38テストケース（100%合格）
 
