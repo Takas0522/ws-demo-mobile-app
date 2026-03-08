@@ -328,6 +328,7 @@ BFFの接続元のWeb APIは別部隊で改修済みです。
 ``` markdown
 <!--前段階でCopilotをどうさせなかった場合は`workshop-documents/価格履歴機能_MobileApp.md`を利用します-->
 `docs/specs/{機能名}` に記載されている機能を実装するプランを作成してください。
+不明点やあいまいな点があれば質問してください。
 ```
 
 ※Free プランの方、または CLI を使用できない場合は VS Code の Copilot から Plan モードと Agent モードで実施してください。

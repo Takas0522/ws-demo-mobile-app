@@ -1,11 +1,21 @@
 ---
-description: 'Android アプリ開発のための命名規則・設計原則・コードスタイル・レイヤー構造・開発工程のガイドライン。Androidアーキテクチャガイド・Now in Android のベストプラクティスに基づく。'
+description: "Android アプリ開発のための命名規則・設計原則・コードスタイル・レイヤー構造・開発工程のガイドライン。Androidアーキテクチャガイド・Now in Android のベストプラクティスに基づく。"
 applyTo: "app/**"
 ---
 
 # Android アプリ開発規約
 
 このファイルは `app/` 配下の Java コードに適用される規約を定義します。
+
+---
+
+## バックエンド構成
+
+```
+Android App → Mobile BFF (Java, port 8081) → Web API (Java, port 8080) → SQLite
+```
+
+- バックエンドはすべて Java（Spring Boot）で構成されている。`src/windows-app/CppApiServer/` の C++ 製 Web API サーバーは無関係であり、参照しないこと
 
 ---
 
@@ -66,19 +76,19 @@ com.example.mobileapp/
 
 ## 命名規則
 
-| 対象 | 規則 | 例 |
-|---|---|---|
-| クラス・インターフェース | PascalCase | `ProductDetailActivity`, `ApiService` |
-| メソッド・変数 | camelCase | `loadProducts()`, `productAdapter` |
-| 定数 | SCREAMING_SNAKE_CASE | `static final String TAG = "MainActivity"` |
-| パッケージ | 全て小文字 | `com.example.mobileapp.ui` |
-| Activity | `Xxx` + `Activity` | `LoginActivity`, `ProductDetailActivity` |
-| Adapter | `Xxx` + `Adapter` | `ProductAdapter` |
-| ViewModel | `Xxx` + `ViewModel` | `ProductListViewModel` |
-| Repository | `Xxx` + `Repository` | `ProductRepository` |
-| レイアウトファイル | `activity_xxx.xml`, `item_xxx.xml` | `activity_main.xml`, `item_product.xml` |
-| ViewID（XML） | スネークケース + タイププレフィックス | `tv_product_name`, `btn_login`, `rv_products` |
-| ログTAG | クラス名 | `private static final String TAG = "LoginActivity"` |
+| 対象                     | 規則                                  | 例                                                  |
+| ------------------------ | ------------------------------------- | --------------------------------------------------- |
+| クラス・インターフェース | PascalCase                            | `ProductDetailActivity`, `ApiService`               |
+| メソッド・変数           | camelCase                             | `loadProducts()`, `productAdapter`                  |
+| 定数                     | SCREAMING_SNAKE_CASE                  | `static final String TAG = "MainActivity"`          |
+| パッケージ               | 全て小文字                            | `com.example.mobileapp.ui`                          |
+| Activity                 | `Xxx` + `Activity`                    | `LoginActivity`, `ProductDetailActivity`            |
+| Adapter                  | `Xxx` + `Adapter`                     | `ProductAdapter`                                    |
+| ViewModel                | `Xxx` + `ViewModel`                   | `ProductListViewModel`                              |
+| Repository               | `Xxx` + `Repository`                  | `ProductRepository`                                 |
+| レイアウトファイル       | `activity_xxx.xml`, `item_xxx.xml`    | `activity_main.xml`, `item_product.xml`             |
+| ViewID（XML）            | スネークケース + タイププレフィックス | `tv_product_name`, `btn_login`, `rv_products`       |
+| ログTAG                  | クラス名                              | `private static final String TAG = "LoginActivity"` |
 
 ---
 
@@ -89,7 +99,7 @@ com.example.mobileapp/
 - **ViewBinding** を使用する（`findViewById` 禁止）
 - `@Override` アノテーションは常に付与する
 - ローカル変数は可能な限り `final` を使用する
-- ログは `Log.d/w/e(TAG, "message")` を使用し、TAGは `private static final String TAG = "ClassName"` で定義する
+- ログは `Log.d/w/e(TAG, "message")` を使用し、TAGは `private static final String TAG = "ClassName"` で定義する。デバッグ実行時のログは Logcat に格納され、Android Studio の Logcat パネルで確認できる
 - APIコールバックは匿名クラスではなくラムダ式を使用する（Java 8+）
 - `null` チェックは早期リターンで行う
 

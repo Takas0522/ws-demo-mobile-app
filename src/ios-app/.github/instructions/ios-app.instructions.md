@@ -1,11 +1,21 @@
 ---
-description: 'iOS アプリ開発のための命名規則・設計原則・コードスタイル・レイヤー構造・開発工程のガイドライン。Apple Human Interface Guidelines・SwiftUI・Swift Concurrency のベストプラクティスに基づく。'
+description: "iOS アプリ開発のための命名規則・設計原則・コードスタイル・レイヤー構造・開発工程のガイドライン。Apple Human Interface Guidelines・SwiftUI・Swift Concurrency のベストプラクティスに基づく。"
 applyTo: "MobileApp/**"
 ---
 
 # iOS アプリ開発規約
 
 このファイルは `MobileApp/` 配下の Swift コードに適用される規約を定義します。
+
+---
+
+## バックエンド構成
+
+```
+iOS App → Mobile BFF (Java, port 8081) → Web API (Java, port 8080) → SQLite
+```
+
+- バックエンドはすべて Java（Spring Boot）で構成されている。`src/windows-app/CppApiServer/` の C++ 製 Web API サーバーは無関係であり、参照しないこと
 
 ---
 
@@ -62,17 +72,17 @@ MobileApp/
 
 ## 命名規則
 
-| 対象 | 規則 | 例 |
-|---|---|---|
-| 型（struct, class, enum, protocol） | PascalCase | `ProductListView`, `AuthService`, `NetworkError` |
-| プロパティ・変数・関数 | camelCase | `isAuthenticated`, `loadProducts()` |
-| 定数（型レベル） | camelCase | `let baseURL = "..."` |
-| View | `Xxx` + `View` | `LoginView`, `ProductDetailView` |
-| ViewModel | `Xxx` + `ViewModel` | `ProductListViewModel`, `ProductDetailViewModel` |
-| Service | `Xxx` + `Service` | `AuthService` |
-| Manager | `Xxx` + `Manager` | `KeychainManager` |
-| プロトコル | 機能を表す名詞または形容詞 | `Authenticatable`, `ProductRepository` |
-| ファイル名 | 主要な型と同名 | `ProductListView.swift`, `AuthService.swift` |
+| 対象                                | 規則                       | 例                                               |
+| ----------------------------------- | -------------------------- | ------------------------------------------------ |
+| 型（struct, class, enum, protocol） | PascalCase                 | `ProductListView`, `AuthService`, `NetworkError` |
+| プロパティ・変数・関数              | camelCase                  | `isAuthenticated`, `loadProducts()`              |
+| 定数（型レベル）                    | camelCase                  | `let baseURL = "..."`                            |
+| View                                | `Xxx` + `View`             | `LoginView`, `ProductDetailView`                 |
+| ViewModel                           | `Xxx` + `ViewModel`        | `ProductListViewModel`, `ProductDetailViewModel` |
+| Service                             | `Xxx` + `Service`          | `AuthService`                                    |
+| Manager                             | `Xxx` + `Manager`          | `KeychainManager`                                |
+| プロトコル                          | 機能を表す名詞または形容詞 | `Authenticatable`, `ProductRepository`           |
+| ファイル名                          | 主要な型と同名             | `ProductListView.swift`, `AuthService.swift`     |
 
 ---
 
@@ -90,13 +100,13 @@ MobileApp/
 
 #### SwiftUI プロパティラッパーの使い分け
 
-| プロパティラッパー | 用途 |
-|---|---|
-| `@State` | View内のローカルな値型の一時的な状態 |
-| `@Binding` | 親から受け取った状態への双方向参照 |
-| `@StateObject` | ViewがOwnerとなるObservableObjectの生成・保持 |
-| `@ObservedObject` | 外部から注入されるObservableObjectの観測 |
-| `@EnvironmentObject` | View階層全体で共有するObservableObject |
+| プロパティラッパー   | 用途                                          |
+| -------------------- | --------------------------------------------- |
+| `@State`             | View内のローカルな値型の一時的な状態          |
+| `@Binding`           | 親から受け取った状態への双方向参照            |
+| `@StateObject`       | ViewがOwnerとなるObservableObjectの生成・保持 |
+| `@ObservedObject`    | 外部から注入されるObservableObjectの観測      |
+| `@EnvironmentObject` | View階層全体で共有するObservableObject        |
 
 ---
 

@@ -172,3 +172,5 @@ pids/
 
 # Android local properties
 local.properties
+
+temp/

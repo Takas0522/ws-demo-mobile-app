@@ -1,5 +1,5 @@
 ---
-description: 'モバイルアプリ（Android/iOS）開発のための命名規則・設計原則・コードスタイル・レイヤー構造・開発工程のガイドライン。Androidアーキテクチャガイド・Now in Android・Human Interface Guidelines・SwiftUI・Swift Concurrencyのベストプラクティスに基づく。'
+description: "モバイルアプリ（Android/iOS）開発のための命名規則・設計原則・コードスタイル・レイヤー構造・開発工程のガイドライン。Androidアーキテクチャガイド・Now in Android・Human Interface Guidelines・SwiftUI・Swift Concurrencyのベストプラクティスに基づく。"
 applyTo: "src/{android-app,ios-app}/**"
 ---
 
@@ -7,6 +7,19 @@ applyTo: "src/{android-app,ios-app}/**"
 
 このファイルは Android（`src/android-app/`）および iOS（`src/ios-app/`）のモバイルアプリ開発に適用される規約を定義します。
 Androidアーキテクチャガイド・[Now in Android](https://github.com/android/nowinandroid)・Apple Human Interface Guidelines・SwiftUI・Swift Concurrencyのベーシックなプラクティスを参考に構成しています。
+
+---
+
+## バックエンド構成
+
+モバイルアプリ（iOS / Android）はすべて以下の Java ベースのバックエンドに接続する。
+
+```
+Mobile App → Mobile BFF (Java, port 8081) → Web API (Java, port 8080) → SQLite
+```
+
+- `src/windows-app/CppApiServer/` の C++ 製 Web API サーバーはモバイルアプリのバックエンドとは無関係であり、参照しないこと
+- バックエンドの API 仕様を確認する際は `src/mobile-bff/` および `src/web-api/` を参照する
 
 ---
 
@@ -109,33 +122,33 @@ MobileApp/
 
 ### Android（Java）
 
-| 対象 | 規則 | 例 |
-|---|---|---|
-| クラス・インターフェース | PascalCase | `ProductDetailActivity`, `ApiService` |
-| メソッド・変数 | camelCase | `loadProducts()`, `productAdapter` |
-| 定数 | SCREAMING_SNAKE_CASE | `static final String TAG = "MainActivity"` |
-| パッケージ | 全て小文字 | `com.example.mobileapp.ui` |
-| Activity | `Xxx` + `Activity` | `LoginActivity`, `ProductDetailActivity` |
-| Adapter | `Xxx` + `Adapter` | `ProductAdapter` |
-| ViewModel | `Xxx` + `ViewModel` | `ProductListViewModel` |
-| Repository | `Xxx` + `Repository` | `ProductRepository` |
-| レイアウトファイル | `activity_xxx.xml`, `item_xxx.xml` | `activity_main.xml`, `item_product.xml` |
-| ViewID（XML） | スネークケース + タイププレフィックス | `tv_product_name`, `btn_login`, `rv_products` |
-| ログTAG | クラス名 | `private static final String TAG = "LoginActivity"` |
+| 対象                     | 規則                                  | 例                                                  |
+| ------------------------ | ------------------------------------- | --------------------------------------------------- |
+| クラス・インターフェース | PascalCase                            | `ProductDetailActivity`, `ApiService`               |
+| メソッド・変数           | camelCase                             | `loadProducts()`, `productAdapter`                  |
+| 定数                     | SCREAMING_SNAKE_CASE                  | `static final String TAG = "MainActivity"`          |
+| パッケージ               | 全て小文字                            | `com.example.mobileapp.ui`                          |
+| Activity                 | `Xxx` + `Activity`                    | `LoginActivity`, `ProductDetailActivity`            |
+| Adapter                  | `Xxx` + `Adapter`                     | `ProductAdapter`                                    |
+| ViewModel                | `Xxx` + `ViewModel`                   | `ProductListViewModel`                              |
+| Repository               | `Xxx` + `Repository`                  | `ProductRepository`                                 |
+| レイアウトファイル       | `activity_xxx.xml`, `item_xxx.xml`    | `activity_main.xml`, `item_product.xml`             |
+| ViewID（XML）            | スネークケース + タイププレフィックス | `tv_product_name`, `btn_login`, `rv_products`       |
+| ログTAG                  | クラス名                              | `private static final String TAG = "LoginActivity"` |
 
 ### iOS（Swift）
 
-| 対象 | 規則 | 例 |
-|---|---|---|
-| 型（struct, class, enum, protocol） | PascalCase | `ProductListView`, `AuthService`, `NetworkError` |
-| プロパティ・変数・関数 | camelCase | `isAuthenticated`, `loadProducts()` |
-| 定数（型レベル） | camelCase（Swiftの慣例） | `let baseURL = "..."` |
-| View | `Xxx` + `View` | `LoginView`, `ProductDetailView` |
-| ViewModel | `Xxx` + `ViewModel` | `ProductListViewModel`, `ProductDetailViewModel` |
-| Service | `Xxx` + `Service` | `AuthService` |
-| Manager | `Xxx` + `Manager` | `KeychainManager` |
-| プロトコル | 機能を表す名詞または形容詞 | `Authenticatable`, `ProductRepository` |
-| ファイル名 | 主要な型と同名 | `ProductListView.swift`, `AuthService.swift` |
+| 対象                                | 規則                       | 例                                               |
+| ----------------------------------- | -------------------------- | ------------------------------------------------ |
+| 型（struct, class, enum, protocol） | PascalCase                 | `ProductListView`, `AuthService`, `NetworkError` |
+| プロパティ・変数・関数              | camelCase                  | `isAuthenticated`, `loadProducts()`              |
+| 定数（型レベル）                    | camelCase（Swiftの慣例）   | `let baseURL = "..."`                            |
+| View                                | `Xxx` + `View`             | `LoginView`, `ProductDetailView`                 |
+| ViewModel                           | `Xxx` + `ViewModel`        | `ProductListViewModel`, `ProductDetailViewModel` |
+| Service                             | `Xxx` + `Service`          | `AuthService`                                    |
+| Manager                             | `Xxx` + `Manager`          | `KeychainManager`                                |
+| プロトコル                          | 機能を表す名詞または形容詞 | `Authenticatable`, `ProductRepository`           |
+| ファイル名                          | 主要な型と同名             | `ProductListView.swift`, `AuthService.swift`     |
 
 ---
 
@@ -178,13 +191,13 @@ TextView tv = (TextView) findViewById(R.id.tv_product_name);
 
 #### SwiftUI プロパティラッパーの使い分け
 
-| プロパティラッパー | 用途 | 例 |
-|---|---|---|
-| `@State` | View内のローカルな値型の一時的な状態 | `@State private var isLoading = false` |
-| `@Binding` | 親から受け取った状態への双方向参照 | `@Binding var text: String` |
-| `@StateObject` | ViewがOwnerとなるObservableObjectの生成・保持 | `@StateObject private var viewModel = ProductListViewModel()` |
-| `@ObservedObject` | 外部から注入されるObservableObjectの観測 | `@ObservedObject var viewModel: ProductListViewModel` |
-| `@EnvironmentObject` | View階層全体で共有するObservableObject | `@EnvironmentObject var authService: AuthService` |
+| プロパティラッパー   | 用途                                          | 例                                                            |
+| -------------------- | --------------------------------------------- | ------------------------------------------------------------- |
+| `@State`             | View内のローカルな値型の一時的な状態          | `@State private var isLoading = false`                        |
+| `@Binding`           | 親から受け取った状態への双方向参照            | `@Binding var text: String`                                   |
+| `@StateObject`       | ViewがOwnerとなるObservableObjectの生成・保持 | `@StateObject private var viewModel = ProductListViewModel()` |
+| `@ObservedObject`    | 外部から注入されるObservableObjectの観測      | `@ObservedObject var viewModel: ProductListViewModel`         |
+| `@EnvironmentObject` | View階層全体で共有するObservableObject        | `@EnvironmentObject var authService: AuthService`             |
 
 - `@StateObject` はViewが所有権を持つViewModel（生成元）に使用する
 - `@ObservedObject` は親からViewModelを受け取る場合に使用する（`@StateObject` との混同禁止）
