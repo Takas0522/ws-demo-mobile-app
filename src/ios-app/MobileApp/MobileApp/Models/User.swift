@@ -7,24 +7,24 @@
 
 import Foundation
 
-struct User: Codable {
+struct User: Codable, Sendable {
     let userId: Int
     let userName: String
     let loginId: String
     let userType: String
 }
 
-struct LoginRequest: Codable {
+struct LoginRequest: Codable, Sendable {
     let loginId: String
     let password: String
 }
 
-struct LoginResponse: Codable {
+struct LoginResponse: Codable, Sendable {
     let data: LoginData
     let timestamp: String
 }
 
-struct LoginData: Codable {
+struct LoginData: Codable, Sendable {
     let token: String
     let tokenType: String
     let expiresIn: Int

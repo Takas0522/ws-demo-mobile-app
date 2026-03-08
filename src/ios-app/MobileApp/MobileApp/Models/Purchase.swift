@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Purchase: Codable, Identifiable {
+struct Purchase: Codable, Identifiable, Sendable {
     let id: String
     let purchaseId: String
     let userId: String
@@ -18,12 +18,12 @@ struct Purchase: Codable, Identifiable {
     let purchasedAt: String
 }
 
-struct PurchaseRequest: Codable {
+struct PurchaseRequest: Codable, Sendable {
     let productId: Int
     let quantity: Int
 }
 
-struct PurchaseResponse: Codable {
+struct PurchaseResponse: Codable, Sendable {
     let data: Purchase
     let timestamp: String
 }

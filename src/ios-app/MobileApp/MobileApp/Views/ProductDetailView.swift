@@ -137,7 +137,7 @@ struct ProductDetailView: View {
 
 struct PurchaseSheet: View {
     let product: Product?
-    let onPurchase: (Int) async -> Void
+    let onPurchase: @MainActor @Sendable (Int) async -> Void
     
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedQuantity = 100
