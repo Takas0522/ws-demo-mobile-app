@@ -208,13 +208,14 @@ sqlite3 ./data/mobile_app.db < ddl.sql
 # 確認
 sqlite3 ./data/mobile_app.db ".tables"
 
-# 期待される出力: 6つのテーブル
+# 期待される出力: 7つのテーブル
 # - users
 # - admins
 # - products
 # - purchases
 # - favorites
 # - feature_flags
+# - product_price_history
 ```
 
 #### 3.2 初期データ投入

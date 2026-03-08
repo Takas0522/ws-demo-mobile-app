@@ -6,12 +6,15 @@
 
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
-      "version": "21",
+      "version": "17",
       "installMaven": "true",
       "installGradle": "true"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
+      "version": "20.19"
+    },
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "10.0"
     },
     "ghcr.io/devcontainers/features/git:1": {}
   },
@@ -25,12 +28,13 @@
         "pivotal.vscode-spring-boot",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "Vue.volar"
       ],
       "settings": {
         "java.configuration.runtimes": [
           {
-            "name": "JavaSE-21",
+            "name": "JavaSE-17",
             "path": "/usr/local/sdkman/candidates/java/current",
             "default": true
           }
