@@ -2,7 +2,6 @@
 name: spec-builder
 description: "ビジネス仕様・システム仕様を策定し、Mermaid 図を含むドキュメントとして出力するサブエージェント"
 tools: ["read", "edit", "search", "web"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 

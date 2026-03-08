@@ -2,7 +2,6 @@
 name: implementer
 description: "開発タスクに基づいてコードを実装するサブエージェント。コーディング規約に準拠した実装を行う"
 tools: ["read", "edit", "search", "execute"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 

@@ -2,7 +2,6 @@
 name: dev-planner
 description: "システム仕様をもとに、動作確認可能な粒度で開発タスクを分割し計画を立案するサブエージェント"
 tools: ["read", "edit", "search"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 

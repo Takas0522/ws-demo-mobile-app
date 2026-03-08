@@ -2,7 +2,6 @@
 name: unit-test-builder
 description: "テストシナリオの作成とユニットテストコードの実装を行うサブエージェント。ISTQB のテスト設計技法を用いる"
 tools: ["read", "edit", "search", "execute"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 

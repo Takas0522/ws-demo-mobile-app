@@ -2,7 +2,6 @@
 name: user-test-builder
 description: "ユーザー受入テスト（UAT）のテストシナリオを構築するサブエージェント。経産省システム管理基準を参考にする"
 tools: ["read", "edit", "search", "web"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 

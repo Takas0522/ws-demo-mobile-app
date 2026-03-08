@@ -2,7 +2,6 @@
 name: test-fixer
 description: "テスト実行→失敗分析→実装/テスト修正のサイクルを繰り返し、全テストを通過させるサブエージェント"
 tools: ["read", "edit", "search", "execute"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 

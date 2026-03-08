@@ -2,7 +2,6 @@
 name: dev-reviewer
 description: "各工程の成果物をレビューし、品質基準に照らして合否を判定するサブエージェント"
 tools: ["read", "search", "web"]
-model: ["Claude Sonnet 4.5"]
 user-invocable: false
 ---
 
