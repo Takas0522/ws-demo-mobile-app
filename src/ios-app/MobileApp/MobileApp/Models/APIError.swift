@@ -7,18 +7,18 @@
 
 import Foundation
 
-struct APIError: Codable {
+struct APIError: Codable, Sendable {
     let error: ErrorDetail
     let timestamp: String
 }
 
-struct ErrorDetail: Codable {
+struct ErrorDetail: Codable, Sendable {
     let code: String
     let message: String
     let details: String?
 }
 
-enum NetworkError: Error {
+enum NetworkError: Error, Sendable {
     case invalidURL
     case noData
     case decodingError
