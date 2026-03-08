@@ -23,7 +23,7 @@ SQLite Database
 ```
 
 - すべてのバックエンドサービス（Mobile BFF / Admin BFF / Web API）は Java（Spring Boot）で実装されている
-- `src/windows-app/CppApiServer/` に C++ 製の Web API サーバーが存在するが、これはどのクライアントからも参照されていない独立した実装であり、実際のシステム構成には含まれない
+- `src/windows-app/CppApiServer/` に C++ 製の API サーバーが存在する。これは Java の Mobile BFF と同じポート 8081 で動作し、Windows アプリのローカル開発用バックエンド（Mobile BFF の代替）として使用される。iOS / Android アプリからは参照されない
 
 ### その他
 

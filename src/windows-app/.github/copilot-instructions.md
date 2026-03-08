@@ -2,14 +2,31 @@
 
 ## バックエンド構成
 
-Windows アプリは他のモバイルアプリ（iOS / Android）と同様に、Mobile BFF（Java, ポート 8081）を経由して Web API（Java, ポート 8080）に接続する。
+Windows アプリはポート 8081 のバックエンドに接続する。バックエンドには 2 つの選択肢がある。
+
+### 1. CppApiServer（C++ 製ローカルバックエンド）
+
+```
+Windows App → CppApiServer (C++, port 8081) → SQLite (ローカル DB)
+```
+
+- `CppApiServer/` ディレクトリに配置された C++ 製の API サーバー
+- Java のバックエンドスタックを起動せずに Windows アプリ単体で開発・デバッグできる
+- ソリューションの起動プロファイル「CppApiServer + WindowsApp」で同時起動可能
+
+### 2. Java Mobile BFF（共通バックエンド）
 
 ```
 Windows App → Mobile BFF (Java, port 8081) → Web API (Java, port 8080) → SQLite
 ```
 
-- `CppApiServer/` ディレクトリに C++ 製の Web API サーバーが存在するが、これは実際のシステム構成には含まれず、どのクライアントからも参照されていない独立した実装である
-- バックエンドの API 仕様を確認する際は `src/mobile-bff/` および `src/web-api/`（Java）を参照すること
+- iOS / Android と共通の Java バックエンドスタックを使用する構成
+- ソリューションの起動プロファイル「WindowsApp Only」で起動し、別途 Java サービスを起動する
+
+### API 仕様の参照先
+
+- C++ バックエンド: `CppApiServer/` のソースコードを参照
+- Java バックエンド: `src/mobile-bff/` および `src/web-api/` を参照
 
 ## プロジェクト ガイドライン
 
