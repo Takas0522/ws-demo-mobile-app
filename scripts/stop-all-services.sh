@@ -50,6 +50,28 @@ else
 fi
 echo ""
 
+# Struts2 管理画面アプリ（Tomcat 7）の停止
+echo "Stopping Struts2 Admin Application (Tomcat 7)..."
+CATALINA_HOME="${CATALINA_HOME:-/opt/tomcat7}"
+if [ -f "${CATALINA_HOME}/bin/shutdown.sh" ]; then
+  JAVA7_HOME="${JAVA7_HOME:-/usr/lib/jvm/zulu7}"
+  export JAVA_HOME="$JAVA7_HOME"
+  "${CATALINA_HOME}/bin/shutdown.sh" 2>/dev/null || true
+  sleep 3
+  if [ -f "${CATALINA_HOME}/temp/catalina.pid" ]; then
+    TOMCAT_PID=$(cat "${CATALINA_HOME}/temp/catalina.pid")
+    if kill -0 "$TOMCAT_PID" 2>/dev/null; then
+      echo "  Force killing Tomcat (PID: $TOMCAT_PID)..."
+      kill -9 "$TOMCAT_PID" 2>/dev/null || true
+    fi
+    rm -f "${CATALINA_HOME}/temp/catalina.pid"
+  fi
+  echo "✓ Struts2 Admin Application stopped"
+else
+  echo "✓ Tomcat 7 not installed (skipped)"
+fi
+echo ""
+
 # SQLiteはファイルベースのため、停止処理は不要です
 echo "SQLite database: no shutdown required (file-based)"
 echo ""

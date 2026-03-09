@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <!-- Property placeholder -->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!-- Component scanning for Service/DAO beans -->
+    <context:component-scan base-package="com.example.admin">
+        <context:exclude-filter type="regex" expression="com\.example\.admin\.action\..*"/>
+        <context:exclude-filter type="regex" expression="com\.example\.admin\.api\..*"/>
+    </context:component-scan>
+
+    <!-- DatabaseUtil initialization -->
+    <bean id="databaseUtil" class="com.example.admin.util.DatabaseUtil" init-method="init">
+        <property name="dbPath" value="${db.path}"/>
+    </bean>
+
+    <!-- JWT Utility -->
+    <bean id="jwtUtil" class="com.example.admin.util.JwtUtil">
+        <property name="secret" value="${jwt.secret}"/>
+        <property name="expirationHours" value="${jwt.expiration.hours}"/>
+    </bean>
+
+    <!-- Beans will be added as they are created in later phases -->
+</beans>

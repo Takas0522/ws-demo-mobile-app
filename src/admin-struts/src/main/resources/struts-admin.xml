@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    <package name="admin" extends="struts-default" namespace="/admin">
+
+        <interceptors>
+            <interceptor name="authInterceptor"
+                         class="com.example.admin.interceptor.AuthInterceptor"/>
+
+            <interceptor-stack name="adminStack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="authInterceptor"/>
+            </interceptor-stack>
+
+            <interceptor-stack name="guestStack">
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="adminStack"/>
+
+        <global-results>
+            <result name="login" type="redirect">/admin/login</result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </global-results>
+
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
+
+        <!-- ===== 認証 ===== -->
+        <action name="login" class="com.example.admin.action.auth.LoginAction"
+                method="input">
+            <interceptor-ref name="guestStack"/>
+            <result name="input">/WEB-INF/jsp/auth/login.jsp</result>
+            <result name="success" type="redirect">/admin/dashboard</result>
+        </action>
+
+        <action name="login-submit" class="com.example.admin.action.auth.LoginAction">
+            <interceptor-ref name="guestStack"/>
+            <result name="input">/WEB-INF/jsp/auth/login.jsp</result>
+            <result name="success" type="redirect">/admin/dashboard</result>
+        </action>
+
+        <action name="logout" class="com.example.admin.action.auth.LogoutAction">
+            <interceptor-ref name="guestStack"/>
+            <result name="success" type="redirect">/admin/login</result>
+        </action>
+
+        <!-- ===== ダッシュボード ===== -->
+        <action name="dashboard" class="com.example.admin.action.DashboardAction">
+            <result name="success">/WEB-INF/jsp/dashboard.jsp</result>
+        </action>
+
+        <!-- ===== 商品管理 ===== -->
+        <action name="products" class="com.example.admin.action.product.ProductListAction">
+            <result name="success">/WEB-INF/jsp/product/list.jsp</result>
+        </action>
+
+        <action name="product-edit" class="com.example.admin.action.product.ProductDetailAction">
+            <result name="success">/WEB-INF/jsp/product/edit.jsp</result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </action>
+
+        <action name="product-update" class="com.example.admin.action.product.ProductUpdateAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">product-edit</param>
+                <param name="productId">${productId}</param>
+                <param name="successMessage">商品を更新しました</param>
+            </result>
+            <result name="input">/WEB-INF/jsp/product/edit.jsp</result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </action>
+
+        <!-- ===== ユーザー管理 ===== -->
+        <action name="users" class="com.example.admin.action.user.UserListAction">
+            <result name="success">/WEB-INF/jsp/user/list.jsp</result>
+        </action>
+
+        <!-- ===== フィーチャーフラグ管理 ===== -->
+        <action name="feature-flags" class="com.example.admin.action.featureflag.FeatureFlagAction">
+            <result name="success">/WEB-INF/jsp/featureflag/list.jsp</result>
+        </action>
+
+        <action name="feature-flag-update" class="com.example.admin.action.featureflag.FeatureFlagUpdateAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">feature-flags</param>
+                <param name="userId">${userId}</param>
+                <param name="successMessage">フラグを更新しました</param>
+            </result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </action>
+
+    </package>
+</struts>

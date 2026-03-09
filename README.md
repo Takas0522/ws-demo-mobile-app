@@ -84,6 +84,18 @@
 **✅ 全コンポーネント完成**: Web API、Mobile BFF、Admin BFF、PostgreSQL、iOS App、Android App、Admin Web  
 **🎉 100%完了**: 全75タスク完了、本番稼働可能
 
+### 管理者向け（Struts2 移行後）
+
+```
+管理者ブラウザ
+    ↓
+Struts2 管理アプリ (Tomcat 7, port 8082)
+    ↓
+SQLite Database（直接アクセス）
+```
+
+※ 旧構成（Vue.js + Admin BFF）は `src/admin-web/` および `src/admin-bff/` に保持されていますが、起動対象から除外されています。
+
 ## 技術スタック
 
 ### バックエンド（✅ 実装済み）
@@ -93,6 +105,13 @@
 - **データベース**: PostgreSQL 16
 - **ビルドツール**: Maven 3.9+
 - **認証方式**: JWT（RS256、アクセス+リフレッシュトークン）
+
+### 管理画面 Struts2（✅ 移行済み）
+- **言語**: Java 7
+- **フレームワーク**: Apache Struts 2.5.33
+- **サーブレットコンテナ**: Apache Tomcat 7
+- **データベース**: SQLite（直接アクセス）
+- **ビルドツール**: Maven 3.9+
 
 ### フロントエンド（✅ 実装済み）
 - **iOS**: SwiftUI（12ファイル、9機能）
@@ -302,6 +321,27 @@ npm run dev
 - [統合テスト計画](docs/testing/integration-test-plan.md)
 - [手動テストチェックリスト](docs/testing/manual-test-checklist.md)
 - [デモセットアップガイド](docs/DEMO-SETUP.md)
+
+## 🚀 起動方法
+
+### 全サービス一括起動
+```bash
+./scripts/start-all-services.sh
+```
+
+### Struts2 管理画面のみ起動
+```bash
+./scripts/start-admin-struts.sh
+```
+- URL: http://localhost:8082/admin-struts/admin/login
+- ログイン: admin001 / admin123
+
+### 停止
+```bash
+./scripts/stop-all-services.sh
+# または
+./scripts/stop-admin-struts.sh
+```
 
 ## 💻 クイックスタート（全システム）
 
@@ -516,7 +556,7 @@ npm run dev
 │   │       └── dto/            # DTO
 │   └── pom.xml
 │
-├── admin-bff/                  # Admin BFF - ✅ 完成
+├── admin-bff/                  # Admin BFF - ✅ 完成（※旧構成 - Struts2移行により起動対象外）
 │   ├── src/main/java/
 │   │   └── com/example/adminbff/
 │   │       ├── controller/     # 5 コントローラー
@@ -525,7 +565,7 @@ npm run dev
 │   │       └── dto/            # DTO
 │   └── pom.xml
 │
-├── admin-web/                  # Admin Web - ✅ 完成
+├── admin-web/                  # Admin Web - ✅ 完成（※旧構成 - Struts2移行により起動対象外）
 │   ├── src/
 │   │   ├── api/               # APIクライアント
 │   │   ├── components/        # 共通コンポーネント
@@ -534,6 +574,17 @@ npm run dev
 │   │   └── router/            # Vue Router
 │   ├── package.json
 │   └── README.md
+│
+├── admin-struts/               # Struts2 管理画面 - ✅ 移行完了（Admin BFF + Admin Web の後継）
+│   ├── src/main/java/
+│   │   └── com/example/admin/
+│   │       ├── action/         # Struts2 Action クラス
+│   │       ├── dao/            # DAO（SQLite 直接アクセス）
+│   │       ├── model/          # モデルクラス
+│   │       └── interceptor/    # インターセプター
+│   ├── src/main/webapp/
+│   │   └── WEB-INF/views/     # JSP ビュー
+│   └── pom.xml
 │
 ├── database/                   # データベース - ✅ 完成
 │   ├── schema/
@@ -688,8 +739,10 @@ curl -X POST http://localhost:8081/api/v1/auth/login \
 
 | スクリプト | 説明 | コマンド |
 |----------|------|---------|
-| **全サービス起動** | PostgreSQL, Web API, BFF, Admin Webを起動 | `./scripts/start-all-services.sh` |
+| **全サービス起動** | Web API, Mobile BFF, Struts2 Adminを起動 | `./scripts/start-all-services.sh` |
 | **全サービス停止** | すべてのサービスを停止 | `./scripts/stop-all-services.sh` |
+| **Struts2 管理画面起動** | Struts2 管理アプリのみ起動 | `./scripts/start-admin-struts.sh` |
+| **Struts2 管理画面停止** | Struts2 管理アプリのみ停止 | `./scripts/stop-admin-struts.sh` |
 | **DB リセット** | データベースを初期状態に戻す | `./scripts/reset-database.sh` |
 
 ## 🎯 次のステップ

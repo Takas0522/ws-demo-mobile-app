@@ -37,6 +37,10 @@
             "name": "JavaSE-17",
             "path": "/usr/local/sdkman/candidates/java/current",
             "default": true
+          },
+          {
+            "name": "JavaSE-1.7",
+            "path": "/usr/lib/jvm/zulu-7-amd64"
           }
         ],
         "editor.formatOnSave": true,
@@ -47,7 +51,7 @@
     }
   },
 
-  "forwardPorts": [8080, 8081, 8082, 5173],
+  "forwardPorts": [8080, 8081, 8082, 5173, 8083],
   "portsAttributes": {
     "8080": {
       "label": "Web API",
@@ -58,16 +62,20 @@
       "onAutoForward": "notify"
     },
     "8082": {
-      "label": "Admin BFF",
+      "label": "Admin BFF / Struts2 Admin",
       "onAutoForward": "notify"
     },
     "5173": {
       "label": "Admin Web",
       "onAutoForward": "notify"
+    },
+    "8083": {
+      "label": "Struts2 Admin (移行期間用)",
+      "onAutoForward": "notify"
     }
   },
 
-  "postCreateCommand": "mkdir -p /workspace/src/web-api/data && if [ ! -f /workspace/src/web-api/data/mobile_app.db ]; then sqlite3 /workspace/src/web-api/data/mobile_app.db < /workspace/src/database/schema/01_create_tables.sql && sqlite3 /workspace/src/web-api/data/mobile_app.db < /workspace/src/database/seeds/02_seed_data.sql && echo 'SQLite database initialized'; else echo 'SQLite database already exists'; fi && echo 'Dev Container is ready!'",
+  "postCreateCommand": "mkdir -p /workspace/src/web-api/data && if [ ! -f /workspace/src/web-api/data/mobile_app.db ]; then sqlite3 /workspace/src/web-api/data/mobile_app.db < /workspace/src/database/schema/01_create_tables.sql && sqlite3 /workspace/src/web-api/data/mobile_app.db < /workspace/src/database/seeds/02_seed_data.sql && echo 'SQLite database initialized'; else echo 'SQLite database already exists'; fi && echo 'Setting up Tomcat 7...' && cp /opt/tomcat7/conf/server.xml /opt/tomcat7/conf/server.xml.bak && echo 'Dev Container is ready!'",
 
   "remoteUser": "vscode"
 }

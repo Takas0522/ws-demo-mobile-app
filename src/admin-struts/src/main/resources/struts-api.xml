@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+    <!-- API 基盤パッケージ（abstract — インターセプタ・グローバルresult定義用） -->
+    <package name="api-base" extends="json-default" abstract="true">
+
+        <interceptors>
+            <interceptor name="jwtInterceptor"
+                         class="com.example.admin.interceptor.JwtInterceptor"/>
+
+            <interceptor-stack name="apiSecuredStack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="jwtInterceptor"/>
+            </interceptor-stack>
+
+            <interceptor-stack name="apiPublicStack">
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="apiSecuredStack"/>
+
+        <global-results>
+            <result name="unauthorized" type="httpheader">
+                <param name="status">401</param>
+                <param name="headers.Content-Type">application/json; charset=UTF-8</param>
+            </result>
+        </global-results>
+    </package>
+
+    <!-- ===== 認証 API (/api/v1/auth) ===== -->
+    <package name="api-auth" extends="api-base" namespace="/api/v1/auth">
+
+        <!-- POST /api/v1/auth/login — ユーザーログイン -->
+        <action name="login" class="com.example.admin.api.auth.ApiAuthAction" method="login">
+            <interceptor-ref name="apiPublicStack"/>
+        </action>
+
+        <!-- POST /api/v1/auth/admin-login — 管理者ログイン -->
+        <action name="admin-login" class="com.example.admin.api.auth.ApiAuthAction" method="adminLogin">
+            <interceptor-ref name="apiPublicStack"/>
+        </action>
+
+        <!-- POST /api/v1/auth/logout — ログアウト -->
+        <action name="logout" class="com.example.admin.api.auth.ApiAuthAction" method="logout">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- POST /api/v1/auth/refresh — トークンリフレッシュ -->
+        <action name="refresh" class="com.example.admin.api.auth.ApiAuthAction" method="refresh">
+            <interceptor-ref name="apiPublicStack"/>
+        </action>
+
+        <!-- PUT /api/v1/auth/password — パスワード変更 -->
+        <action name="password" class="com.example.admin.api.auth.ApiAuthAction" method="changePassword">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+    </package>
+
+    <!-- ===== メイン API (/api/v1) ===== -->
+    <package name="api-main" extends="api-base" namespace="/api/v1">
+
+        <!-- === 商品 (Products) === -->
+
+        <!-- GET /api/v1/products — 商品一覧 -->
+        <action name="products" class="com.example.admin.api.product.ApiProductAction" method="list">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- GET /api/v1/products-search?keyword=xxx — 商品検索 -->
+        <action name="products-search" class="com.example.admin.api.product.ApiProductAction" method="search">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- GET /api/v1/products-detail?productId=xxx — 商品詳細 -->
+        <action name="products-detail" class="com.example.admin.api.product.ApiProductAction" method="detail">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- PUT /api/v1/products-update?productId=xxx — 商品更新（ADMIN のみ） -->
+        <action name="products-update" class="com.example.admin.api.product.ApiProductAction" method="update">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- GET /api/v1/products-price-history?productId=xxx — 価格履歴 -->
+        <action name="products-price-history" class="com.example.admin.api.product.ApiProductAction" method="priceHistory">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- === 購入 (Purchases) === -->
+
+        <!-- GET /api/v1/purchases — 購入履歴 -->
+        <action name="purchases" class="com.example.admin.api.purchase.ApiPurchaseAction" method="list">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- POST /api/v1/purchases-create — 購入作成 -->
+        <action name="purchases-create" class="com.example.admin.api.purchase.ApiPurchaseAction" method="create">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- === お気に入り (Favorites) === -->
+
+        <!-- GET /api/v1/favorites — お気に入り一覧 -->
+        <action name="favorites" class="com.example.admin.api.favorite.ApiFavoriteAction" method="list">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- POST /api/v1/favorites-add — お気に入り追加 -->
+        <action name="favorites-add" class="com.example.admin.api.favorite.ApiFavoriteAction" method="add">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- DELETE /api/v1/favorites-remove?productId=xxx — お気に入り削除 -->
+        <action name="favorites-remove" class="com.example.admin.api.favorite.ApiFavoriteAction" method="remove">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- === フィーチャーフラグ (Feature Flags) === -->
+
+        <!-- GET /api/v1/feature-flags — ユーザーのフラグ取得 -->
+        <action name="feature-flags" class="com.example.admin.api.featureflag.ApiFeatureFlagAction" method="userFlags">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- === 管理者エンドポイント (Admin) === -->
+
+        <!-- GET /api/v1/admin-users — 管理者向けユーザー一覧＋フラグ -->
+        <action name="admin-users" class="com.example.admin.api.featureflag.ApiFeatureFlagAction" method="adminUsers">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- PUT /api/v1/admin-feature-flag-update?userId=xxx&flagKey=yyy — フラグ更新 -->
+        <action name="admin-feature-flag-update" class="com.example.admin.api.featureflag.ApiFeatureFlagAction" method="updateFlag">
+            <interceptor-ref name="apiSecuredStack"/>
+        </action>
+
+        <!-- === ヘルスチェック (Health) === -->
+
+        <!-- GET /api/v1/health — ヘルスチェック -->
+        <action name="health" class="com.example.admin.api.health.ApiHealthAction">
+            <interceptor-ref name="apiPublicStack"/>
+        </action>
+
+    </package>
+
+</struts>
