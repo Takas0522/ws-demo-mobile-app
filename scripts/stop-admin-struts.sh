@@ -1,26 +1,27 @@
 #!/bin/bash
 # Struts2 管理画面アプリケーションの停止スクリプト
 
-CATALINA_HOME="${CATALINA_HOME:-/opt/tomcat7}"
-JAVA7_HOME="${JAVA7_HOME:-/usr/lib/jvm/zulu7}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+PID_FILE="${PROJECT_ROOT}/pids/admin-struts.pid"
 
-echo "Stopping Struts2 Admin Application (Tomcat 7)..."
+echo "Stopping Struts2 Admin Application..."
 
-export JAVA_HOME="$JAVA7_HOME"
-
-if [ -f "${CATALINA_HOME}/bin/shutdown.sh" ]; then
-    "${CATALINA_HOME}/bin/shutdown.sh" 2>/dev/null || true
-    sleep 3
-    # PID ファイルで確認
-    if [ -f "${CATALINA_HOME}/temp/catalina.pid" ]; then
-        PID=$(cat "${CATALINA_HOME}/temp/catalina.pid")
+if [ -f "$PID_FILE" ]; then
+    PID=$(cat "$PID_FILE")
+    if kill -0 "$PID" 2>/dev/null; then
+        kill "$PID"
+        echo "  Sent SIGTERM to PID $PID"
+        sleep 3
         if kill -0 "$PID" 2>/dev/null; then
-            echo "Force killing Tomcat (PID: $PID)..."
             kill -9 "$PID" 2>/dev/null || true
+            echo "  Force killed PID $PID"
         fi
-        rm -f "${CATALINA_HOME}/temp/catalina.pid"
+    else
+        echo "  Process $PID is not running"
     fi
-    echo "Tomcat 7 stopped."
+    rm -f "$PID_FILE"
+    echo "  Stopped."
 else
-    echo "Tomcat not found at $CATALINA_HOME"
+    echo "  PID file not found. Application may not be running."
 fi
