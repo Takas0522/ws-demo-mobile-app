@@ -1,6 +1,6 @@
 # デモ環境セットアップガイド
 
-> 最終更新: 2025-01-XX  
+> 最終更新: 2026-03-20  
 > 対象: mobile-app-system デモンストレーション用環境
 
 ---
@@ -28,24 +28,21 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                             Client Layer                                    │
 ├────────────────┬──────────────────┬──────────────────┬──────────────────────┤
-│  Mobile App    │  Mobile App      │  Windows App     │   Admin Web          │
-│   (iOS)        │   (Android)      │  (C++/Win32)     │   (Vue.js)           │
-│   *Mock*       │   *Mock*         │   Port: N/A      │   Port: 3000         │
+│  Mobile App    │  Mobile App      │  Windows App     │  Struts2 Admin       │
+│   (iOS)        │   (Android)      │  (C++/Win32)     │  (Java/Struts2)      │
+│   *Mock*       │   *Mock*         │   Port: N/A      │   Port: 8082         │
 └────────┬───────┴────────┬─────────┴────────┬─────────┴────────┬─────────────┘
          │                │                  │                  │
-         └────────────────┼──────────────────┼──────────────────┘
-                          │                  │
-┌─────────────────────────┴──────────────────┴──────────────────┐
-│                     BFF Layer                                 │
-├──────────────────────┬────────────────────────────────────────┤
-│   Mobile BFF         │      Admin BFF                         │
-│   (Spring Boot)      │      (Spring Boot)                     │
-│   Port: 8081         │      Port: 8082                        │
-└──────────┬───────────┴────────────┬───────────────────────────┘
-           │                        │
-           └────────────┬───────────┘
-                        │
-┌───────────────────────┴───────────────────────────────────────┐
+         └────────────────┼──────────────────┘                  │
+                          │                                     │
+┌─────────────────────────┴─────────────────────┐               │
+│              BFF Layer                        │               │
+│   Mobile BFF (Spring Boot, Port: 8081)        │               │
+└──────────────────────┬────────────────────────┘               │
+                       │                                        │
+                       └────────────────┬───────────────────────┘
+                                        │
+┌───────────────────────────────────────┴───────────────────────┐
 │                   API Layer                                   │
 │                Web API (Spring Boot)                          │
 │                Port: 8080                                     │
@@ -54,19 +51,21 @@
 ┌───────────────────────┴───────────────────────────────────────┐
 │                  Data Layer                                   │
 │            SQLite (File-based)                                │
-│              ./data/mobile_app.db                             │
+│          src/web-api/data/mobile_app.db                       │
 └───────────────────────────────────────────────────────────────┘
 ```
+
+> **Note**: Struts2 Admin は Admin BFF + Admin Web (Vue.js) を統合した後継アプリケーションです。
+> 組込み Tomcat 7 上で動作し、SQLite に直接アクセスします。
 
 ### 1.2 必要なポート
 
 | サービス | ポート | 説明 |
 |---------|--------|------|
 | SQLite | - | データベース（ファイルベース） |
-| Web API | 8080 | REST API |
-| Mobile BFF | 8081 | モバイルアプリ用BFF |
-| Admin BFF | 8082 | 管理Web用BFF |
-| Admin Web | 3000 | 管理Webアプリ |
+| Web API | 8080 | REST API（Spring Boot） |
+| Mobile BFF | 8081 | モバイルアプリ用BFF（Spring Boot） |
+| Struts2 Admin | 8082 | 管理Webアプリ（Struts2 + 組込みTomcat 7） |
 
 ---
 
@@ -77,26 +76,25 @@
 | ソフトウェア | バージョン | 確認コマンド | インストール先 |
 |------------|-----------|------------|--------------|
 | **Git** | 最新 | `git --version` | https://git-scm.com/ |
-| **Docker** | 20.x以上 | `docker --version` | https://www.docker.com/ |
-| **Docker Compose** | 2.x以上 | `docker-compose --version` | Docker Desktopに含まれる |
-| **Java** | 17以上 | `java -version` | https://adoptium.net/ |
-| **Gradle** | 7.x以上 | `./gradlew --version` | プロジェクトに含まれる |
-| **Node.js** | 18.x以上 | `node --version` | https://nodejs.org/ |
-| **npm** | 9.x以上 | `npm --version` | Node.jsに含まれる |
+| **Java** | 7以上 | `java -version` | https://adoptium.net/ |
+| **Apache Maven** | 3.x以上 | `mvn -v` | https://maven.apache.org/ |
+| **SQLite3** | 最新 | `sqlite3 --version` | https://www.sqlite.org/download.html |
+
+> **Note**: admin-struts は Java 7 / Struts 2.3.37 で構築されています。
+> Web API / Mobile BFF は Java 17 + Spring Boot です。
 
 ### 2.2 推奨ツール
 
 | ツール | 用途 | インストール |
 |-------|------|------------|
-| **curl** | API動作確認 | 標準装備（macOS/Linux） |
-| **jq** | JSON整形 | `brew install jq` (macOS) |
-| **sqlite3** | DB接続確認 | `brew install sqlite3` (macOS) |
+| **curl** | API動作確認 | 標準装備（macOS/Linux）、Windows は Git Bash に同梱 |
+| **jq** | JSON整形 | `brew install jq` (macOS) / `winget install jqlang.jq` (Windows) |
+| **sqlite3** | DB接続確認 | `brew install sqlite3` (macOS) / `winget install SQLite.SQLite` (Windows) |
 | **Postman** | API手動テスト | https://www.postman.com/ |
-| **Visual Studio** | latest | Windows App開発（MSBuild使用） |
 
 ### 2.3 システム要件
 
-- **OS**: macOS, Linux, Windows (WSL2推奨)
+- **OS**: macOS, Linux, Windows 10以上
 - **メモリ**: 8GB以上推奨
 - **ディスク**: 5GB以上の空き容量
 
@@ -106,42 +104,83 @@
 
 最速でデモ環境を起動する手順です。
 
+### Linux / macOS
+
 ```bash
 # 1. リポジトリをクローン
 git clone <repository-url>
 cd ws-demo-mobile-app
 
 # 2. データベースを初期化
-mkdir -p data
-sqlite3 ./data/mobile_app.db < database/ddl.sql
+./scripts/reset-database.sh
 
-# 3. データベースを初期化
-cd database
-./init-database.sh
-cd ..
+# 3. すべてのサービスを起動
+./scripts/start-all-services.sh
 
-# 4. Web APIを起動（ターミナル1）
-cd src/web-api
-./gradlew bootRun
+# 4. ブラウザで管理画面を開く
+#    URL:   http://localhost:8082/admin-struts/admin/login
+#    ID:    admin001
+#    PW:    admin123
+```
 
-# 5. Mobile BFFを起動（ターミナル2）
-cd src/mobile-bff
-./gradlew bootRun
+### Windows（コマンドプロンプト）
 
-# 6. Admin BFFを起動（ターミナル3）
-cd src/admin-bff
-./gradlew bootRun
+```bat
+REM 1. リポジトリをクローン
+git clone <repository-url>
+cd ws-demo-mobile-app
 
-# 7. Admin Webを起動（ターミナル4）
-cd src/admin-web
-npm install
-npm run dev
+REM 2. データベースを初期化
+scripts\reset-database.bat
 
-# 8. ブラウザで管理画面を開く
-open http://localhost:3000
+REM 3. すべてのサービスを起動
+scripts\start-all-services.bat
+
+REM 4. ブラウザで管理画面を開く
+REM    URL:   http://localhost:8082/admin-struts/admin/login
+REM    ID:    admin001
+REM    PW:    admin123
+```
+
+### admin-struts のみ起動する場合
+
+admin-struts 単体で起動する場合は、先に DB の初期化を行った上で個別起動スクリプトを使用します。
+
+**Linux / macOS:**
+
+```bash
+# DB 初期化（未実施の場合）
+./scripts/reset-database.sh
+
+# admin-struts を起動
+./scripts/start-admin-struts.sh
+
+# 停止
+./scripts/stop-admin-struts.sh
+```
+
+**Windows:**
+
+```bat
+REM DB 初期化（未実施の場合）
+scripts\reset-database.bat
+
+REM admin-struts を起動
+scripts\start-admin-struts.bat
+
+REM 停止
+scripts\stop-admin-struts.bat
 ```
 
 **起動完了**: すべてのサービスが起動したら、[動作確認](#5-動作確認)に進んでください。
+
+### ログイン情報
+
+| ユーザー | ログインID | パスワード | 種別 | アクセス先 |
+|---------|-----------|-----------|------|-----------|
+| 管理者 | `admin001` | `admin123` | admin | Web UI + Admin API |
+| 山田太郎 | `user001` | `password123` | user | API のみ |
+| 佐藤花子〜加藤由美 | `user002`〜`user010` | `password123` | user | API のみ |
 
 ---
 
@@ -169,23 +208,31 @@ git branch
 
 #### 2.1 データベースファイルの準備
 
+**Linux / macOS:**
+
 ```bash
-# データベースディレクトリの作成
-mkdir -p data
+# リセットスクリプトで初期化（推奨）
+./scripts/reset-database.sh
 
-# SQLiteデータベースは初回起動時に自動作成されます
-# 手動で作成する場合:
-sqlite3 ./data/mobile_app.db < database/ddl.sql
+# 手動で確認する場合
+sqlite3 src/web-api/data/mobile_app.db ".tables"
+```
 
-# ファイル確認
-ls -la ./data/mobile_app.db
+**Windows:**
+
+```bat
+REM リセットスクリプトで初期化（推奨）
+scripts\reset-database.bat
+
+REM 手動で確認する場合
+sqlite3 src\web-api\data\mobile_app.db ".tables"
 ```
 
 #### 2.2 接続確認
 
 ```bash
 # SQLiteに接続
-sqlite3 ./data/mobile_app.db
+sqlite3 src/web-api/data/mobile_app.db
 
 # 接続成功したら
 sqlite> .tables      # テーブル一覧
@@ -199,202 +246,204 @@ sqlite> .quit        # 終了
 
 #### 3.1 スキーマ作成
 
+**Linux / macOS:**
+
 ```bash
-cd database
+# スキーマ作成
+sqlite3 src/web-api/data/mobile_app.db < src/database/schema/01_create_tables.sql
 
-# DDLスクリプトを実行
-sqlite3 ./data/mobile_app.db < ddl.sql
-
-# 確認
-sqlite3 ./data/mobile_app.db ".tables"
-
+# テーブル確認
+sqlite3 src/web-api/data/mobile_app.db ".tables"
 # 期待される出力: 7つのテーブル
-# - users
-# - admins
-# - products
-# - purchases
-# - favorites
-# - feature_flags
-# - product_price_history
+# users, products, purchases, favorites, feature_flags,
+# user_feature_flags, product_price_history
+```
+
+**Windows:**
+
+```bat
+REM スキーマ作成
+sqlite3 src\web-api\data\mobile_app.db < src\database\schema\01_create_tables.sql
+
+REM テーブル確認
+sqlite3 src\web-api\data\mobile_app.db ".tables"
 ```
 
 #### 3.2 初期データ投入
 
+**Linux / macOS:**
+
 ```bash
 # 初期データを投入
-sqlite3 ./data/mobile_app.db < seed.sql
+sqlite3 src/web-api/data/mobile_app.db < src/database/seeds/02_seed_data.sql
 
 # データ確認
-sqlite3 ./data/mobile_app.db << EOF
-SELECT COUNT(*) FROM users;       -- 3件以上
-SELECT COUNT(*) FROM products;    -- 3件以上
-SELECT COUNT(*) FROM feature_flags; -- users数と同じ
-EOF
+sqlite3 src/web-api/data/mobile_app.db "SELECT 'users' as tbl, COUNT(*) as cnt FROM users UNION ALL SELECT 'products', COUNT(*) FROM products;"
+```
+
+**Windows:**
+
+```bat
+REM 初期データを投入
+sqlite3 src\web-api\data\mobile_app.db < src\database\seeds\02_seed_data.sql
+
+REM データ確認
+sqlite3 src\web-api\data\mobile_app.db "SELECT 'users' as tbl, COUNT(*) as cnt FROM users UNION ALL SELECT 'products', COUNT(*) FROM products;"
 ```
 
 **自動化スクリプト（推奨）**:
 
 ```bash
-# init-database.sh を作成（まだない場合）
-cat > init-database.sh << 'EOF'
-#!/bin/bash
-set -e
+# Linux / macOS
+./scripts/reset-database.sh
 
-echo "Initializing database..."
-sqlite3 ../data/mobile_app.db < ddl.sql
-sqlite3 ../data/mobile_app.db < seed.sql
-echo "Database initialized successfully!"
-EOF
-
-chmod +x init-database.sh
-./init-database.sh
+# Windows
+scripts\reset-database.bat
 ```
 
 ---
 
 ### Step 4: Web API のセットアップ
 
-#### 4.1 環境変数の設定
+#### 4.1 ビルドと起動
+
+**Linux / macOS:**
 
 ```bash
 cd src/web-api
 
-# .env ファイルを作成（または .env.example をコピー）
-cat > .env << EOF
-DB_PATH=./data/mobile_app.db
-JWT_SECRET=your-secret-key-change-this-in-production-min-32-chars
-SERVER_PORT=8080
-EOF
-```
+# ビルド
+mvn clean package -q -DskipTests
 
-#### 4.2 ビルドと起動
-
-```bash
-# Gradleラッパーに実行権限を付与（初回のみ）
-chmod +x gradlew
-
-# 依存関係のダウンロードとビルド
-./gradlew build
-
-# アプリケーションを起動
-./gradlew bootRun
+# 起動
+java -jar target/web-api-1.0.0-SNAPSHOT.jar
 
 # 別ターミナルで動作確認
 curl http://localhost:8080/actuator/health
 # {"status":"UP"}
 ```
 
+**Windows:**
+
+```bat
+cd src\web-api
+
+REM ビルド
+mvn clean package -q -DskipTests
+
+REM 起動
+java -jar target\web-api-1.0.0-SNAPSHOT.jar
+
+REM 別ターミナルで動作確認
+curl http://localhost:8080/actuator/health
+```
+
 **バックグラウンド起動**:
 
 ```bash
-# バックグラウンドで起動
-nohup ./gradlew bootRun > web-api.log 2>&1 &
+# Linux / macOS
+nohup java -jar target/web-api-1.0.0-SNAPSHOT.jar > ../../logs/web-api.log 2>&1 &
+echo $! > ../../pids/web-api.pid
+```
 
-# PIDを記録
-echo $! > web-api.pid
-
-# 停止する場合
-kill $(cat web-api.pid)
+```bat
+REM Windows
+start "Web API" /b cmd /c "java -jar target\web-api-1.0.0-SNAPSHOT.jar > ..\..\logs\web-api.log 2>&1"
 ```
 
 ---
 
 ### Step 5: Mobile BFF のセットアップ
 
+**Linux / macOS:**
+
 ```bash
 cd src/mobile-bff
 
-# 環境変数設定
-cat > .env << EOF
-WEB_API_URL=http://localhost:8080
-SERVER_PORT=8081
-EOF
-
 # ビルドと起動
-chmod +x gradlew
-./gradlew build
-./gradlew bootRun
+mvn clean package -q -DskipTests
+java -jar target/mobile-bff-1.0.0-SNAPSHOT.jar
 
 # 別ターミナルで動作確認
 curl http://localhost:8081/actuator/health
 # {"status":"UP"}
 ```
 
+**Windows:**
+
+```bat
+cd src\mobile-bff
+
+REM ビルドと起動
+mvn clean package -q -DskipTests
+java -jar target\mobile-bff-1.0.0-SNAPSHOT.jar
+
+REM 別ターミナルで動作確認
+curl http://localhost:8081/actuator/health
+```
+
 ---
 
-### Step 6: Admin BFF のセットアップ
+### Step 6: Struts2 管理画面のセットアップ
+
+> Admin BFF (Spring Boot) + Admin Web (Vue.js) は Struts2 管理画面アプリに統合されました。
+
+#### 6.1 ビルドと起動
+
+**Linux / macOS:**
 
 ```bash
-cd src/admin-bff
+cd src/admin-struts
 
-# 環境変数設定
-cat > .env << EOF
-WEB_API_URL=http://localhost:8080
-SERVER_PORT=8082
-EOF
+# WAR ビルド
+mvn clean package -q -DskipTests
 
-# ビルドと起動
-chmod +x gradlew
-./gradlew build
-./gradlew bootRun
+# 組込み Tomcat で起動（ポート 8082）
+mvn tomcat7:run -DskipTests
 
 # 別ターミナルで動作確認
-curl http://localhost:8082/actuator/health
-# {"status":"UP"}
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/admin-struts/admin/login
+# 200
 ```
 
----
+**Windows:**
 
-### Step 7: Admin Web のセットアップ
+```bat
+cd src\admin-struts
 
-#### 7.1 依存関係のインストール
+REM WAR ビルド
+mvn clean package -q -DskipTests
+
+REM 組込み Tomcat で起動（ポート 8082）
+mvn tomcat7:run -DskipTests
+
+REM 別ターミナルで動作確認
+curl -s -o nul -w "%%{http_code}" http://localhost:8082/admin-struts/admin/login
+```
+
+#### 6.2 起動スクリプトを使用（推奨）
 
 ```bash
-cd src/admin-web
+# Linux / macOS
+./scripts/start-admin-struts.sh
 
-# package.json の確認
-cat package.json
-
-# 依存関係をインストール
-npm install
-
-# インストール確認
-ls node_modules | wc -l
-# 数百個のパッケージがインストールされる
+# 停止
+./scripts/stop-admin-struts.sh
 ```
 
-#### 7.2 環境変数の設定
+```bat
+REM Windows
+scripts\start-admin-struts.bat
 
-```bash
-# .env.local ファイルを作成
-cat > .env.local << EOF
-VITE_API_BASE_URL=http://localhost:8082
-VITE_APP_TITLE=Demo Admin
-EOF
+REM 停止
+scripts\stop-admin-struts.bat
 ```
 
-#### 7.3 起動
+#### 6.3 アクセス
 
-```bash
-# 開発サーバーを起動
-npm run dev
-
-# 出力例:
-#   VITE v4.x.x  ready in xxx ms
-#
-#   ➜  Local:   http://localhost:3000/
-#   ➜  Network: use --host to expose
-```
-
-#### 7.4 ビルド（本番用）
-
-```bash
-# 本番ビルド（デモでは不要）
-npm run build
-
-# ビルド成果物の確認
-ls -la dist/
-```
+- **URL**: http://localhost:8082/admin-struts/admin/login
+- **ログインID**: `admin001`
+- **パスワード**: `admin123`
 
 ---
 
@@ -402,12 +451,20 @@ ls -la dist/
 
 ### 5.1 全サービスの起動確認
 
+**Linux / macOS:**
+
 ```bash
-# すべてのサービスが起動しているか確認
-curl http://localhost:8080/actuator/health  # {"status":"UP"}
-curl http://localhost:8081/actuator/health  # {"status":"UP"}
-curl http://localhost:8082/actuator/health  # {"status":"UP"}
-curl http://localhost:3000                  # HTMLが返る
+curl http://localhost:8080/actuator/health                           # {"status":"UP"}
+curl http://localhost:8081/actuator/health                           # {"status":"UP"}
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/admin-struts/admin/login  # 200
+```
+
+**Windows:**
+
+```bat
+curl http://localhost:8080/actuator/health
+curl http://localhost:8081/actuator/health
+curl -s -o nul -w "%%{http_code}" http://localhost:8082/admin-struts/admin/login
 ```
 
 ### 5.2 ログイン動作確認
@@ -417,65 +474,35 @@ curl http://localhost:3000                  # HTMLが返る
 ```bash
 curl -X POST http://localhost:8081/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{
-    "loginId": "user001",
-    "password": "password123"
-  }' | jq .
-
-# 期待される出力:
-# {
-#   "token": "eyJhbGciOiJIUzI1NiIs...",
-#   "userType": "user",
-#   "expiresIn": 3600
-# }
+  -d '{"loginId": "user001", "password": "password123"}'
 ```
 
-#### 5.2.2 管理者ログイン（Admin BFF）
+**Windows（コマンドプロンプト）:**
+
+```bat
+curl -X POST http://localhost:8081/api/v1/auth/login -H "Content-Type: application/json" -d "{\"loginId\": \"user001\", \"password\": \"password123\"}"
+```
+
+> Windows コマンドプロンプトでは JSON 内のダブルクォートを `\"` でエスケープし、外側を `"` で囲みます。  
+> PowerShell の場合は `-d '{\"loginId\": \"user001\", \"password\": \"password123\"}'` のようにシングルクォートを使用します。
+
+#### 5.2.2 管理者ログイン（Struts2 Admin API）
 
 ```bash
-curl -X POST http://localhost:8082/api/v1/auth/admin/login \
+curl -X POST http://localhost:8082/admin-struts/api/v1/auth/admin-login \
   -H "Content-Type: application/json" \
-  -d '{
-    "loginId": "admin001",
-    "password": "admin123"
-  }' | jq .
-
-# 期待される出力:
-# {
-#   "token": "eyJhbGciOiJIUzI1NiIs...",
-#   "userType": "admin",
-#   "expiresIn": 3600
-# }
+  -d '{"loginId": "admin001", "password": "admin123"}'
 ```
 
-### 5.3 商品一覧取得
+**Windows:**
 
-```bash
-# ユーザーログインでトークン取得
-TOKEN=$(curl -s -X POST http://localhost:8081/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"loginId":"user001","password":"password123"}' | jq -r '.token')
-
-# 商品一覧を取得
-curl http://localhost:8081/api/v1/products \
-  -H "Authorization: Bearer $TOKEN" | jq .
-
-# 期待される出力:
-# {
-#   "products": [
-#     {
-#       "productId": 1,
-#       "productName": "商品A",
-#       "unitPrice": 1000,
-#       ...
-#     }
-#   ]
-# }
+```bat
+curl -X POST http://localhost:8082/admin-struts/api/v1/auth/admin-login -H "Content-Type: application/json" -d "{\"loginId\": \"admin001\", \"password\": \"admin123\"}"
 ```
 
-### 5.4 管理画面の動作確認
+### 5.3 管理画面の動作確認
 
-1. ブラウザで http://localhost:3000 を開く
+1. ブラウザで http://localhost:8082/admin-struts/admin/login を開く
 2. ログイン画面が表示される
 3. 以下の情報でログイン:
    - ログインID: `admin001`
@@ -495,24 +522,37 @@ curl http://localhost:8081/api/v1/products \
 **原因と解決方法**:
 
 1. **データベースファイルが存在しない**
+
    ```bash
-   ls -la ./data/mobile_app.db
+   # Linux / macOS
+   ls -la src/web-api/data/mobile_app.db
    # ファイルが存在しない場合
-   sqlite3 ./data/mobile_app.db < database/ddl.sql
+   ./scripts/reset-database.sh
    ```
 
-2. **データベースディレクトリが存在しない**
-   ```bash
-   mkdir -p data
-   sqlite3 ./data/mobile_app.db < database/ddl.sql
+   ```bat
+   REM Windows
+   dir src\web-api\data\mobile_app.db
+   REM ファイルが存在しない場合
+   scripts\reset-database.bat
    ```
 
-3. **ファイルのパーミッションが不正**
+2. **sqlite3 コマンドが見つからない**
+
    ```bash
-   # パーミッション確認
-   ls -la ./data/mobile_app.db
-   # 必要に応じて修正
-   chmod 644 ./data/mobile_app.db
+   # macOS
+   brew install sqlite3
+
+   # Ubuntu/Debian
+   sudo apt-get install sqlite3
+   ```
+
+   ```bat
+   REM Windows（winget）
+   winget install SQLite.SQLite
+
+   REM Windows（scoop）
+   scoop install sqlite
    ```
 
 ---
@@ -524,120 +564,114 @@ curl http://localhost:8081/api/v1/products \
 **原因と解決方法**:
 
 1. **ポート8080が使用中**
+
    ```bash
-   # ポート確認
+   # Linux / macOS
    lsof -i :8080
-   # プロセスを停止
    kill -9 <PID>
    ```
 
-2. **環境変数が設定されていない**
-   ```bash
-   # .env ファイルを確認
-   cat web-api/.env
-   # 必要に応じて作成
+   ```bat
+   REM Windows
+   netstat -ano | findstr :8080
+   taskkill /PID <PID> /F
    ```
 
-3. **データベース接続エラー**
-   ```bash
-   # ログを確認
-   tail -f web-api/logs/application.log
-   # SQLiteデータベースファイルの確認
-   ls -la ./data/mobile_app.db
-   ```
-
-4. **Javaバージョンが古い**
+2. **Javaバージョンが古い**
    ```bash
    java -version
-   # Java 17以上が必要
+   # Web API / Mobile BFF は Java 17 以上が必要
    ```
 
 ---
 
-### 6.3 BFFが起動しない
+### 6.3 Struts2 管理画面が起動しない
 
-**症状**: `Connection refused to Web API`
+**症状**: `mvn tomcat7:run` でエラー、またはポート 8082 に接続できない
 
 **原因と解決方法**:
 
-1. **Web APIが起動していない**
+1. **ポート8082が使用中**
+
    ```bash
-   curl http://localhost:8080/actuator/health
-   # Web APIを起動
+   # Linux / macOS
+   lsof -i :8082
+   kill -9 <PID>
    ```
 
-2. **WEB_API_URLが間違っている**
-   ```bash
-   # .env ファイルを確認
-   cat mobile-bff/.env
-   # 正しいURL: http://localhost:8080
+   ```bat
+   REM Windows
+   netstat -ano | findstr :8082
+   taskkill /PID <PID> /F
    ```
 
----
-
-### 6.4 Admin Webが起動しない
-
-**症状**: `npm install` エラーまたは `npm run dev` エラー
-
-**原因と解決方法**:
-
-1. **Node.jsバージョンが古い**
+2. **Maven がインストールされていない**
    ```bash
-   node -version
-   # 18.x以上が必要
+   mvn -v
+   # Maven 3.x 以上が必要
    ```
 
-2. **依存関係のインストール失敗**
+3. **ビルドエラー**
    ```bash
-   # node_modulesを削除して再インストール
-   rm -rf node_modules package-lock.json
-   npm install
+   cd src/admin-struts
+   mvn clean package -DskipTests
+   # エラーメッセージを確認
    ```
 
-3. **ポート3000が使用中**
+4. **ログを確認**
+
    ```bash
-   # ポート確認
-   lsof -i :3000
-   # または別のポートを使用
-   npm run dev -- --port 3001
+   # Linux / macOS
+   tail -f logs/admin-struts.log
+   ```
+
+   ```bat
+   REM Windows
+   type logs\admin-struts.log
    ```
 
 ---
 
-### 6.5 ログインできない
+### 6.4 ログインできない
 
-**症状**: 401 Unauthorized
+**症状**: ログイン画面でエラー、401 Unauthorized
 
 **原因と解決方法**:
 
 1. **初期データが投入されていない**
-   ```sql
-   sqlite3 ./data/mobile_app.db "SELECT * FROM users;"
-   # データがない場合は seed.sql を実行
+   ```bash
+   sqlite3 src/web-api/data/mobile_app.db "SELECT login_id, user_type FROM users;"
+   # データがない場合はリセット
+   ./scripts/reset-database.sh   # Linux / macOS
+   scripts\reset-database.bat    # Windows
    ```
 
-2. **パスワードハッシュが間違っている**
-   ```bash
-   # seed.sqlを確認
-   cat database/seed.sql | grep password
-   ```
-
-3. **JWT秘密鍵が設定されていない**
-   ```bash
-   # .env ファイルを確認
-   cat web-api/.env | grep JWT_SECRET
-   ```
+2. **管理画面には admin ユーザーでログインが必要**
+   - ログインID: `admin001`
+   - パスワード: `admin123`
+   - 一般ユーザー (`user001` 等) では Web UI にログインできません
 
 ---
 
-### 6.6 一般的なエラーとログ確認
+### 6.5 一般的なエラーとログ確認
 
-| エラー | ログ確認コマンド |
-|-------|--------------|
-| Web API | `tail -f web-api/logs/application.log` |
-| Mobile BFF | `tail -f mobile-bff/logs/application.log` |
-| Admin BFF | `tail -f admin-bff/logs/application.log` |
-| SQLite | `sqlite3 ./data/mobile_app.db "PRAGMA integrity_check;"` |
+**Linux / macOS:**
+
+| エラー原因 | ログ確認コマンド |
+|-----------|--------------|
+| Web API | `tail -f logs/web-api.log` |
+| Mobile BFF | `tail -f logs/mobile-bff.log` |
+| Struts2 Admin | `tail -f logs/admin-struts.log` |
+| SQLite | `sqlite3 src/web-api/data/mobile_app.db "PRAGMA integrity_check;"` |
+
+**Windows:**
+
+| エラー原因 | ログ確認コマンド |
+|-----------|--------------|
+| Web API | `type logs\web-api.log` |
+| Mobile BFF | `type logs\mobile-bff.log` |
+| Struts2 Admin | `type logs\admin-struts.log` |
+| SQLite | `sqlite3 src\web-api\data\mobile_app.db "PRAGMA integrity_check;"` |
 
 ---
 
@@ -742,148 +776,60 @@ curl http://localhost:8081/api/v1/products \
 
 ### 8.1 データベースのリセット
 
-```bash
-cd database
-
-# データのみ削除（テーブル構造は保持）
-sqlite3 ./data/mobile_app.db << EOF
-DELETE FROM purchases;
-DELETE FROM favorites;
-DELETE FROM feature_flags;
-DELETE FROM products;
-DELETE FROM users;
-EOF
-
-# 初期データを再投入
-sqlite3 ./data/mobile_app.db < seed.sql
-```
-
-### 8.2 データベース全体を再作成
+**Linux / macOS:**
 
 ```bash
-# データベースファイルを削除
-rm -f ./data/mobile_app.db
-
-# 初期化スクリプトを実行
-./init-database.sh
+./scripts/reset-database.sh
 ```
 
-### 8.3 すべてのサービスを停止
+**Windows:**
+
+```bat
+scripts\reset-database.bat
+```
+
+### 8.2 すべてのサービスを停止
+
+**Linux / macOS:**
 
 ```bash
-# BFFとWeb APIを停止（Ctrl+C で各ターミナルを停止）
-
-# またはプロセスを強制終了
-pkill -f "gradle.*bootRun"
-pkill -f "vite"
-
-# SQLiteはファイルベースのため停止不要
+./scripts/stop-all-services.sh
 ```
 
-### 8.4 リセットスクリプト（推奨）
+**Windows:**
+
+```bat
+scripts\stop-all-services.bat
+```
+
+### 8.3 停止してからリセットして再起動
+
+**Linux / macOS:**
 
 ```bash
-# scripts/reset-all.sh を作成
-cat > scripts/reset-all.sh << 'EOF'
-#!/bin/bash
-set -e
-
-echo "Stopping all services..."
-pkill -f "gradle.*bootRun" || true
-pkill -f "vite" || true
-
-echo "Reinitializing database..."
-rm -f ./data/mobile_app.db
-cd database
-sqlite3 ../data/mobile_app.db < ddl.sql
-sqlite3 ../data/mobile_app.db < seed.sql
-cd ..
-
-echo "Reset complete! You can now start services again."
-EOF
-
-chmod +x scripts/reset-all.sh
-./scripts/reset-all.sh
+./scripts/stop-all-services.sh
+./scripts/reset-database.sh
+./scripts/start-all-services.sh
 ```
 
+**Windows:**
+
+```bat
+scripts\stop-all-services.bat
+scripts\reset-database.bat
+scripts\start-all-services.bat
+```
 ---
 
-## 9. 便利なスクリプト
+## 9. スクリプト一覧
 
-### 9.1 全サービス起動スクリプト
-
-```bash
-# scripts/start-all.sh
-cat > scripts/start-all.sh << 'EOF'
-#!/bin/bash
-set -e
-
-echo "Initializing SQLite database..."
-mkdir -p data
-sqlite3 ./data/mobile_app.db < database/ddl.sql
-sqlite3 ./data/mobile_app.db < database/seed.sql
-
-echo "Starting Web API..."
-cd src/web-api
-nohup ./gradlew bootRun > ../logs/web-api.log 2>&1 &
-echo $! > ../pids/web-api.pid
-cd ..
-
-echo "Waiting for Web API..."
-sleep 10
-
-echo "Starting Mobile BFF..."
-cd src/mobile-bff
-nohup ./gradlew bootRun > ../logs/mobile-bff.log 2>&1 &
-echo $! > ../pids/mobile-bff.pid
-cd ..
-
-echo "Starting Admin BFF..."
-cd src/admin-bff
-nohup ./gradlew bootRun > ../logs/admin-bff.log 2>&1 &
-echo $! > ../pids/admin-bff.pid
-cd ..
-
-echo "Starting Admin Web..."
-cd src/admin-web
-nohup npm run dev > ../logs/admin-web.log 2>&1 &
-echo $! > ../pids/admin-web.pid
-cd ..
-
-echo "All services started!"
-echo "Logs are in ./logs/"
-echo "PIDs are in ./pids/"
-EOF
-
-chmod +x scripts/start-all.sh
-```
-
-### 9.2 全サービス停止スクリプト
-
-```bash
-# scripts/stop-all.sh
-cat > scripts/stop-all.sh << 'EOF'
-#!/bin/bash
-
-echo "Stopping all services..."
-
-# PIDファイルから停止
-if [ -d "pids" ]; then
-  for pid_file in pids/*.pid; do
-    if [ -f "$pid_file" ]; then
-      kill $(cat "$pid_file") 2>/dev/null || true
-      rm "$pid_file"
-    fi
-  done
-fi
-
-# Docker停止（不要 - SQLiteはファイルベース）
-
-echo "All services stopped!"
-EOF
-
-chmod +x scripts/stop-all.sh
-```
+| スクリプト | Linux / macOS | Windows |
+|-----------|---------------|---------|
+| 全サービス起動 | `./scripts/start-all-services.sh` | `scripts\start-all-services.bat` |
+| 全サービス停止 | `./scripts/stop-all-services.sh` | `scripts\stop-all-services.bat` |
+| admin-struts 起動 | `./scripts/start-admin-struts.sh` | `scripts\start-admin-struts.bat` |
+| admin-struts 停止 | `./scripts/stop-admin-struts.sh` | `scripts\stop-admin-struts.bat` |
+| DB リセット | `./scripts/reset-database.sh` | `scripts\reset-database.bat` |
 
 ---
 
@@ -891,78 +837,47 @@ chmod +x scripts/stop-all.sh
 
 ### Q1: ポートを変更したい
 
-**A**: 各サービスの設定ファイルまたは環境変数で変更できます。
+**A**: admin-struts のポートは `src/admin-struts/pom.xml` の `tomcat7-maven-plugin` 設定で変更できます。
+Web API / Mobile BFF は `application.properties` で変更できます。
 
-```bash
-# Web API
-# web-api/.env
-SERVER_PORT=8090
+### Q2: Windows で curl が使えない
 
-# Admin Web
-# admin-web/.env.local
-VITE_PORT=3001
+**A**: Git for Windows をインストールすると Git Bash に curl が含まれます。
+または、PowerShell の `Invoke-WebRequest` コマンドレットを使用できます：
 
-# または起動時に指定
-npm run dev -- --port 3001
+```powershell
+Invoke-WebRequest -Uri http://localhost:8082/admin-struts/admin/login -Method GET
 ```
-
-### Q2: 本番環境にデプロイしたい
-
-**A**: このシステムはデモ用です。本番環境にデプロイする場合は以下を検討してください：
-
-- HTTPS化（Let's Encrypt等）
-- JWT秘密鍵の変更
-- データベース認証情報の変更
-- 環境変数の外部化（AWS Secrets Manager等）
-- ログ管理（CloudWatch等）
-- モニタリング（Prometheus + Grafana等）
 
 ### Q3: モバイルアプリはどうやって動かす？
 
-**A**: このデモではモバイルアプリは実装されていません（BFFまで）。実際のモバイルアプリを開発する場合は：
+**A**: モバイルアプリは Mobile BFF に接続します：
 
-- iOS: Xcode + Swift
-- Android: Android Studio + Java/Kotlin
-- Windows: Visual Studio + C++20/Win32 (Windows 10+)
+- iOS: Xcode + Swift (`src/ios-app/`)
+- Android: Android Studio + Java (`src/android-app/`)
+- Windows: Visual Studio + C++ (`src/windows-app/`)
 - API URL: Mobile BFF (`http://localhost:8081`)
 
 ### Q4: テストデータを追加したい
 
-**A**: `database/seed.sql` を編集して再実行してください。
+**A**: `src/database/seeds/02_seed_data.sql` を編集して DB をリセットしてください。
 
-```sql
--- ユーザー追加
-INSERT INTO users (login_id, user_name, password_hash, created_at, updated_at)
-VALUES ('user999', 'テストユーザー', '$2a$10$...', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+```bash
+# Linux / macOS
+./scripts/reset-database.sh
+
+# Windows
+scripts\reset-database.bat
 ```
-
 ---
 
-## 11. 参考資料
-
-| ドキュメント | パス |
-|------------|------|
-| システム概要 | `docs/specs/mobile-app-system/00-overview.md` |
-| API仕様 | `docs/specs/mobile-app-system/05-api-spec.md` |
-| テスト計画 | `docs/testing/integration-test-plan.md` |
-| テストシナリオ | `docs/testing/test-scenarios/` |
-| アーキテクチャ | `docs/architecture/` |
-
----
-
-## 12. サポート
+## 11. サポート
 
 問題が発生した場合:
 
 1. まず[トラブルシューティング](#6-トラブルシューティング)を確認
 2. ログファイルを確認（`logs/` ディレクトリ）
 3. Issueを作成（GitHub）
-
----
-
-**デモ環境の準備が完了しました！🎉**
-
-次は [docs/testing/integration-test-plan.md](testing/integration-test-plan.md) を参照して、統合テストを実施してください。
 
 ---
 

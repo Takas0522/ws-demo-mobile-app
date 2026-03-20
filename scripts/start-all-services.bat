@@ -21,11 +21,11 @@ if not exist "%PROJECT_ROOT%\logs" mkdir "%PROJECT_ROOT%\logs"
 if not exist "%PROJECT_ROOT%\pids" mkdir "%PROJECT_ROOT%\pids"
 
 REM =========================================
-REM  [1/5] SQLiteデータベースの初期化
+REM  [1/4] SQLiteデータベースの初期化
 REM =========================================
-set "DB_DIR=%PROJECT_ROOT%\data"
+set "DB_DIR=%PROJECT_ROOT%\src\web-api\data"
 set "DB_FILE=%DB_DIR%\mobile_app.db"
-echo [1/5] Checking SQLite database...
+echo [1/4] Checking SQLite database...
 
 if not exist "%DB_DIR%" mkdir "%DB_DIR%"
 
@@ -59,20 +59,27 @@ if not exist "%DB_FILE%" (
 echo.
 
 REM =========================================
-REM  [2/5] Web APIを起動
+REM  [2/4] Web APIを起動
 REM =========================================
-echo [2/5] Starting Web API (port 8080)...
+echo [2/4] Starting Web API (port 8080)...
 cd /d "%PROJECT_ROOT%\src\web-api"
-if exist "mvnw.cmd" (
-    start "Web API" /b cmd /c "mvnw.cmd spring-boot:run > "%PROJECT_ROOT%\logs\web-api.log" 2>&1"
-    echo [OK] Web API starting...
-) else if exist "gradlew.bat" (
-    start "Web API" /b cmd /c "gradlew.bat bootRun > "%PROJECT_ROOT%\logs\web-api.log" 2>&1"
-    echo [OK] Web API starting...
-) else (
-    echo [ERROR] mvnw.cmd / gradlew.bat not found in src\web-api\
-    exit /b 1
+set "JAR_FILE=target\web-api-1.0.0-SNAPSHOT.jar"
+if not exist "%JAR_FILE%" (
+    echo   JAR not found. Building...
+    where mvn >nul 2>&1
+    if errorlevel 1 (
+        if exist "mvnw.cmd" (
+            call mvnw.cmd clean package -q -DskipTests
+        ) else (
+            echo [ERROR] mvn / mvnw.cmd not found!
+            exit /b 1
+        )
+    ) else (
+        call mvn clean package -q -DskipTests
+    )
 )
+start "Web API" /b cmd /c "java -jar "%JAR_FILE%" > "%PROJECT_ROOT%\logs\web-api.log" 2>&1"
+echo [OK] Web API starting...
 echo.
 
 REM Web APIの起動を待機
@@ -95,51 +102,39 @@ echo [OK] Web API is ready
 echo.
 
 REM =========================================
-REM  [3/5] Mobile BFFを起動
+REM  [3/4] Mobile BFFを起動
 REM =========================================
-echo [3/5] Starting Mobile BFF (port 8081)...
+echo [3/4] Starting Mobile BFF (port 8081)...
 cd /d "%PROJECT_ROOT%\src\mobile-bff"
-if exist "mvnw.cmd" (
-    start "Mobile BFF" /b cmd /c "mvnw.cmd spring-boot:run > "%PROJECT_ROOT%\logs\mobile-bff.log" 2>&1"
-    echo [OK] Mobile BFF starting...
-) else if exist "gradlew.bat" (
-    start "Mobile BFF" /b cmd /c "gradlew.bat bootRun > "%PROJECT_ROOT%\logs\mobile-bff.log" 2>&1"
-    echo [OK] Mobile BFF starting...
-) else (
-    echo [ERROR] mvnw.cmd / gradlew.bat not found in src\mobile-bff\
-    exit /b 1
+set "JAR_FILE=target\mobile-bff-1.0.0-SNAPSHOT.jar"
+if not exist "%JAR_FILE%" (
+    echo   JAR not found. Building...
+    where mvn >nul 2>&1
+    if errorlevel 1 (
+        if exist "mvnw.cmd" (
+            call mvnw.cmd clean package -q -DskipTests
+        ) else (
+            echo [ERROR] mvn / mvnw.cmd not found!
+            exit /b 1
+        )
+    ) else (
+        call mvn clean package -q -DskipTests
+    )
 )
+start "Mobile BFF" /b cmd /c "java -jar "%JAR_FILE%" > "%PROJECT_ROOT%\logs\mobile-bff.log" 2>&1"
+echo [OK] Mobile BFF starting...
 echo.
 
-REM =========================================
-REM  [4/5] Admin BFFを起動
-REM =========================================
-echo [4/5] Starting Admin BFF (port 8082)...
-cd /d "%PROJECT_ROOT%\src\admin-bff"
-if exist "mvnw.cmd" (
-    start "Admin BFF" /b cmd /c "mvnw.cmd spring-boot:run > "%PROJECT_ROOT%\logs\admin-bff.log" 2>&1"
-    echo [OK] Admin BFF starting...
-) else if exist "gradlew.bat" (
-    start "Admin BFF" /b cmd /c "gradlew.bat bootRun > "%PROJECT_ROOT%\logs\admin-bff.log" 2>&1"
-    echo [OK] Admin BFF starting...
-) else (
-    echo [ERROR] mvnw.cmd / gradlew.bat not found in src\admin-bff\
-    exit /b 1
-)
-echo.
+REM [MIGRATED TO STRUTS2] Admin BFF + Admin Web（旧構成 - Struts2 移行により無効化）
+REM Admin BFF (port 8082) と Admin Web (port 3000) は
+REM Struts2 管理画面アプリに統合されました。
 
 REM =========================================
-REM  [5/5] Admin Webを起動
+REM  [4/4] Struts2 管理画面アプリを起動
 REM =========================================
-echo [5/5] Starting Admin Web (port 3000)...
-cd /d "%PROJECT_ROOT%\src\admin-web"
-if exist "package.json" (
-    start "Admin Web" /b cmd /c "npm run dev > "%PROJECT_ROOT%\logs\admin-web.log" 2>&1"
-    echo [OK] Admin Web starting...
-) else (
-    echo [ERROR] package.json not found in src\admin-web\
-    exit /b 1
-)
+echo [4/4] Starting Struts2 Admin Application (port 8082)...
+call "%SCRIPT_DIR%start-admin-struts.bat"
+echo [OK] Struts2 Admin Application started
 echo.
 
 REM =========================================
@@ -148,6 +143,24 @@ REM =========================================
 echo =========================================
 echo   All Services Started!
 echo =========================================
+echo.
+echo Services:
+echo   - SQLite DB:     %DB_FILE%
+echo   - Web API:       http://localhost:8080
+echo   - Mobile BFF:    http://localhost:8081
+echo   - Struts2 Admin: http://localhost:8082/admin-struts/admin/login
+echo.
+echo Logs:
+echo   - logs\web-api.log
+echo   - logs\mobile-bff.log
+echo   - logs\admin-struts.log
+echo.
+echo To stop all services, run:
+echo   scripts\stop-all-services.bat
+echo.
+
+cd /d "%PROJECT_ROOT%"
+endlocal
 echo.
 echo Services:
 echo   - SQLite DB:   %DB_FILE%

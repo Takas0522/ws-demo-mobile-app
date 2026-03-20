@@ -17,7 +17,7 @@ set "SCRIPT_DIR=%~dp0"
 set "PROJECT_ROOT=%SCRIPT_DIR%.."
 
 REM SQLiteデータベースファイルのパス
-set "DB_DIR=%PROJECT_ROOT%\data"
+set "DB_DIR=%PROJECT_ROOT%\src\web-api\data"
 set "DB_FILE=%DB_DIR%\mobile_app.db"
 
 REM dataディレクトリを作成

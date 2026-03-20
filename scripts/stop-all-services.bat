@@ -17,11 +17,14 @@ set "SCRIPT_DIR=%~dp0"
 set "PROJECT_ROOT=%SCRIPT_DIR%.."
 
 REM =========================================
-REM  Javaプロセス（Web API / BFF）を停止
+REM  Javaプロセス（Web API / Mobile BFF / Struts2 Admin）を停止
 REM =========================================
 echo Stopping Java services...
 
-REM ポートベースでJavaプロセスを検索・停止
+REM ポートベースでプロセスを検索・停止
+REM   8080: Web API
+REM   8081: Mobile BFF
+REM   8082: Struts2 Admin Application
 for %%P in (8080 8081 8082) do (
     for /f "tokens=5" %%A in ('netstat -ano 2^>nul ^| findstr "LISTENING" ^| findstr ":%%P "') do (
         set "PID=%%A"
@@ -39,40 +42,9 @@ for %%P in (8080 8081 8082) do (
 echo.
 
 REM =========================================
-REM  Node.jsプロセス（Admin Web）を停止
-REM =========================================
-echo Stopping Admin Web...
-for /f "tokens=5" %%A in ('netstat -ano 2^>nul ^| findstr "LISTENING" ^| findstr ":3000 "') do (
-    set "PID=%%A"
-    if not "!PID!"=="0" (
-        echo   Stopping process on port 3000 ^(PID: !PID!^)...
-        taskkill /PID !PID! /F >nul 2>&1
-        if not errorlevel 1 (
-            echo   [OK] Admin Web stopped
-        )
-    )
-)
-echo.
-
-REM =========================================
 REM  SQLite
 REM =========================================
 echo SQLite database: no shutdown required (file-based)
-echo.
-
-REM =========================================
-REM  Gradleデーモンを停止（オプション）
-REM =========================================
-echo Stopping Gradle daemons...
-cd /d "%PROJECT_ROOT%\src\web-api"
-if exist "gradlew.bat" (
-    call gradlew.bat --stop >nul 2>&1
-)
-if exist "mvnw.cmd" (
-    REM Maven Wrapperにはデーモン停止は不要
-    echo   Maven Wrapper: no daemon to stop
-)
-echo [OK] Gradle daemons stopped
 echo.
 
 echo =========================================
