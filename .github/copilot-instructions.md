@@ -13,13 +13,11 @@ Web API (Java, port 8080)
     ↓
 SQLite Database
 
-管理者用 Web アプリ
+管理者用 Web アプリ（Struts2 移行後）
     ↓
-Admin BFF (Java, port 8082)
+Struts2 管理アプリ (組込み Tomcat, port 8082)
     ↓
-Web API (Java, port 8080)
-    ↓
-SQLite Database
+SQLite Database（直接アクセス）
 ```
 
 - すべてのバックエンドサービス（Mobile BFF / Admin BFF / Web API）は Java（Spring Boot）で実装されている

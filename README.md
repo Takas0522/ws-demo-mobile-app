@@ -89,7 +89,7 @@
 ```
 管理者ブラウザ
     ↓
-Struts2 管理アプリ (Tomcat 7, port 8082)
+Struts2 管理アプリ (組込み Tomcat, port 8082)
     ↓
 SQLite Database（直接アクセス）
 ```
@@ -109,7 +109,7 @@ SQLite Database（直接アクセス）
 ### 管理画面 Struts2（✅ 移行済み）
 - **言語**: Java 7
 - **フレームワーク**: Apache Struts 2.5.33
-- **サーブレットコンテナ**: Apache Tomcat 7
+- **サーブレットコンテナ**: 組込み Tomcat（tomcat7-maven-plugin）
 - **データベース**: SQLite（直接アクセス）
 - **ビルドツール**: Maven 3.9+
 

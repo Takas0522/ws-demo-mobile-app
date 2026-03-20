@@ -76,7 +76,7 @@
     }
   },
 
-  "postCreateCommand": "mkdir -p /workspace/src/web-api/data && if [ ! -f /workspace/src/web-api/data/mobile_app.db ]; then sqlite3 /workspace/src/web-api/data/mobile_app.db < /workspace/src/database/schema/01_create_tables.sql && sqlite3 /workspace/src/web-api/data/mobile_app.db < /workspace/src/database/seeds/02_seed_data.sql && echo 'SQLite database initialized'; else echo 'SQLite database already exists'; fi && echo 'Setting up Tomcat 7...' && cp /opt/tomcat7/conf/server.xml /opt/tomcat7/conf/server.xml.bak && echo 'Dev Container is ready!'",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
 
   "remoteUser": "vscode"
 }
