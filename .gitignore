@@ -174,3 +174,5 @@ pids/
 local.properties
 
 temp/
+
+.playwright-cli/
