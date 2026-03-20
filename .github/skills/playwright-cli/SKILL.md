@@ -6,11 +6,17 @@ allowed-tools: Bash(playwright-cli:*)
 
 # Browser Automation with playwright-cli
 
+## Important: headed モード
+
+`playwright-cli open` を実行する際は、**必ず `--headed` オプションを付与すること**。
+この開発環境（DevContainer）では headed モードが利用可能であり、ブラウザウィンドウを表示して動作確認できる。
+環境の制約を勝手に推測して `--headed` を省略してはならない。ユーザーが明示的に headless を指定した場合のみ省略する。
+
 ## Quick start
 
 ```bash
-# open new browser
-playwright-cli open
+# open new browser (headed mode)
+playwright-cli open --headed
 # navigate to a page
 playwright-cli goto https://playwright.dev
 # interact with the page using refs from the snapshot
@@ -28,9 +34,9 @@ playwright-cli close
 ### Core
 
 ```bash
-playwright-cli open
+playwright-cli open --headed
 # open and navigate right away
-playwright-cli open https://example.com/
+playwright-cli open --headed https://example.com/
 playwright-cli goto https://playwright.dev
 playwright-cli type "search query"
 playwright-cli click e3
@@ -157,11 +163,15 @@ playwright-cli video-stop video.webm
 
 ## Open parameters
 ```bash
+# Always use --headed to show the browser window (default in this project)
+playwright-cli open --headed
+playwright-cli open --headed https://example.com/
+
 # Use specific browser when creating session
-playwright-cli open --browser=chrome
-playwright-cli open --browser=firefox
-playwright-cli open --browser=webkit
-playwright-cli open --browser=msedge
+playwright-cli open --headed --browser=chrome
+playwright-cli open --headed --browser=firefox
+playwright-cli open --headed --browser=webkit
+playwright-cli open --headed --browser=msedge
 # Connect to browser via extension
 playwright-cli open --extension
 
@@ -226,7 +236,7 @@ npx playwright-cli click e1
 ## Example: Form submission
 
 ```bash
-playwright-cli open https://example.com/form
+playwright-cli open --headed https://example.com/form
 playwright-cli snapshot
 
 playwright-cli fill e1 "user@example.com"
@@ -239,7 +249,7 @@ playwright-cli close
 ## Example: Multi-tab workflow
 
 ```bash
-playwright-cli open https://example.com
+playwright-cli open --headed https://example.com
 playwright-cli tab-new https://example.com/other
 playwright-cli tab-list
 playwright-cli tab-select 0
@@ -250,7 +260,7 @@ playwright-cli close
 ## Example: Debugging with DevTools
 
 ```bash
-playwright-cli open https://example.com
+playwright-cli open --headed https://example.com
 playwright-cli click e4
 playwright-cli fill e7 "test"
 playwright-cli console
@@ -259,7 +269,7 @@ playwright-cli close
 ```
 
 ```bash
-playwright-cli open https://example.com
+playwright-cli open --headed https://example.com
 playwright-cli tracing-start
 playwright-cli click e4
 playwright-cli fill e7 "test"
