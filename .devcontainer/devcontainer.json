@@ -29,7 +29,8 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
-        "Vue.volar"
+        "Vue.volar",
+        "bierner.markdown-mermaid"
       ],
       "settings": {
         "java.configuration.runtimes": [
