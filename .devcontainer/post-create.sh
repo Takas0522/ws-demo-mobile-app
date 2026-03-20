@@ -23,7 +23,7 @@ fi
 # --- 2. Playwright ブラウザのインストール ---
 echo "Installing Playwright browsers..."
 if [ -f /workspace/src/e2e/package.json ]; then
-    (cd /workspace/src/e2e && npm ci && npx playwright install --with-deps chromium) \
+    (cd /workspace/src/e2e && npm ci && npx playwright install --with-deps chromium && npm install -g @playwright/cli@latest) \
         || echo "WARNING: Playwright install failed, continuing"
 else
     echo "No e2e package.json found, skipping Playwright install"

@@ -30,7 +30,8 @@
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
         "Vue.volar",
-        "bierner.markdown-mermaid"
+        "bierner.markdown-mermaid",
+        "ms-playwright.playwright"
       ],
       "settings": {
         "java.configuration.runtimes": [
