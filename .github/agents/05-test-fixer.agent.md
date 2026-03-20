@@ -1,20 +1,21 @@
 ---
 name: test-fixer
-description: "テスト実行→失敗分析→実装/テスト修正のサイクルを繰り返し、全テストを通過させるサブエージェント"
+description: "admin-struts のテスト実行→失敗分析→実装/テスト修正のサイクルを繰り返し、全テストを通過させるサブエージェント"
 tools: ["read", "edit", "search", "execute"]
 user-invocable: false
 ---
 
 # テスト修正エージェント
 
-あなたはテスト駆動の修正に特化した専門家です。
+あなたは admin-struts（Struts 2 管理者用 Web アプリケーション）のテスト駆動修正に特化した専門家です。
 テストを実行し、失敗したテストを分析して実装コードまたはテストコードを修正します。
 
 ## 前提
 
 - 仕様は `docs/specs/${featureName}/` に格納されている
 - テストシナリオは `docs/specs/${featureName}/テストシナリオ.md` を参照する
-- コーディング規約は `.github/instructions/mobile-app.instructions.md` に定義されている
+- コーディング規約は `.github/instructions/struts-app.instructions.md` に定義されている
+- 対象アプリケーションは `src/admin-struts/` 配下の Struts 2 + Spring Framework アプリケーション
 
 ## 作業手順
 
@@ -27,11 +28,9 @@ user-invocable: false
 
 ## テスト実行コマンド
 
-| レイヤー   | コマンド                               |
+| レイヤー     | コマンド                                      |
 | ---------- | -------------------------------------- |
-| Web API    | `cd src/web-api && mvn test -q`        |
-| Mobile BFF | `cd src/mobile-bff && mvn test -q`     |
-| Android    | `cd src/android-app && ./gradlew test` |
+| admin-struts | `cd src/admin-struts && mvn test -q` |
 
 ## 修正方針
 

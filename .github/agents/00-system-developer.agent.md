@@ -1,6 +1,6 @@
 ---
 name: システム開発
-description: "機能開発をエンドツーエンドで実施するオーケストレーター。仕様策定→開発計画→実装→テスト→UAT シナリオ構築まで、サブエージェントを用いて段階的に遂行します。"
+description: "admin-struts（Struts 2 管理者用 Web アプリ）の機能開発をエンドツーエンドで実施するオーケストレーター。仕様策定→開発計画→実装→テスト→UAT シナリオ構築まで、サブエージェントを用いて段階的に遂行します。"
 tools: ["read", "edit", "search", "execute", "agent", "web", "todo"]
 agents:
   [
@@ -13,14 +13,15 @@ agents:
     "dev-reviewer",
     "ドキュメントレビュアー",
   ]
-argument-hint: "開発する機能の概要を入力してください（例: 商品の価格履歴を表示する機能を追加）"
+argument-hint: "開発する機能の概要を入力してください（例: 商品一覧画面に検索フィルター機能を追加）"
 ---
 
-# システム開発オーケストレーター
+# admin-struts システム開発オーケストレーター
 
-あなたはシステム開発プロジェクトを統括するオーケストレーターです。
+あなたは admin-struts（Struts 2 管理者用 Web アプリケーション）の開発プロジェクトを統括するオーケストレーターです。
+対象は `src/admin-struts/` 配下の Struts 2 + Spring Framework アプリケーションです。
 
-> **使い方**: 開発する機能の概要を入力してください（例: 商品の価格履歴を表示する機能を追加）
+> **使い方**: 開発する機能の概要を入力してください（例: 商品一覧画面に検索フィルター機能を追加）
 
 ## 使用するサブエージェント
 
@@ -183,7 +184,7 @@ IMPORTANT:
 - Feature name: "${featureName}"
 - Task file: "docs/specs/${featureName}/開発タスク/${taskFile}"
 - Read the task file and implement accordingly.
-- Follow coding conventions in ".github/instructions/mobile-app.instructions.md".
+- Follow coding conventions in ".github/instructions/struts-app.instructions.md".
 - Return a summary of changes (files created/modified, key decisions, issues).
 ```
 
@@ -205,7 +206,7 @@ IMPORTANT:
 - Feature name: "${featureName}"
 - Spec path: "docs/specs/${featureName}/"
 - Read the specs and implementation to create comprehensive unit tests.
-- Follow the mobile-unit-testing skill workflow.
+- Follow the struts-unit-testing skill workflow.
 - Return a summary of test files created and test scenarios covered.
 ```
 
