@@ -3,6 +3,7 @@ package com.example.admin.dao;
 import com.example.admin.entity.ProductPriceHistory;
 
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -59,6 +60,54 @@ public class ProductPriceHistoryDao extends BaseDao {
             conn = getConnection();
             BeanListHandler<ProductPriceHistory> handler = createBeanListHandler(ProductPriceHistory.class, COLUMN_TO_PROPERTY);
             return queryRunner.query(conn, sql, handler, productId);
+        } finally {
+            closeQuietly(conn);
+        }
+    }
+
+    /**
+     * 日付フィルタ + ページネーション対応の価格履歴検索（新しい順）。
+     *
+     * @param productId 商品ID
+     * @param startDate 検索開始日時（ISO 8601 形式）
+     * @param endDate   検索終了日時（ISO 8601 形式）
+     * @param limit     1ページあたりの件数
+     * @param offset    取得開始位置
+     * @return 価格変更履歴リスト
+     */
+    public List<ProductPriceHistory> findByProductIdWithFilter(
+            Long productId, String startDate, String endDate, int limit, int offset) throws SQLException {
+        String sql = "SELECT * FROM product_price_history"
+                + " WHERE product_id = ? AND changed_at >= ? AND changed_at <= ?"
+                + " ORDER BY changed_at DESC LIMIT ? OFFSET ?";
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            BeanListHandler<ProductPriceHistory> handler =
+                    createBeanListHandler(ProductPriceHistory.class, COLUMN_TO_PROPERTY);
+            return queryRunner.query(conn, sql, handler, productId, startDate, endDate, limit, offset);
+        } finally {
+            closeQuietly(conn);
+        }
+    }
+
+    /**
+     * 日付フィルタ付きの総件数カウント。
+     *
+     * @param productId 商品ID
+     * @param startDate 検索開始日時（ISO 8601 形式）
+     * @param endDate   検索終了日時（ISO 8601 形式）
+     * @return 該当件数
+     */
+    public int countByProductIdWithFilter(
+            Long productId, String startDate, String endDate) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM product_price_history"
+                + " WHERE product_id = ? AND changed_at >= ? AND changed_at <= ?";
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            Number count = queryRunner.query(conn, sql, new ScalarHandler<Number>(), productId, startDate, endDate);
+            return count != null ? count.intValue() : 0;
         } finally {
             closeQuietly(conn);
         }

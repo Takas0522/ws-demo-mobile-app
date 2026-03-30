@@ -1,7 +1,6 @@
 package com.example.admin.api.product;
 
 import com.example.admin.entity.Product;
-import com.example.admin.entity.ProductPriceHistory;
 import com.example.admin.service.ProductService;
 import com.example.admin.util.ApiResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +35,10 @@ public class ApiProductAction extends ActionSupport {
     // Input params (Struts2 パラメータインジェクション)
     private Long productId;
     private String keyword;
+    private String startDate;
+    private String endDate;
+    private Integer page;
+    private Integer limit;
 
     public void setProductId(Long productId) {
         this.productId = productId;
@@ -51,6 +54,38 @@ public class ApiProductAction extends ActionSupport {
 
     public String getKeyword() {
         return keyword;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public Integer getLimit() {
+        return limit;
     }
 
     /**
@@ -185,33 +220,52 @@ public class ApiProductAction extends ActionSupport {
     }
 
     /**
-     * GET /api/v1/products-price-history?productId=xxx — 価格履歴
+     * GET /api/v1/products/{productId}/price-history — 価格履歴
+     *
+     * クエリパラメータ:
+     *   startDate — 検索開始日（ISO 8601、省略時は5年前）
+     *   endDate   — 検索終了日（ISO 8601、省略時は現在日時）
+     *   page      — ページ番号（1以上、省略時は1）
+     *   limit     — 1ページあたり件数（1〜100、省略時は20）
      */
     public String priceHistory() {
         HttpServletResponse response = ServletActionContext.getResponse();
         try {
             if (productId == null) {
-                ApiResponseUtil.writeError(response, 400, "PROD_001", "Product ID is required");
+                ApiResponseUtil.writeError(response, 400, "PRODUCT_001", "商品IDが指定されていません");
                 return null;
             }
 
-            List<ProductPriceHistory> history = productService.getPriceHistory(productId);
-
-            List<Map<String, Object>> historyList = new ArrayList<Map<String, Object>>();
-            for (ProductPriceHistory h : history) {
-                Map<String, Object> item = new HashMap<String, Object>();
-                item.put("priceHistoryId", h.getPriceHistoryId());
-                item.put("productId", h.getProductId());
-                item.put("oldPrice", h.getOldPrice());
-                item.put("newPrice", h.getNewPrice());
-                item.put("changedAt", h.getChangedAt());
-                item.put("changedBy", h.getChangedBy());
-                item.put("changeReason", h.getChangeReason());
-                historyList.add(item);
+            // 商品存在チェック
+            Product product = productService.getProductById(productId);
+            if (product == null) {
+                ApiResponseUtil.writeError(response, 404, "PRODUCT_001", "商品が見つかりません");
+                return null;
             }
 
-            Map<String, Object> data = new HashMap<String, Object>();
-            data.put("priceHistory", historyList);
+            // 日付形式バリデーション
+            if (startDate != null && !startDate.isEmpty() && !isValidDateFormat(startDate)) {
+                ApiResponseUtil.writeError(response, 400, "VAL_001",
+                        "startDate の形式が不正です。ISO 8601 形式（yyyy-MM-dd または yyyy-MM-ddTHH:mm:ss）で指定してください");
+                return null;
+            }
+            if (endDate != null && !endDate.isEmpty() && !isValidDateFormat(endDate)) {
+                ApiResponseUtil.writeError(response, 400, "VAL_001",
+                        "endDate の形式が不正です。ISO 8601 形式（yyyy-MM-dd または yyyy-MM-ddTHH:mm:ss）で指定してください");
+                return null;
+            }
+
+            // startDate > endDate チェック
+            if (startDate != null && !startDate.isEmpty()
+                    && endDate != null && !endDate.isEmpty()
+                    && startDate.compareTo(endDate) > 0) {
+                ApiResponseUtil.writeError(response, 400, "VAL_001",
+                        "startDate は endDate より前の日付を指定してください");
+                return null;
+            }
+
+            Map<String, Object> data = productService.getPriceHistoryWithPagination(
+                    productId, startDate, endDate, page, limit);
 
             ApiResponseUtil.writeSuccess(response, data);
         } catch (Exception e) {
@@ -219,6 +273,13 @@ public class ApiProductAction extends ActionSupport {
             writeInternalError(response);
         }
         return null;
+    }
+
+    /**
+     * 日付文字列が ISO 8601 形式（yyyy-MM-dd または yyyy-MM-ddTHH:mm:ss）かを検証する。
+     */
+    private boolean isValidDateFormat(String date) {
+        return date.matches("\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2})?");
     }
 
     // --- Helper methods ---

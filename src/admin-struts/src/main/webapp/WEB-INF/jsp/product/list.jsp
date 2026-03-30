@@ -27,6 +27,8 @@
                 <td>
                     <a href="${pageContext.request.contextPath}/admin/product-edit?productId=<s:property value='#product.productId'/>"
                        class="btn btn-primary btn-sm">編集</a>
+                    <a href="${pageContext.request.contextPath}/admin/product-price-history?productId=<s:property value='#product.productId'/>"
+                       class="btn btn-secondary btn-sm">価格履歴</a>
                 </td>
             </tr>
         </s:iterator>

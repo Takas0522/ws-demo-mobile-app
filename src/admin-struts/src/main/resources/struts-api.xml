@@ -86,8 +86,9 @@
             <interceptor-ref name="apiSecuredStack"/>
         </action>
 
-        <!-- GET /api/v1/products-price-history?productId=xxx — 価格履歴 -->
-        <action name="products-price-history" class="com.example.admin.api.product.ApiProductAction" method="priceHistory">
+        <!-- GET /api/v1/products/{productId}/price-history — 価格履歴 -->
+        <action name="products/*/price-history" class="com.example.admin.api.product.ApiProductAction" method="priceHistory">
+            <param name="productId">{1}</param>
             <interceptor-ref name="apiSecuredStack"/>
         </action>
 

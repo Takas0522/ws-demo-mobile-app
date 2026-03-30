@@ -74,6 +74,11 @@
             <result name="error">/WEB-INF/jsp/error.jsp</result>
         </action>
 
+        <action name="product-price-history" class="com.example.admin.action.product.ProductPriceHistoryAction">
+            <result name="success">/WEB-INF/jsp/product/history.jsp</result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </action>
+
         <!-- ===== ユーザー管理 ===== -->
         <action name="users" class="com.example.admin.action.user.UserListAction">
             <result name="success">/WEB-INF/jsp/user/list.jsp</result>
