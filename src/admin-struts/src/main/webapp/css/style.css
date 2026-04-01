@@ -186,3 +186,15 @@ body {
 /* Feature Flag Toggle */
 .flag-enabled { color: #28a745; font-weight: 600; }
 .flag-disabled { color: #dc3545; }
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+.pagination-info {
+    font-size: 0.9rem;
+    color: #666;
+}
